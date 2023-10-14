@@ -19,18 +19,18 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    const int numTimeSteps = 10000;
-    const int particlesSize = 10;
+    const int numTimeSteps = 1000;
+    const int particlesSize = 1000;
 
     const int batchSize = 10000;
 
     //Physikalische Konstanten
     const double timepercalc = 0.5916079;
     const double G = 6.67430e-11;
-    const double softening = 1;
+    const double softening = 10;
 
 
-    const double faktor = 0.2;
+    const double faktor = 0.05;
 
 private:
     int calulations = 0;

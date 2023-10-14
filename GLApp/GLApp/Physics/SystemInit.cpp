@@ -6,22 +6,29 @@
 void SystemInit::start(std::vector<std::vector<Particle>>& particles)
 {
 
-	solarSystem(particles);
+	//solarSystem(particles);
 
-	//galaxy(0, { 0,0,0 }, { 0,0,0 }, particles);
+	spiralGalaxy(0, { 0,0,0 }, { 0,0,0 }, particles);
 	//galaxy(1000, { 5000000, 3000,0 }, { 0,0,0 }, particles);
 }
 
-void SystemInit::galaxy(int size, glm::vec3 position, glm::vec3 velocity, std::vector<std::vector<Particle>>& particles)
+void SystemInit::spiralGalaxy(int size, glm::vec3 position, glm::vec3 velocity, std::vector<std::vector<Particle>>& particles)
 {
-	// Change: Set values for diskRadius and starSpeed to good defaults
+	// Ändern: Setzen von Werten für diskRadius und starSpeed
 	double diskRadius = 200;
 	double starSpeed = 0.03;
 
-	//Creating a galaxy like the milky way
+	int numArms = 4;
+	double armWidth = 0;
+	double armDensity = 0.3;
+	double interArmDensity = 1;
+
+	double depth = 10;
+
+	// Erstellen einer Spiralgalaxie
 	for (int j = size; j < physics.particlesSize; j++)
 	{
-		//black hole in the middle
+		// Schwarzes Loch in der Mitte
 		if (j == size)
 		{
 			particles[0][j].position = position;
@@ -31,22 +38,29 @@ void SystemInit::galaxy(int size, glm::vec3 position, glm::vec3 velocity, std::v
 			particles[0][j].color = glm::vec3(1, 1, 0);
 		}
 
-		//stars on a disk around the black hole with velocity so the stars stay on the orbit arod the vlack hole
+		// Sterne in Spiralarmen um das schwarze Loch
 		else
 		{
 			Particle particle;
 			double r = physics.random(0.0, diskRadius);
-			double angle = physics.random(0, 2 * 3.14);
+			double angle = physics.random(0, 2 * armWidth);
+
+			// Ändern: Verwende eine logarithmische Verteilung der Radien, um die Spiralarme zu erzeugen
+			r = r * std::exp(starSpeed * r / diskRadius);
 			double v = std::sqrt((physics.G * particles[0][size].mass) / r) * starSpeed;
-			particle.position = glm::vec3(r * std::cos(angle), r * std::sin(angle), 0) + particles[0][size].position + position;
-			particle.velocity = glm::vec3(-v * std::sin(angle), v * std::cos(angle), 0) + particles[0][size].velocity + velocity;
+			double armAngle = 2 * 3.14 * (j - size) / numArms; // Winkel für die Anzahl der Arme
+
+			double density = (angle < armDensity) ? 1.0 : interArmDensity;
+
+			particle.position = glm::vec3(r * std::cos(angle + armAngle), r * std::sin(angle + armAngle), physics.random(-depth, depth)) + particles[0][size].position + position;
+			particle.velocity = glm::vec3(-v * std::sin(angle + armAngle), v * std::cos(angle + armAngle), 0) + particles[0][size].velocity + velocity;
 			particle.mass = 0.5;
 			particle.radius = 0.5;
 			particle.color = glm::vec3(1, 1, 1);
 			particles[0][j] = particle;
 		}
 	}
-}
+}	
 
 
 void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
