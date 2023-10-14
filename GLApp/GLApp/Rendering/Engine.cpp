@@ -5,9 +5,12 @@
 #include <gtc/matrix_transform.hpp>
 #include <Windows.h>
 #include <gtc/type_ptr.hpp>
+#include <chrono>
+#include <thread>
 
- Engine::Engine() : window(nullptr), shaderProgram(0), VAO(0), cameraPosition(0.0f, 0.0f, 5.0f), cameraFront(0.0f, 0.0f, -1.0f), cameraUp(0.0f, 1.0f, 0.0f), cameraYaw(-90.0f), cameraPitch(0.0f)
+ Engine::Engine() : window(nullptr), shaderProgram(0), VAO(0), cameraPosition(0.0f, 0.0f, 1000.0f), cameraFront(0.0f, 0.0f, -1.0f), cameraUp(0.0f, 1.0f, 0.0f), cameraYaw(-90.0f), cameraPitch(0.0f)
 {
+
 }
 
 bool Engine::init() {
@@ -132,6 +135,19 @@ void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles
     // GLFW-Puffer austauschen und Ereignisse verarbeiten
     glfwSwapBuffers(window);
     glfwPollEvents();
+
+    //dely before it starts
+    if (deltaTime == 0)
+    {
+        while (true) {
+            // Überprüfe den Status der Leertaste (32 entspricht der Leertaste)
+            if (GetAsyncKeyState(32) & 0x8000) {
+                break;  // Wenn Leertaste gedrückt, beende die Schleife
+            }
+            // Optional: Füge eine kurze Verzögerung ein, um die CPU-Auslastung zu reduzieren
+            Sleep(10);
+        }
+    }
 }
 
 void Engine::renderParticles(int deltaTime, std::vector<std::vector<Particle>>& particles)

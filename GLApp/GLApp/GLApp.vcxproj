@@ -71,8 +71,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\3 Schule\Next\Astro_Genesis\GLApp\GLApp\Math;C:\3 Schule\Next\Astro_Genesis\GLApp\GLApp\Rendering;C:\3 Schule\Next\Astro_Genesis\GLApp\GLApp\Physics;C:\3 Schule\Next\Astro_Genesis\External Libraries\GLM\glm;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\3 Schule\Next\Astro_Genesis\External Libraries\GLM;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\3 Schule\Next\GLApp\GLApp\Math;C:\3 Schule\Next\GLApp\GLApp\Rendering;C:\3 Schule\Next\GLApp\GLApp\Physics;C:\3 Schule\Next\External Libraries\GLM\glm;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\3 Schule\Next\External Libraries\GLM;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>

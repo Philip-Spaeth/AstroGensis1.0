@@ -1,5 +1,6 @@
 #pragma once
 #include <glm.hpp>
+#include "gtc/matrix_transform.hpp"
 
 class Particle {
 public:
@@ -28,39 +29,53 @@ public:
         return glm::length(delta);
     }
 
-    // Methode zur Berechnung der Gravitationskraft von einem anderen Teilchen
-    glm::vec3 CalculateGravitationalForce(const Particle& other, double G, double softening) const
+    glm::vec3 CalculateGravitationalForce(const Particle& other, double G, double softening, float deltaTime)
     {
+        glm::vec3 zero = { 0,0,0 };
+        if (position == zero && other.position == zero)
+        {
+            return { 0 , 0 , 0 };
+        }
+        if (&other == this)
+        {
+            return { 0 , 0 , 0};
+        } 
+
         glm::vec3 delta = other.position - position;
         float distance = glm::length(delta);
-        if (distance < radius + other.radius) {
-            // Kollision vermeiden (falls erforderlich)
-            return glm::vec3(0.0f);
-        }
-        double forceMagnitude = (G * mass * other.mass) / (distance * distance + softening * softening);
 
-        ////////////color mode
-        if (colorMode)
+        float forceMagnitude = 0;
+
+        if (distance != 0)
         {
-            if (other.mass > 100 && mass < 100)
-            {
-                if (forceMagnitude * -1 > bigestGravitation)
-                {
+            forceMagnitude = (G * mass * other.mass) / (distance * distance + softening * softening);
+        }
+        ////////////color mode
+        if (colorMode) {
+            if (other.mass > 100 && mass < 100) {
+                if (forceMagnitude * -1 > bigestGravitation) {
                     static_cast<double>(bigestGravitation) = forceMagnitude * -1;
                 }
-
-                else if (forceMagnitude > bigestGravitation)
-                {
+                else if (forceMagnitude > bigestGravitation) {
                     static_cast<double>(bigestGravitation) = forceMagnitude;
                 }
             }
-		}
+        }
 
-        return (delta / distance) * static_cast<float>(forceMagnitude);
-    }
+        float acceleration = 0;
+        // Calculate the acceleration
+        if (mass != 0)
+        {
+            acceleration = forceMagnitude / mass;
+        }
+        // Calculate the velocity in 3D
+        glm::vec3 direction = glm::normalize(other.position - position);
+        glm::vec3 newvelocity = (acceleration * deltaTime) * direction;
 
-    // Methode zur Aktualisierung der Geschwindigkeit basierend auf einer Kraft
-    void UpdateVelocity(const glm::vec3& force, float deltaTime) {
-        velocity += (force / mass);
+        // Update the velocity in 3D
+        velocity += newvelocity;
+
+        // Return the force vector
+        return forceMagnitude * direction;
     }
 };

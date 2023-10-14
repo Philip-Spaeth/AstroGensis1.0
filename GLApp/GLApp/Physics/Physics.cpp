@@ -31,7 +31,24 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
     std::cout << "Starting the calculations..." << std::endl;
 
     double time = numTimeSteps * ((particlesSize * timepercalc* particlesSize));
-    std::cout << "Estimated time: " << time << " seconds" << std::endl;
+    //printing out the estimated time in seconds, minutes and hours, and days
+    if (time < 60)
+    {
+		std::cout << "Estimated time: " << time << " seconds" << std::endl;
+	}
+    else if (time < 3600)
+    {
+		std::cout << "Estimated time: " << time / 60 << " minutes" << std::endl;
+	}
+    else if (time < 86400)
+    {
+		std::cout << "Estimated time: " << time / 3600 << " hours" << std::endl;
+	}
+    else
+    {
+		std::cout << "Estimated time: " << time / 86400 << " days" << std::endl;
+	}
+    
 
     std::string dataFolder = "Data";
     std::filesystem::create_directory(dataFolder);
@@ -98,16 +115,14 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
                     double m1 = currentParticle.mass;
                     double m2 = otherParticle.mass;
 
-                    glm::vec3 force = currentParticle.CalculateGravitationalForce(otherParticle, G, softening);
+                    glm::vec3 force = currentParticle.CalculateGravitationalForce(otherParticle, G, softening, faktor);
 
-                    // Berechnen der neuen Geschwindigkeit
-                    currentParticle.UpdateVelocity(force, faktor);
                     // Berechnen der neuen Position
                     currentParticle.UpdatePosition(faktor); // Übergeben Sie den Zeitschritt (deltaTime), den Sie hier verwenden möchten
 
                     calulations++;
                 }
-
+                //just for color not effecient
                 if (currentParticle.colorMode == true)
                 {
                     if (currentParticle.mass < 1000)
