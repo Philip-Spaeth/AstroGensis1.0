@@ -198,7 +198,7 @@ void Engine::renderParticles(int deltaTime, std::vector<std::vector<Particle>>& 
         << particles[deltaTime][particleIndex].mass << std::endl;
 
     // Ausgabe des ersten Partikels
-    particleIndex = 200;
+    particleIndex = 1;
     std::cout << "Zeit: " << deltaTime << " Partikel " << particleIndex << ": "
         << particles[deltaTime][particleIndex].position.x << std::endl;
 

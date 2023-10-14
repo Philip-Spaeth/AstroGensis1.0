@@ -22,8 +22,8 @@ private:
     glm::vec3 cameraPosition;
     glm::vec3 cameraFront;
     glm::vec3 cameraUp;
-    float cameraSpeed = 1;
-    float rushSpeed = 10000;
+    float cameraSpeed = 100;
+    float rushSpeed = 1000;
     float cameraYaw;
     float cameraPitch;
     glm::mat4 view;

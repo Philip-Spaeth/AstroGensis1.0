@@ -10,7 +10,7 @@
 #include "Engine.h"
 #include "Physics.h"
 
-const int TARGET_FPS = 10;
+const int TARGET_FPS = 30;
 
 int main()
 {
