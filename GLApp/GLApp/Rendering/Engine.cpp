@@ -147,6 +147,23 @@ void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles
             // Optional: Füge eine kurze Verzögerung ein, um die CPU-Auslastung zu reduzieren
             Sleep(10);
         }
+        //delay for 1 second
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+
+    if (GetAsyncKeyState(32) & 0x8000)
+    {
+        //delay for 1 second
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        while (true) {
+            // Überprüfe den Status der Leertaste (32 entspricht der Leertaste)
+            if (GetAsyncKeyState(32) & 0x8000) {
+                break;  // Wenn Leertaste gedrückt, beende die Schleife
+            }
+            // Optional: Füge eine kurze Verzögerung ein, um die CPU-Auslastung zu reduzieren
+            Sleep(10);
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
 

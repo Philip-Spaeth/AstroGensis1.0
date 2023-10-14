@@ -6,7 +6,7 @@ class Particle {
 public:
     Particle(float x = 0.0f, float y = 0.0f, float z = 0.0f)
         : position(x, y, z), velocity(0.0f, 0.0f, 0.0f), mass(1.0f), radius(1.0f), color(glm::vec3(1.0f, 1.0f, 1.0f)) {
-        // Weitere Initialisierungen, falls benötigt
+        // Weitere Initialisierungen, falls benï¿½tigt
     }
 
     glm::vec3 position; // 3D-Position des Teilchens
