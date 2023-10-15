@@ -8,9 +8,14 @@
 #include <chrono>
 #include <thread>
 
- Engine::Engine() : window(nullptr), shaderProgram(0), VAO(0), cameraPosition(0.0f, 0.0f, 1000.0f), cameraFront(0.0f, 0.0f, -1.0f), cameraUp(0.0f, 1.0f, 0.0f), cameraYaw(-90.0f), cameraPitch(0.0f)
+ Engine::Engine() : window(nullptr), shaderProgram(0), VAO(0)
 {
-
+     // start kamera position
+     cameraPosition = glm::vec3(0.0f, 0.0f, 1000.0f);                     
+     cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+     cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+     cameraYaw = -90.0f;
+     cameraPitch = 0.0f;
 }
 
 bool Engine::init() {
@@ -139,7 +144,17 @@ void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles
     //dely before it starts
     if (deltaTime == 0)
     {
-        while (true) {
+        while (true) 
+        {
+            //Process mouse and keyboard input before the simulation starts
+            processMouseInput();
+            processInput();
+
+            renderParticles(deltaTime, particles);
+
+            // GLFW-Puffer austauschen und Ereignisse verarbeiten
+            glfwSwapBuffers(window);
+            glfwPollEvents();
             // Überprüfe den Status der Leertaste (32 entspricht der Leertaste)
             if (GetAsyncKeyState(32) & 0x8000) {
                 break;  // Wenn Leertaste gedrückt, beende die Schleife
@@ -151,11 +166,22 @@ void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
 
+    //pause if space is pressed
     if (GetAsyncKeyState(32) & 0x8000)
     {
         //delay for 1 second
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
-        while (true) {
+        while (true) 
+        {
+            //still process mouse and keyboard input
+            processMouseInput();
+            processInput();
+
+            renderParticles(deltaTime, particles);
+
+            // GLFW-Puffer austauschen und Ereignisse verarbeiten
+            glfwSwapBuffers(window);
+            glfwPollEvents();
             // Überprüfe den Status der Leertaste (32 entspricht der Leertaste)
             if (GetAsyncKeyState(32) & 0x8000) {
                 break;  // Wenn Leertaste gedrückt, beende die Schleife
@@ -164,6 +190,22 @@ void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles
             Sleep(10);
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    }
+
+    //cam movement after the last particle
+    if (deltaTime == (particles.size() - 1))
+    {
+        while (true)
+        {
+            processMouseInput();
+            processInput();
+
+            renderParticles(deltaTime, particles);
+
+            // GLFW-Puffer austauschen und Ereignisse verarbeiten
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+        }
     }
 }
 
