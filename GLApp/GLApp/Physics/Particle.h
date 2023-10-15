@@ -15,7 +15,7 @@ public:
     float radius;       // Radius des Teilchens
     glm::vec3 color;    // Farbe des Teilchens (RGB-Wert)
 
-    bool colorMode = false;
+    bool colorMode = true;
     double bigestGravitation = 0;
 
     // Methode zur Aktualisierung der Position basierend auf der Geschwindigkeit

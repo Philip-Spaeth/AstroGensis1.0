@@ -138,8 +138,8 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
                         }
 
                         float color = gravityForce * 5 / highestForce;
-                        std::cout << color << std::endl;
-                        particles[t][p].color = glm::vec3(color/2 + 0.5, 0, color + 0.5);
+                        double extraLight = 0.7;
+                        particles[t][p].color = glm::vec3(color/2 + extraLight, color/5 + extraLight, color + extraLight);
                     }
                 }
             }

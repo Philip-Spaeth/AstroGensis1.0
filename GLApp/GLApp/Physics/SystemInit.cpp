@@ -35,7 +35,7 @@ void SystemInit::spiralGalaxy(int size, glm::vec3 position, glm::vec3 velocity, 
 			particles[0][j].velocity = velocity;
 			particles[0][j].mass = 1e12;
 			particles[0][j].radius = 2;
-			particles[0][j].color = glm::vec3(1, 1, 0);
+			particles[0][j].color = glm::vec3(1, 1, 1);
 		}
 
 		// Sterne in Spiralarmen um das schwarze Loch
@@ -55,8 +55,8 @@ void SystemInit::spiralGalaxy(int size, glm::vec3 position, glm::vec3 velocity, 
 			particle.position = glm::vec3(r * std::cos(angle + armAngle), r * std::sin(angle + armAngle), physics.random(-depth, depth)) + particles[0][size].position + position;
 			particle.velocity = glm::vec3(-v * std::sin(angle + armAngle), v * std::cos(angle + armAngle), 0) + particles[0][size].velocity + velocity;
 			particle.mass = 0.5;
-			particle.radius = 0.5;
-			particle.color = glm::vec3(1, 1, 1);
+			particle.radius = 0.01;
+			//particle.color = glm::vec3(1, 1, 1);
 			particles[0][j] = particle;
 		}
 	}
