@@ -69,21 +69,20 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\3 Schule\Next\GLApp\GLApp\Math;C:\3 Schule\Next\GLApp\GLApp\Rendering;C:\3 Schule\Next\GLApp\GLApp\Physics;C:\3 Schule\Next\External Libraries\GLM\glm;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\3 Schule\Next\External Libraries\GLM;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>D:\Git-Repos\simulation\GLApp\GLApp\Physics;D:\Git-Repos\simulation\GLApp\GLApp\Rendering;D:\Git-Repos\simulation\External Libraries\GLFW\include;D:\Git-Repos\simulation\External Libraries\GLM\glm;D:\Git-Repos\simulation\External Libraries\GLEW\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Git-Repos\simulation\External Libraries\GLM;D:\Git-Repos\simulation\External Libraries\GLFW\lib-vc2015;D:\Git-Repos\simulation\External Libraries\GLEW;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\3 Schule\Next\Astro_Genesis_OpenGL\GLApp\GLApp\Math;C:\3 Schule\Next\Astro_Genesis_OpenGL\GLApp\GLApp\Phsics;C:\3 Schule\Next\Astro_Genesis_OpenGL\GLApp\GLApp\Rendering;C:\3 Schule\Next\Astro_Genesis_OpenGL\External Libraries\GLM\glm;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\3 Schule\Next\Astro_Genesis_OpenGL\External Libraries\GLM\glm;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>D:\Git-Repos\simulation\External Libraries\GLM\glm;D:\Git-Repos\simulation\GLApp\GLApp\Rendering;D:\Git-Repos\simulation\GLApp\GLApp\Physics;D:\Git-Repos\simulation\GLApp\GLApp\Math;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Git-Repos\simulation\External Libraries\GLM;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -109,10 +108,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\Git-Repos\simulation\External Libraries\GLEW\include;D:\Git-Repos\simulation\External Libraries\GLM\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>D:\Git-Repos\simulation\External Libraries\GLFW\lib-vc2015\glfw3dll.lib;D:\Git-Repos\simulation\External Libraries\GLFW\lib-vc2015\glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -155,20 +157,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Math\Matrix4.cpp" />
-    <ClCompile Include="Math\Vector3.cpp" />
     <ClCompile Include="Physics\Physics.cpp" />
     <ClCompile Include="Physics\SystemInit.cpp" />
-    <ClCompile Include="Rendering\Camera.cpp" />
     <ClCompile Include="Rendering\Engine.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Math\Matrix4.h" />
-    <ClInclude Include="Math\Vector3.h" />
     <ClInclude Include="Physics\Particle.h" />
     <ClInclude Include="Physics\Physics.h" />
     <ClInclude Include="Physics\SystemInit.h" />
-    <ClInclude Include="Rendering\Camera.h" />
     <ClInclude Include="Rendering\Engine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

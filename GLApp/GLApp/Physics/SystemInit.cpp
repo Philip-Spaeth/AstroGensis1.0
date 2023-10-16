@@ -6,9 +6,9 @@
 void SystemInit::start(std::vector<std::vector<Particle>>& particles)
 {
 
-	//solarSystem(particles);
+	solarSystem(particles);
 
-	spiralGalaxy(0, { 0,0,0 }, { 0,0,0 }, particles);
+	//spiralGalaxy(0, { 0,0,0 }, { 0,0,0 }, particles);
 	//galaxy(1000, { 5000000, 3000,0 }, { 0,0,0 }, particles);
 }
 
