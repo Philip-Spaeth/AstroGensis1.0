@@ -4,7 +4,8 @@
 #include <vector>
 #include <string>
 #include <filesystem>
-
+#include <chrono>
+#include <thread>
 #include "Particle.h"
 #include <glm.hpp>
 
@@ -19,18 +20,18 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    const int numTimeSteps = 1000;
-    const int particlesSize = 1000;
+    const int numTimeSteps = 4000;
+    const int particlesSize = 2000;
 
     const int batchSize = 10000;
 
     //Physikalische Konstanten
-    const double timepercalc = 0.5916079;
+    const double timepercalc = 0.152;
     const double G = 6.67430e-11;
     const double softening = 10;
 
 
-    const double faktor = 0.05;
+    const double faktor = 3;
 
 private:
     int calulations = 0;

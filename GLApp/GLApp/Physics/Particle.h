@@ -5,11 +5,12 @@
 class Particle {
 public:
     Particle(float x = 0.0f, float y = 0.0f, float z = 0.0f)
-        : position(x, y, z), velocity(0.0f, 0.0f, 0.0f), mass(1.0f), radius(1.0f), color(glm::vec3(1.0f, 1.0f, 1.0f)) {
+        : position(x, y, z), velocity(0.0f, 0.0f, 0.0f), mass(0
+        ), radius(1.0f), color(glm::vec3(1.0f, 1.0f, 1.0f)) {
         // Weitere Initialisierungen, falls ben�tigt
     }
 
-    glm::vec3 position; // 3D-Position des Teilchens
+    glm::vec3 position ; // 3D-Position des Teilchens
     glm::vec3 velocity; // 3D-Geschwindigkeit des Teilchens
     float mass;         // Masse des Teilchens
     float radius;       // Radius des Teilchens
@@ -19,7 +20,8 @@ public:
     double bigestGravitation = 0;
 
     // Methode zur Aktualisierung der Position basierend auf der Geschwindigkeit
-    void UpdatePosition(float deltaTime) {
+    void UpdatePosition(float deltaTime) 
+    {
         position += velocity * deltaTime;
     }
 
@@ -32,7 +34,8 @@ public:
     glm::vec3 CalculateGravitationalForce(const Particle& other, double G, double softening, float deltaTime)
     {
         glm::vec3 zero = { 0,0,0 };
-        if (position == zero && other.position == zero)
+
+        if (position == zero && other.position == zero || mass == 0 || other.mass == 0)
         {
             return { 0 , 0 , 0 };
         }

@@ -92,7 +92,7 @@ void Engine::start(std::vector<std::vector<Particle>>& particles)
 {
 
     // Laden der Daten für die Darstellung
-    std::cout << "Lade Daten für die Darstellung ..." << std::endl;
+    std::cout << "loading data ..." << std::endl;
     Physics py;
     for (int t = 0; t < py.numTimeSteps; ++t) {
         std::string fileName = "Data/particles_" + std::to_string(t) + ".dat";
@@ -127,7 +127,7 @@ void Engine::start(std::vector<std::vector<Particle>>& particles)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    std::cout << "Daten geladen" << std::endl;
+    std::cout << "Data loaded" << std::endl;
 }
 
 void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles)
@@ -250,16 +250,19 @@ void Engine::renderParticles(int deltaTime, std::vector<std::vector<Particle>>& 
         // Zeichnen Sie den Punkt
         glDrawArrays(GL_POINTS, 0, 1);
     }
-    
-    // Ausgabe des ersten Partikels
-    int particleIndex = 0;
-    std::cout << "Zeit: " << deltaTime << " Partikel " << particleIndex << ": "
-        << particles[deltaTime][particleIndex].mass << std::endl;
-
-    // Ausgabe des ersten Partikels
-    particleIndex = 1;
-    std::cout << "Zeit: " << deltaTime << " Partikel " << particleIndex << ": "
-        << particles[deltaTime][particleIndex].position.x << std::endl;
+    /*
+    //print out all the properties of the particle
+    int index = 1;
+    int mass = particles[deltaTime][index].mass;
+    double x = particles[deltaTime][index].position.x;
+    double y = particles[deltaTime][index].position.y;
+    double z = particles[deltaTime][index].position.z;
+    double vx = particles[deltaTime][index].velocity.x;
+    double vy = particles[deltaTime][index].velocity.y;
+    double vz = particles[deltaTime][index].velocity.z;
+    //print out all at once
+    std::cout << "mass: " << mass << " x: " << x << " y: " << y << " z: " << z << " vx: " << vx << " vy: " << vy << " vz: " << vz << std::endl;
+    */
 
     // VAO lösen
     glBindVertexArray(0);
