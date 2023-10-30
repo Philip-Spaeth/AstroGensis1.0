@@ -24,15 +24,6 @@
     <ClCompile Include="Physics\Physics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering\Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Matrix4.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Vector3.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Physics\SystemInit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -41,19 +32,10 @@
     <ClInclude Include="Physics\Particle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Vector3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Rendering\Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Physics\Physics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Rendering\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Matrix4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Physics\SystemInit.h">

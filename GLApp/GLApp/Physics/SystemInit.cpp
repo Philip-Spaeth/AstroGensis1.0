@@ -132,11 +132,9 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::vec3 positi
 
 void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 {
-
-	//works the best with 10 particles
 	Physics physics;
 
-	double distanceFaktor = 100;
+	double distanceFaktor = 300;
 
 	for (int j = 0; j < physics.particlesSize; j++)
 	{
@@ -146,7 +144,7 @@ void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 			Particle particle;
 			particle.position = glm::vec3(0, 0, 0);
 			particle.velocity = glm::vec3(0, 0, 0);
-			particle.mass = 33300;
+			particle.mass = 1000000;
 			particle.radius = 6;
 			particle.color = glm::vec3(1, 1, 0);
 			particles[0][j] = particle;

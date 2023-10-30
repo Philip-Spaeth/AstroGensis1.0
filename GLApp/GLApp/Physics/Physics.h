@@ -20,8 +20,8 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    const int numTimeSteps = 1000;
-    const int particlesSize = 30;
+    const int numTimeSteps = 3600;
+    const int particlesSize = 10;
 
     const int batchSize = 10000;
 
@@ -30,7 +30,7 @@ public:
     const double softening = 0.1;
 
 
-    const double faktor = 1;
+    const double faktor = 100000;
 
 private:
     int calulations = 0;

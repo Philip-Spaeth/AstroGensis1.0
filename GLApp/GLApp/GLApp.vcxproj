@@ -155,20 +155,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Math\Matrix4.cpp" />
-    <ClCompile Include="Math\Vector3.cpp" />
     <ClCompile Include="Physics\Physics.cpp" />
     <ClCompile Include="Physics\SystemInit.cpp" />
-    <ClCompile Include="Rendering\Camera.cpp" />
     <ClCompile Include="Rendering\Engine.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Math\Matrix4.h" />
-    <ClInclude Include="Math\Vector3.h" />
     <ClInclude Include="Physics\Particle.h" />
     <ClInclude Include="Physics\Physics.h" />
     <ClInclude Include="Physics\SystemInit.h" />
-    <ClInclude Include="Rendering\Camera.h" />
     <ClInclude Include="Rendering\Engine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
