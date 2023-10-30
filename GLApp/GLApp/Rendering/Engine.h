@@ -18,7 +18,6 @@ public:
 
     GLFWwindow* window;
 private:
-
     glm::vec3 cameraPosition;
     glm::vec3 cameraFront;
     glm::vec3 cameraUp;

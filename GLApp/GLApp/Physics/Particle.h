@@ -14,7 +14,7 @@ public:
     glm::vec3 velocity; // 3D-Geschwindigkeit des Teilchens
     float mass;         // Masse des Teilchens
     float radius;       // Radius des Teilchens
-    glm::vec3 color;    // Farbe des Teilchens (RGB-Wert)
+    glm::vec3 color;    //ds sds Farbe des Teilchens (RGB-Wert)
 
     bool colorMode = true;
     double bigestGravitation = 0;

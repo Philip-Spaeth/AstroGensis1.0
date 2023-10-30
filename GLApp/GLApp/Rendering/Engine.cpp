@@ -252,7 +252,7 @@ void Engine::renderParticles(int deltaTime, std::vector<std::vector<Particle>>& 
     }
     /*
     //print out all the properties of the particle
-    int index = 1;
+    int index = 0;
     int mass = particles[deltaTime][index].mass;
     double x = particles[deltaTime][index].position.x;
     double y = particles[deltaTime][index].position.y;
@@ -263,7 +263,6 @@ void Engine::renderParticles(int deltaTime, std::vector<std::vector<Particle>>& 
     //print out all at once
     std::cout << "mass: " << mass << " x: " << x << " y: " << y << " z: " << z << " vx: " << vx << " vy: " << vy << " vz: " << vz << std::endl;
     */
-
     // VAO lösen
     glBindVertexArray(0);
 }
