@@ -20,8 +20,8 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    const int numTimeSteps = 100;
-    const int particlesSize = 2000;
+    const int numTimeSteps = 1000;
+    const int particlesSize = 30;
 
     const int batchSize = 10000;
 

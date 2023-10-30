@@ -7,10 +7,10 @@ void SystemInit::start(std::vector<std::vector<Particle>>& particles)
 {
 	solarSystem(particles);
 
-	ellipticalGalaxy(0, 999, { 0,0,0 }, { 0,0,0 }, particles);
+	//ellipticalGalaxy(0, 999, { 0,0,0 }, { 0,0,0 }, particles);
 	//ellipticalGalaxy(1000, 1999, { 1000, 200 ,0 }, { 0,0,0 }, particles);
 	//spiralGalaxy(0, 999, { 0,0,0 }, { 0,0,0 }, particles);
-	spiralGalaxy(1000, 1999, { 2000, 500, 0 }, { - 0.1,0,0 }, particles);
+	//spiralGalaxy(1000, 1999, { 2000, 500, 0 }, { - 0.1,0,0 }, particles);
 }
 
 void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::vec3 position, glm::vec3 velocity, std::vector<std::vector<Particle>>& particles)
