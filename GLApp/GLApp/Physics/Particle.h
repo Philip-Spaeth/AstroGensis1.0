@@ -51,7 +51,7 @@ public:
 
         if (distance != 0)
         {
-            forceMagnitude = (G * mass * other.mass) / (distance * distance + softening * softening);
+            forceMagnitude = (G * mass * other.mass) / (distance * distance + softening);
         }
         ////////////color mode
         if (colorMode) {

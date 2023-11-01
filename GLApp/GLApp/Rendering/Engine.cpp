@@ -132,6 +132,20 @@ void Engine::start(std::vector<std::vector<Particle>>& particles)
 
 void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles)
 {
+    passedTime = (deltaTime * 86400) / TARGET_FPS;
+
+    std::string Unit;
+    //set the right unit
+    if (passedTime < 60){Unit = " s";}
+    else if (passedTime < 3600){passedTime /= 60;Unit = " min";}
+	else if (passedTime < 86400){passedTime /= 3600;Unit = " h";}
+	else if (passedTime < 31536000){passedTime /= 86400;Unit = " days";}
+    else if (passedTime < 315360000){passedTime /= 31536000;Unit = " years";}
+	else{passedTime /= 315360000;Unit = " centuries";}
+
+    //print out the past time in the right unit
+    std::cout << "passed time: " << (int)passedTime << Unit << std::endl;
+
     processMouseInput();
     processInput();
 
@@ -222,7 +236,7 @@ void Engine::renderParticles(int deltaTime, std::vector<std::vector<Particle>>& 
     glUseProgram(shaderProgram);
 
     // Erstellen der Projektionsmatrix und far !!!!!!!
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100000.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 1000000.0f);
 
     // Setzen der Matrizen im Shader
     GLuint projectionLoc = glGetUniformLocation(shaderProgram, "projection");
@@ -239,10 +253,15 @@ void Engine::renderParticles(int deltaTime, std::vector<std::vector<Particle>>& 
     for (unsigned int p = 0; p < particles[deltaTime].size(); ++p) 
     {
         glPointSize(particles[deltaTime][p].radius); // Größe der Partikelpunkte festlegen
-        glm::vec3 position = glm::vec3(particles[deltaTime][p].position.x, particles[deltaTime][p].position.y, particles[deltaTime][p].position.z);
+
+        glm::vec3 scaledPosition = glm::vec3(
+            particles[deltaTime][p].position.x * globalScale,
+            particles[deltaTime][p].position.y * globalScale,
+            particles[deltaTime][p].position.z * globalScale
+        );
 
         // Setzen Sie die Position im Shader
-        glUniform3fv(glGetUniformLocation(shaderProgram, "particlePosition"), 1, glm::value_ptr(position));
+        glUniform3fv(glGetUniformLocation(shaderProgram, "particlePosition"), 1, glm::value_ptr(scaledPosition));
 
         // Setzen Sie die Farbe im Shader
         glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(particles[deltaTime][p].color));

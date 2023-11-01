@@ -10,8 +10,6 @@
 #include "Engine.h"
 #include "Physics.h"
 
-const int TARGET_FPS = 30;
-
 int main()
 {
     Physics physics;
@@ -44,9 +42,9 @@ int main()
         lastFrameTime = currentFrameTime;
 
         // Rufen Sie die update-Funktion auf und übergeben Sie die Zeitdauer eines Frames
-        if (frameTime < 1.0 / TARGET_FPS)
+        if (frameTime < 1.0 / engine.TARGET_FPS)
         {
-            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>((1.0 / TARGET_FPS - frameTime) * 1000)));
+            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>((1.0 / engine.TARGET_FPS - frameTime) * 1000)));
         }
 
 

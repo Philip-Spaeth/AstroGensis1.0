@@ -16,13 +16,21 @@ public:
     void update(int deltaTime, std::vector<std::vector<Particle>>& particles);
     bool clean();
 
+
+    const int TARGET_FPS = 30;
+
     GLFWwindow* window;
+
 private:
+    double passedTime = 0;
+
+    double globalScale = 1e-8;
+
     glm::vec3 cameraPosition;
     glm::vec3 cameraFront;
     glm::vec3 cameraUp;
-    float cameraSpeed = 100;
-    float rushSpeed = 1000;
+    float cameraSpeed = 10;
+    float rushSpeed = 100;
     float cameraYaw;
     float cameraPitch;
     glm::mat4 view;

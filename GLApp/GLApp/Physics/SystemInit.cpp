@@ -17,15 +17,14 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::vec3 position, 
 {
 	int size = endIndex + 1 - startIndex; 
 
-	double diskRadius = 200;
+	double diskRadius = 2e15;
 
 	int numArms = 2;
 	double armWidth = 0;
 	double armDensity = 0.3;
 	double interArmDensity = 1;
-	double fixedRadius = 200;
 
-	double depth = 10;
+	double depth = 1e14;
 
 	int i = 0;
 
@@ -38,7 +37,7 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::vec3 position, 
 			Particle particle;
 			particle.position = position;
 			particle.velocity = velocity;
-			particle.mass = 1e12;
+			particle.mass = 1e35;
 			particle.radius = 2;
 			particle.color = glm::vec3(1, 1, 1);
 			particles[0][startIndex] =  particle;
@@ -63,7 +62,7 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::vec3 position, 
 
 			particle.position = glm::vec3(r * std::cos(armAngle), r * std::sin(armAngle), physics.random(-depth, depth)) + position;
 			particle.velocity = glm::vec3(-v * std::sin(armAngle), v * std::cos(armAngle), 0) + velocity;
-			particle.mass = 0.5;
+			particle.mass = 5e25;
 			particle.radius = 0.01;
 			//particle.color = glm::vec3(1, 1, 1);
 			particles[0][j] = particle;
@@ -76,13 +75,14 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::vec3 positi
 {
 	int size = endIndex + 1;
 
-	double diskRadius = 200;
+	double diskRadius = 2e15;
 
 	double starSpeed = 1;
 
-	double depth = 20;
+	double depth = 1e14;
 
 	int i = 0;
+
 	// Erstellen einer Spiralgalaxie
 	for (int j = startIndex; j < size; j++)
 	{
@@ -91,7 +91,7 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::vec3 positi
 		{
 			particles[0][j].position = position;
 			particles[0][j].velocity = velocity;
-			particles[0][j].mass = 1e11;
+			particles[0][j].mass = 1e35;
 			particles[0][j].radius = 2;
 			particles[0][j].color = glm::vec3(1, 1, 1);
 		}
@@ -110,7 +110,7 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::vec3 positi
 
 			particles[0][j].position = glm::vec3(r * std::cos(angle), r * std::sin(angle), physics.random(-depth , depth)) + position;
 			particles[0][j].velocity = glm::vec3(-v * std::sin(angle), v * std::cos(angle), 0) + velocity;
-			particles[0][j].mass = 1;
+			particles[0][j].mass = 5e25;
 			particles[0][j].radius = 0.01;
 			particle.color = glm::vec3(1, 1, 1);
 		}
@@ -134,7 +134,7 @@ void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 {
 	Physics physics;
 
-	double distanceFaktor = 1000;
+	double distanceFaktor = 1.4848e11;
 
 	for (int j = 0; j < physics.particlesSize; j++)
 	{
@@ -144,7 +144,7 @@ void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 			Particle particle;
 			particle.position = glm::vec3(0, 0, 0);
 			particle.velocity = glm::vec3(0, 0, 0);
-			particle.mass = 1e10;
+			particle.mass = 1.989e30;
 			particle.radius = 6;
 			particle.color = glm::vec3(1, 1, 0);
 			particles[0][j] = particle;
@@ -162,7 +162,7 @@ void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 			double v = std::sqrt((physics.G * particles[0][0].mass) / (j * distanceFaktor));
 
 			particle.velocity = glm::vec3(0, v, 0);
-			particle.mass = 1;
+			particle.mass = 5.972e24;
 
 			//diffrent color for every planet
 
