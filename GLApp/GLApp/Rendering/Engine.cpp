@@ -18,7 +18,9 @@
      cameraPitch = 0.0f;
 }
 
-bool Engine::init() {
+bool Engine::init(double physicsFaktor) 
+{
+    faktor = physicsFaktor;
     // GLFW initialisieren
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -132,7 +134,7 @@ void Engine::start(std::vector<std::vector<Particle>>& particles)
 
 void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles)
 {
-    passedTime = (deltaTime * 86400) / TARGET_FPS;
+    passedTime = (deltaTime * faktor * TARGET_FPS) / TARGET_FPS;
 
     std::string Unit;
     //set the right unit
@@ -140,8 +142,7 @@ void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles
     else if (passedTime < 3600){passedTime /= 60;Unit = " min";}
 	else if (passedTime < 86400){passedTime /= 3600;Unit = " h";}
 	else if (passedTime < 31536000){passedTime /= 86400;Unit = " days";}
-    else if (passedTime < 315360000){passedTime /= 31536000;Unit = " years";}
-	else{passedTime /= 315360000;Unit = " centuries";}
+    else {passedTime /= 31536000;Unit = " years";}
 
     //print out the past time in the right unit
     std::cout << "passed time: " << (int)passedTime << Unit << std::endl;

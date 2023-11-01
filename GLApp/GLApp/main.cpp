@@ -10,6 +10,7 @@
 #include "Engine.h"
 #include "Physics.h"
 
+
 int main()
 {
     Physics physics;
@@ -20,7 +21,7 @@ int main()
 
     Engine engine;
 
-    if (!engine.init()) {
+    if (!engine.init(physics.faktor)) {
         std::cerr << "Engine initialization failed." << std::endl;
         return -1;
     }
@@ -42,9 +43,9 @@ int main()
         lastFrameTime = currentFrameTime;
 
         // Rufen Sie die update-Funktion auf und übergeben Sie die Zeitdauer eines Frames
-        if (frameTime < 1.0 / engine.TARGET_FPS)
+        if (frameTime < 1.0 / TARGET_FPS)
         {
-            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>((1.0 / engine.TARGET_FPS - frameTime) * 1000)));
+            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>((1.0 / TARGET_FPS - frameTime) * 1000)));
         }
 
 

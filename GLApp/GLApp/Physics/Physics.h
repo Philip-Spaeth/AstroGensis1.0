@@ -10,19 +10,20 @@
 #include <glm.hpp>
 #include "Engine.h"
 
+#define TARGET_FPS 30
+
 class SystemInit;
 
 class Physics {
 public:
     Physics();
 
-
     bool Calc(std::vector<std::vector<Particle>>& particles);
 
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    const int numTimeSteps = 109;
+    const int numTimeSteps = 3000;
     const int particlesSize = 10;
 
     const int batchSize = 10950;
@@ -35,10 +36,9 @@ public:
     // one hour per second = 3600
     // one day par second = 86400
     // one year per second = 31536000
-    // one century per second = 3153600000
 
     //set the simulated time per second
-    const double faktor = 86400 / 30;
+    const double faktor = 31536000 / TARGET_FPS;
 
 private:
     int calulations = 0;
