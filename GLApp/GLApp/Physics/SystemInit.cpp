@@ -134,7 +134,7 @@ void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 {
 	Physics physics;
 
-	double distanceFaktor = 300;
+	double distanceFaktor = 1000;
 
 	for (int j = 0; j < physics.particlesSize; j++)
 	{
@@ -144,7 +144,7 @@ void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 			Particle particle;
 			particle.position = glm::vec3(0, 0, 0);
 			particle.velocity = glm::vec3(0, 0, 0);
-			particle.mass = 1000000;
+			particle.mass = 1e10;
 			particle.radius = 6;
 			particle.color = glm::vec3(1, 1, 0);
 			particles[0][j] = particle;
@@ -162,7 +162,7 @@ void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 			double v = std::sqrt((physics.G * particles[0][0].mass) / (j * distanceFaktor));
 
 			particle.velocity = glm::vec3(0, v, 0);
-			particle.mass = 100;
+			particle.mass = 1;
 
 			//diffrent color for every planet
 
