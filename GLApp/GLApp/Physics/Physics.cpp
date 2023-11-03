@@ -104,7 +104,7 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
                     double m1 = currentParticle.mass;
                     double m2 = otherParticle.mass;
 
-                    glm::vec3 force = currentParticle.CalculateGravitationalForce(otherParticle, G, softening, faktor);
+                    glm::dvec3 force = currentParticle.CalculateGravitationalForce(otherParticle, G, softening, faktor);
 
                     calulations++;
                 }
@@ -117,7 +117,7 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
                 {
                     if (currentParticle.mass < 1000)
                     {
-                        float gravityForce = particles[t][p].bigestGravitation;
+                        double gravityForce = particles[t][p].bigestGravitation;
 
                         if (gravityForce > highestForce)
                         {
@@ -127,9 +127,9 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
                             }
                         }
 
-                        float color = gravityForce * 5 / highestForce;
+                        double color = gravityForce * 5 / highestForce;
                         double extraLight = 0.7;
-                        particles[t][p].color = glm::vec3(color/2 + extraLight, color/5 + extraLight, color + extraLight);
+                        particles[t][p].color = glm::dvec3(color/2 + extraLight, color/5 + extraLight, color + extraLight);
                     }
                 }
             }

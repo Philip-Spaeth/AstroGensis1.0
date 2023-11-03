@@ -24,13 +24,13 @@ private:
 
     double passedTime = 0;
 
-    double globalScale = 1e-8;
+    double globalScale = 1e-18;
 
     glm::vec3 cameraPosition;
     glm::vec3 cameraFront;
     glm::vec3 cameraUp;
-    float cameraSpeed = 10;
-    float rushSpeed = 100;
+    float cameraSpeed = 100;
+    float rushSpeed = 1000;
     float cameraYaw;
     float cameraPitch;
     glm::mat4 view;

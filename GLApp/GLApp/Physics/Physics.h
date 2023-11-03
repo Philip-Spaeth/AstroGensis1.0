@@ -23,14 +23,14 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    const int numTimeSteps = 3000;
-    const int particlesSize = 10;
+    const int numTimeSteps = 1000;
+    const int particlesSize = 2000;
 
-    const int batchSize = 10950;
+    const int batchSize = 10000;
 
     //Physikalische Konstanten
     const double G = 6.67430e-11;
-    const double softening = 1e4;
+    const double softening = 1e15;
 
 
     // one hour per second = 3600
@@ -38,11 +38,11 @@ public:
     // one year per second = 31536000
 
     //set the simulated time per second
-    const double faktor = 31536000 / TARGET_FPS;
+    const double faktor = 6e17 / TARGET_FPS;
 
 private:
     int calulations = 0;
-    float highestForce = 0;
+    double highestForce = 0;
     SystemInit* systemInit;
 };
 

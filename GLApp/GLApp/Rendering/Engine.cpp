@@ -7,6 +7,7 @@
 #include <gtc/type_ptr.hpp>
 #include <chrono>
 #include <thread>
+#include <string>
 
  Engine::Engine() : window(nullptr), shaderProgram(0), VAO(0)
 {
@@ -88,6 +89,7 @@ bool Engine::init(double physicsFaktor)
     checkShaderLinkStatus(shaderProgram);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    
     return true;
 }
 void Engine::start(std::vector<std::vector<Particle>>& particles)
@@ -144,8 +146,15 @@ void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles
 	else if (passedTime < 31536000){passedTime /= 86400;Unit = " days";}
     else {passedTime /= 31536000;Unit = " years";}
 
-    //print out the past time in the right unit
-    std::cout << "passed time: " << (int)passedTime << Unit << std::endl;
+    if (passedTime < 1000000)
+    {
+        std::cout << "passed time: " << passedTime << Unit << std::endl;
+    }
+    else
+    {
+        //print out the past time in the right unit
+        std::cout << std::scientific << std::setprecision(0) << "passed time: " << passedTime << Unit << std::endl;
+    }
 
     processMouseInput();
     processInput();
@@ -272,7 +281,7 @@ void Engine::renderParticles(int deltaTime, std::vector<std::vector<Particle>>& 
     }
     /*
     //print out all the properties of the particle
-    int index = 0;
+    int index = 4;
     int mass = particles[deltaTime][index].mass;
     double x = particles[deltaTime][index].position.x;
     double y = particles[deltaTime][index].position.y;
@@ -281,7 +290,7 @@ void Engine::renderParticles(int deltaTime, std::vector<std::vector<Particle>>& 
     double vy = particles[deltaTime][index].velocity.y;
     double vz = particles[deltaTime][index].velocity.z;
     //print out all at once
-    std::cout << "mass: " << mass << " x: " << x << " y: " << y << " z: " << z << " vx: " << vx << " vy: " << vy << " vz: " << vz << std::endl;
+     86400
     */
     // VAO lösen
     glBindVertexArray(0);

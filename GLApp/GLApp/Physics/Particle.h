@@ -4,36 +4,36 @@
 
 class Particle {
 public:
-    Particle(float x = 0.0f, float y = 0.0f, float z = 0.0f)
+    Particle(double x = 0.0f, double y = 0.0f, double z = 0.0f)
         : position(x, y, z), velocity(0.0f, 0.0f, 0.0f), mass(0
-        ), radius(1.0f), color(glm::vec3(1.0f, 1.0f, 1.0f)) {
+        ), radius(1.0f), color(glm::dvec3(1.0f, 1.0f, 1.0f)) {
         // Weitere Initialisierungen, falls ben�tigt
     }
 
-    glm::vec3 position ; // 3D-Position des Teilchens
-    glm::vec3 velocity; // 3D-Geschwindigkeit des Teilchens
-    float mass;         // Masse des Teilchens
-    float radius;       // Radius des Teilchens
+    glm::dvec3 position ; // 3D-Position des Teilchens
+    glm::dvec3 velocity; // 3D-Geschwindigkeit des Teilchens
+    double mass;         // Masse des Teilchens
+    double radius;       // Radius des Teilchens
     glm::vec3 color;    //ds sds Farbe des Teilchens (RGB-Wert)
 
-    bool colorMode = false;
+    bool colorMode = true;
     double bigestGravitation = 0;
 
     // Methode zur Aktualisierung der Position basierend auf der Geschwindigkeit
-    void UpdatePosition(float deltaTime) 
+    void UpdatePosition(double deltaTime) 
     {
         position += velocity * deltaTime;
     }
 
     // Methode zur Berechnung der Entfernung zu einem anderen Teilchen
-    float CalculateDistance(const Particle& other) const {
-        glm::vec3 delta = other.position - position;
+    double CalculateDistance(const Particle& other) const {
+        glm::dvec3 delta = other.position - position;
         return glm::length(delta);
     }
 
-    glm::vec3 CalculateGravitationalForce(const Particle& other, double G, double softening, float deltaTime)
+    glm::dvec3 CalculateGravitationalForce(const Particle& other, double G, double softening, double deltaTime)
     {
-        glm::vec3 zero = { 0,0,0 };
+        glm::dvec3 zero = { 0,0,0 };
 
         if (position == zero && other.position == zero || mass == 0 || other.mass == 0)
         {
@@ -44,10 +44,10 @@ public:
             return { 0 , 0 , 0};
         } 
 
-        glm::vec3 delta = other.position - position;
-        float distance = glm::length(delta);
+        glm::dvec3 delta = other.position - position;
+        double distance = glm::length(delta);
 
-        float forceMagnitude = 0;
+        double forceMagnitude = 0;
 
         if (distance != 0)
         {
@@ -65,15 +65,15 @@ public:
             }
         }
 
-        float acceleration = 0;
+        double acceleration = 0;
         // Calculate the acceleration
         if (mass != 0)
         {
             acceleration = forceMagnitude / mass;
         }
         // Calculate the velocity in 3D
-        glm::vec3 direction = glm::normalize(other.position - position);
-        glm::vec3 newvelocity = (acceleration * deltaTime) * direction;
+        glm::dvec3 direction = glm::normalize(other.position - position);
+        glm::dvec3 newvelocity = (acceleration * deltaTime) * direction;
 
         // Update the velocity in 3D
         velocity += newvelocity;
