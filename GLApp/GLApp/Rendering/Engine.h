@@ -24,7 +24,8 @@ private:
 
     double passedTime = 0;
 
-    double globalScale = 1e-18;
+    double globalScale = 1e-9;
+    //double globalScale = 1e-18;
 
     glm::vec3 cameraPosition;
     glm::vec3 cameraFront;

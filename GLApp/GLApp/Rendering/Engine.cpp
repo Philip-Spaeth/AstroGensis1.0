@@ -148,7 +148,7 @@ void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles
 
     if (passedTime < 1000000)
     {
-        std::cout << "passed time: " << passedTime << Unit << std::endl;
+        std::cout << "passed time: " << (int)passedTime << Unit << std::endl;
     }
     else
     {
@@ -279,9 +279,9 @@ void Engine::renderParticles(int deltaTime, std::vector<std::vector<Particle>>& 
         // Zeichnen Sie den Punkt
         glDrawArrays(GL_POINTS, 0, 1);
     }
-    /*
+    
     //print out all the properties of the particle
-    int index = 4;
+    int index = 0;
     int mass = particles[deltaTime][index].mass;
     double x = particles[deltaTime][index].position.x;
     double y = particles[deltaTime][index].position.y;
@@ -289,9 +289,9 @@ void Engine::renderParticles(int deltaTime, std::vector<std::vector<Particle>>& 
     double vx = particles[deltaTime][index].velocity.x;
     double vy = particles[deltaTime][index].velocity.y;
     double vz = particles[deltaTime][index].velocity.z;
-    //print out all at once
-     86400
-    */
+    //print out the position of the particle
+    std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
+    
     // VAO lösen
     glBindVertexArray(0);
 }
