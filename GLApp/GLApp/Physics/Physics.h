@@ -23,7 +23,7 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    const int numTimeSteps = 10000;
+    const int numTimeSteps = 2000;
     const int particlesSize = 10;
 
     const int batchSize = 10000;

@@ -135,7 +135,7 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::vec3 positi
 
 void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 {
-	///*
+	
 	Physics physics;
 
 	double distanceFaktor = 1.4848e11;
@@ -201,9 +201,8 @@ void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 			particles[0][j] = particle;
 		}
 	}
-	//*/
+	
 	/*
-
 	// Data from JPL Horizons Nasa date: 2023-11-03 https://ssd.jpl.nasa.gov/horizons/app.html#/
 
 	Physics physics;
@@ -332,4 +331,3 @@ void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 	}
 	*/
 }
-
