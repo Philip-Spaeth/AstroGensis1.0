@@ -45,6 +45,7 @@ private:
     void renderParticles(int deltaTime, std::vector<std::vector<Particle>>& particles);
     void checkShaderCompileStatus(GLuint shader, const char* shaderType);
     void checkShaderLinkStatus(GLuint program);
+    void calcTime(int deltaTime);
     double faktor = -1;
 };
 
