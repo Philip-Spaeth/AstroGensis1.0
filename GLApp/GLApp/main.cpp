@@ -10,7 +10,6 @@
 #include "Engine.h"
 #include "Physics.h"
 
-const int TARGET_FPS = 30;
 
 int main()
 {
@@ -22,7 +21,7 @@ int main()
 
     Engine engine;
 
-    if (!engine.init()) {
+    if (!engine.init(physics.faktor)) {
         std::cerr << "Engine initialization failed." << std::endl;
         return -1;
     }

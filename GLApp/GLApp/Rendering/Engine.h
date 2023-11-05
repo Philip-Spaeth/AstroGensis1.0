@@ -7,17 +7,25 @@
 #include "Particle.h"
 #include "Physics.h"
 
+class Physics;
+
 class Engine {
 public:
     Engine();
 
-    bool init();
+    bool init(double physicsFaktor);
     void start(std::vector<std::vector<Particle>>& particles);
     void update(int deltaTime, std::vector<std::vector<Particle>>& particles);
     bool clean();
 
     GLFWwindow* window;
+
 private:
+
+    double passedTime = 0;
+
+    double globalScale = 1e-9;
+    //double globalScale = 1e-18;
 
     glm::vec3 cameraPosition;
     glm::vec3 cameraFront;
@@ -37,7 +45,8 @@ private:
     void renderParticles(int deltaTime, std::vector<std::vector<Particle>>& particles);
     void checkShaderCompileStatus(GLuint shader, const char* shaderType);
     void checkShaderLinkStatus(GLuint program);
-
+    void calcTime(int deltaTime);
+    double faktor = -1;
 };
 
 #endif

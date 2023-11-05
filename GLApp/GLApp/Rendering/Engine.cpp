@@ -7,6 +7,7 @@
 #include <gtc/type_ptr.hpp>
 #include <chrono>
 #include <thread>
+#include <string>
 
  Engine::Engine() : window(nullptr), shaderProgram(0), VAO(0)
 {
@@ -18,7 +19,9 @@
      cameraPitch = 0.0f;
 }
 
-bool Engine::init() {
+bool Engine::init(double physicsFaktor) 
+{
+    faktor = physicsFaktor;
     // GLFW initialisieren
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -86,13 +89,14 @@ bool Engine::init() {
     checkShaderLinkStatus(shaderProgram);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    
     return true;
 }
 void Engine::start(std::vector<std::vector<Particle>>& particles)
 {
 
     // Laden der Daten für die Darstellung
-    std::cout << "Lade Daten für die Darstellung ..." << std::endl;
+    std::cout << "loading data ..." << std::endl;
     Physics py;
     for (int t = 0; t < py.numTimeSteps; ++t) {
         std::string fileName = "Data/particles_" + std::to_string(t) + ".dat";
@@ -127,17 +131,30 @@ void Engine::start(std::vector<std::vector<Particle>>& particles)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    std::cout << "Daten geladen" << std::endl;
+    std::cout << "Data loaded" << std::endl;
 }
 
 void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles)
 {
+    //calculate the time
+    calcTime(deltaTime);
+
+    if (false)
+    {
+        //follow an Object
+        int index = 0;
+        double distance = 1000;
+        double x = particles[deltaTime][index].position.x * globalScale;
+        double y = particles[deltaTime][index].position.y * globalScale;
+        double z = particles[deltaTime][index].position.z * globalScale + distance;
+        cameraPosition = glm::vec3(x, y, z);
+    }
+
     processMouseInput();
     processInput();
 
     renderParticles(deltaTime, particles);
 
-    // GLFW-Puffer austauschen und Ereignisse verarbeiten
     glfwSwapBuffers(window);
     glfwPollEvents();
 
@@ -146,47 +163,33 @@ void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles
     {
         while (true) 
         {
-            //Process mouse and keyboard input before the simulation starts
             processMouseInput();
             processInput();
-
             renderParticles(deltaTime, particles);
-
-            // GLFW-Puffer austauschen und Ereignisse verarbeiten
             glfwSwapBuffers(window);
             glfwPollEvents();
-            // Überprüfe den Status der Leertaste (32 entspricht der Leertaste)
             if (GetAsyncKeyState(32) & 0x8000) {
-                break;  // Wenn Leertaste gedrückt, beende die Schleife
+                break;
             }
-            // Optional: Füge eine kurze Verzögerung ein, um die CPU-Auslastung zu reduzieren
             Sleep(10);
         }
-        //delay for 1 second
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
 
     //pause if space is pressed
     if (GetAsyncKeyState(32) & 0x8000)
     {
-        //delay for 1 second
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
         while (true) 
         {
-            //still process mouse and keyboard input
             processMouseInput();
             processInput();
-
             renderParticles(deltaTime, particles);
-
-            // GLFW-Puffer austauschen und Ereignisse verarbeiten
             glfwSwapBuffers(window);
             glfwPollEvents();
-            // Überprüfe den Status der Leertaste (32 entspricht der Leertaste)
             if (GetAsyncKeyState(32) & 0x8000) {
-                break;  // Wenn Leertaste gedrückt, beende die Schleife
+                break;
             }
-            // Optional: Füge eine kurze Verzögerung ein, um die CPU-Auslastung zu reduzieren
             Sleep(10);
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
@@ -199,10 +202,7 @@ void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles
         {
             processMouseInput();
             processInput();
-
             renderParticles(deltaTime, particles);
-
-            // GLFW-Puffer austauschen und Ereignisse verarbeiten
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
@@ -222,7 +222,7 @@ void Engine::renderParticles(int deltaTime, std::vector<std::vector<Particle>>& 
     glUseProgram(shaderProgram);
 
     // Erstellen der Projektionsmatrix und far !!!!!!!
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100000.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 1000000.0f);
 
     // Setzen der Matrizen im Shader
     GLuint projectionLoc = glGetUniformLocation(shaderProgram, "projection");
@@ -239,10 +239,15 @@ void Engine::renderParticles(int deltaTime, std::vector<std::vector<Particle>>& 
     for (unsigned int p = 0; p < particles[deltaTime].size(); ++p) 
     {
         glPointSize(particles[deltaTime][p].radius); // Größe der Partikelpunkte festlegen
-        glm::vec3 position = glm::vec3(particles[deltaTime][p].position.x, particles[deltaTime][p].position.y, particles[deltaTime][p].position.z);
+
+        glm::vec3 scaledPosition = glm::vec3(
+            particles[deltaTime][p].position.x * globalScale,
+            particles[deltaTime][p].position.y * globalScale,
+            particles[deltaTime][p].position.z * globalScale
+        );
 
         // Setzen Sie die Position im Shader
-        glUniform3fv(glGetUniformLocation(shaderProgram, "particlePosition"), 1, glm::value_ptr(position));
+        glUniform3fv(glGetUniformLocation(shaderProgram, "particlePosition"), 1, glm::value_ptr(scaledPosition));
 
         // Setzen Sie die Farbe im Shader
         glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(particles[deltaTime][p].color));
@@ -251,16 +256,19 @@ void Engine::renderParticles(int deltaTime, std::vector<std::vector<Particle>>& 
         glDrawArrays(GL_POINTS, 0, 1);
     }
     
-    // Ausgabe des ersten Partikels
-    int particleIndex = 0;
-    std::cout << "Zeit: " << deltaTime << " Partikel " << particleIndex << ": "
-        << particles[deltaTime][particleIndex].mass << std::endl;
-
-    // Ausgabe des ersten Partikels
-    particleIndex = 1;
-    std::cout << "Zeit: " << deltaTime << " Partikel " << particleIndex << ": "
-        << particles[deltaTime][particleIndex].position.x << std::endl;
-
+    /*
+    //print out all the properties of the particle
+    int index = 0;
+    int mass = particles[deltaTime][index].mass;
+    double x = particles[deltaTime][index].position.x;
+    double y = particles[deltaTime][index].position.y;
+    double z = particles[deltaTime][index].position.z;
+    double vx = particles[deltaTime][index].velocity.x;
+    double vy = particles[deltaTime][index].velocity.y;
+    double vz = particles[deltaTime][index].velocity.z;
+    //print out the position of the particle
+    std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
+    */
     // VAO lösen
     glBindVertexArray(0);
 }
@@ -370,4 +378,105 @@ bool Engine::clean()
     // Aufräumen und beenden
     glfwTerminate();
     return true;
+}
+
+void Engine::calcTime(int deltaTime)
+{
+    passedTime = (deltaTime * faktor * TARGET_FPS) / TARGET_FPS;
+
+    int passedTimeInSec = passedTime / 86400;
+
+    std::string Unit;
+
+    //set the right unit
+    if (passedTime < 60) { Unit = " s"; }
+    else if (passedTime < 3600) { passedTime /= 60; Unit = " min"; }
+    else if (passedTime < 86400) { passedTime /= 3600; Unit = " h"; }
+    else if (passedTime < 31536000) { passedTime /= 86400; Unit = " days"; }
+    else { passedTime /= 31536000; Unit = " years"; }
+
+    // Berechne das Enddatum basierend auf der "passedTime"
+    int startYear = 2023;
+    int startMonth = 11;
+    int startDay = 3;
+
+    // Berechnen Sie das aktuellen datums basierend auf der "passedTimeInSec"
+    int currentYear = startYear;
+    int currentMonth = startMonth;
+    int currentDay = startDay;
+
+    // Berechnen Sie das aktuelle Datum basierend auf der "passedTimeInSec"
+    while (passedTimeInSec > 0) {
+        // Berechnen Sie die Anzahl der Tage im aktuellen Monat
+        int daysInMonth = 0;
+        switch (currentMonth) {
+        case 1: daysInMonth = 31; break;
+        case 2: daysInMonth = 28; break;
+        case 3: daysInMonth = 31; break;
+        case 4: daysInMonth = 30; break;
+        case 5: daysInMonth = 31; break;
+        case 6: daysInMonth = 30; break;
+        case 7: daysInMonth = 31; break;
+        case 8: daysInMonth = 31; break;
+        case 9: daysInMonth = 30; break;
+        case 10: daysInMonth = 31; break;
+        case 11: daysInMonth = 30; break;
+        case 12: daysInMonth = 31; break;
+        }
+
+        // Überprüfen Sie, ob das aktuelle Jahr ein Schaltjahr ist
+        bool isLeapYear = false;
+        if (currentYear % 4 == 0) {
+            if (currentYear % 100 == 0) {
+                if (currentYear % 400 == 0) {
+                    isLeapYear = true;
+                }
+            }
+            else {
+                isLeapYear = true;
+            }
+        }
+
+        // Überprüfen Sie, ob das aktuelle Jahr ein Schaltjahr ist
+        if (isLeapYear && currentMonth == 2) {
+            daysInMonth = 29;
+        }
+
+        // Überprüfen Sie, ob das aktuelle Jahr ein Schaltjahr ist
+        if (currentDay == daysInMonth) {
+            currentDay = 1;
+            if (currentMonth == 12) {
+                currentMonth = 1;
+                currentYear++;
+            }
+            else {
+                currentMonth++;
+            }
+        }
+        else {
+            currentDay++;
+        }
+
+        passedTimeInSec--;
+    }
+    std::string day = std::to_string(currentDay);
+    if (currentDay < 10)
+    {
+        day = "0" + day;
+    }
+    std::string month = std::to_string(currentMonth);
+    if (currentMonth < 10)
+    {
+		month = "0" + month;
+	}
+
+    if (passedTime < 1000000)
+    {
+        std::cout << "passed time: " << (int)passedTime << Unit << "    date: " << currentYear << "." << month << "." << day << std::endl;
+    }
+    else
+    {
+        //print out the past time in the right unit
+        std::cout << std::scientific << std::setprecision(0) << "passed time: " << passedTime << Unit << "    date: " << currentYear << "." << month << "." << day << std::endl;
+    }
 }

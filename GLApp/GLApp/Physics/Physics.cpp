@@ -8,6 +8,8 @@
 #include <gtc/constants.hpp>
 #include <fstream>
 #include "SystemInit.h"
+#include <string.h>
+
 
 Physics::Physics()
 {
@@ -28,27 +30,9 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
         return false;
     }
 
-    std::cout << "Starting the calculations..." << std::endl;
+    auto current_time = std::chrono::high_resolution_clock::now();
 
-    double time = numTimeSteps * ((particlesSize * timepercalc* particlesSize));
-    //printing out the estimated time in seconds, minutes and hours, and days
-    if (time < 60)
-    {
-		std::cout << "Estimated time: " << time << " seconds" << std::endl;
-	}
-    else if (time < 3600)
-    {
-		std::cout << "Estimated time: " << time / 60 << " minutes" << std::endl;
-	}
-    else if (time < 86400)
-    {
-		std::cout << "Estimated time: " << time / 3600 << " hours" << std::endl;
-	}
-    else
-    {
-		std::cout << "Estimated time: " << time / 86400 << " days" << std::endl;
-	}
-    
+    std::cout << "Starting the calculations..." << std::endl;
 
     std::string dataFolder = "Data";
     std::filesystem::create_directory(dataFolder);
@@ -94,40 +78,29 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
                 for (int i = 0; i < particlesSize; i++)
                 {
 
-                    if (i == p) {
+                    if (i == p) 
+                    {
                         continue;
                     }
-
-                    //collision of black holes
-                    if (particles[t][p].mass > 1000 && particles[t][i].mass > 1000 && particles[t][p].CalculateDistance(particles[t][i]) < 20)
+                    if (particles[t][p].mass == 0 || particles[t][i].mass == 0)
                     {
-                        particles[t][p].mass += particles[t][i].mass;
-                        particles[t][i].mass = 0.00000001;
-                        particles[t][i].radius = 0.0001;
-                        particles[t][i].position.x = 1e20;
-                    }
+						continue;
+					}
 
-
-                    // Berechnen der neuen Werte mit dem Gravitationsgesetz von Newton
-                    Particle& otherParticle = particles[t][i];
-
-                    // Physik
-                    double m1 = currentParticle.mass;
-                    double m2 = otherParticle.mass;
-
-                    glm::vec3 force = currentParticle.CalculateGravitationalForce(otherParticle, G, softening, faktor);
-
-                    // Berechnen der neuen Position
-                    currentParticle.UpdatePosition(faktor); // Übergeben Sie den Zeitschritt (deltaTime), den Sie hier verwenden möchten
+                    glm::dvec3 force = currentParticle.CalculateGravitationalForce(particles[t][i], G, softening, faktor);
 
                     calulations++;
                 }
+
+                // Berechnen der neuen Position
+                currentParticle.UpdatePosition(faktor);
+
                 //just for color not effecient
                 if (currentParticle.colorMode == true)
                 {
                     if (currentParticle.mass < 1000)
                     {
-                        float gravityForce = particles[t][p].bigestGravitation;
+                        double gravityForce = particles[t][p].bigestGravitation;
 
                         if (gravityForce > highestForce)
                         {
@@ -137,9 +110,9 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
                             }
                         }
 
-                        float color = gravityForce * 5 / highestForce;
+                        double color = gravityForce * 5 / highestForce;
                         double extraLight = 0.7;
-                        particles[t][p].color = glm::vec3(color/2 + extraLight, color/5 + extraLight, color + extraLight);
+                        particles[t][p].color = glm::dvec3(color/2 + extraLight, color/5 + extraLight, color + extraLight);
                     }
                 }
             }
@@ -159,7 +132,37 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
                 std::cerr << "Error opening file for writing: " << fileName << std::endl;
             }
 
-            std::cout << "Progress: " << (t * 100) / numTimeSteps << "%" << std::endl;
+            std::chrono::duration<double> elapsed_time = current_time - std::chrono::high_resolution_clock::now();
+
+            double time = elapsed_time.count() * -1;
+            std::string timeUnit;
+
+            //calculation of what to multiply with the time to get the remaining time so the it is 100
+            double newtime = time * (numTimeSteps - t) / t;
+
+
+            if (newtime <= 60)
+            {
+                timeUnit = " sec";
+            }
+            else if (newtime <= 3600)
+            {
+                timeUnit = " min";
+                newtime /= 60;
+            }
+            else if (newtime <= 86400)
+            {
+                timeUnit = " h";
+                newtime /= 3600;
+            }
+            else if (newtime > 86400)
+            {
+                timeUnit = " days";
+                newtime /= 86400;
+            }
+            
+            //printing out the progress
+            std::cout << "Progress: " << (t * 100) / numTimeSteps << "%  "  << (int)newtime << timeUnit << " left" << std::endl;
         }
     }
     std::cout << "Total Calculations: " << calulations << std::endl;
