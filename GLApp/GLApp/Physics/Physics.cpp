@@ -87,24 +87,7 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
 						continue;
 					}
 
-                    //collision of black holes
-                    if (particles[t][p].mass > 1000 && particles[t][i].mass > 1000 && particles[t][p].CalculateDistance(particles[t][i]) < 20)
-                    {
-                        particles[t][p].mass += particles[t][i].mass;
-                        particles[t][i].mass = 0.00000001;
-                        particles[t][i].radius = 0.0001;
-                        particles[t][i].position.x = 1e20;
-                    }
-
-
-                    // Berechnen der neuen Werte mit dem Gravitationsgesetz von Newton
-                    Particle& otherParticle = particles[t][i];
-
-                    // Physik
-                    double m1 = currentParticle.mass;
-                    double m2 = otherParticle.mass;
-
-                    glm::dvec3 force = currentParticle.CalculateGravitationalForce(otherParticle, G, softening, faktor);
+                    glm::dvec3 force = currentParticle.CalculateGravitationalForce(particles[t][i], G, softening, faktor);
 
                     calulations++;
                 }

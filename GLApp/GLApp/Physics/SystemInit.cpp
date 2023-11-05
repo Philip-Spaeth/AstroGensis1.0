@@ -177,11 +177,11 @@ void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 			}
 			else if (color == 1)
 			{
-				particle.color = glm::vec3(0, 1, 0);
+				particle.color = glm::vec3(0, 0, 1);
 			}
 			else if (color == 2)
 			{
-				particle.color = glm::vec3(0, 0, 1);
+				particle.color = glm::vec3(0, 1, 0);
 			}
 
 			//diffrent size for every planet
