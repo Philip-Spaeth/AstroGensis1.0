@@ -23,8 +23,8 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    const int numTimeSteps = 2000;
-    const int particlesSize = 2;
+    const int numTimeSteps = 500;
+    const int particlesSize = 3;
 
     const int batchSize = 10000;
 
@@ -38,7 +38,7 @@ public:
     // one year per second = 31536000
 
     //set the simulated time per second
-    const double faktor = 8640000 / TARGET_FPS;
+    const double faktor = 864000000 / TARGET_FPS;
     //const double faktor = 6e17 / TARGET_FPS;
 
 private:

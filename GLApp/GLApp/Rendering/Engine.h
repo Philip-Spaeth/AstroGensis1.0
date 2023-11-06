@@ -20,6 +20,8 @@ public:
 
     GLFWwindow* window;
 
+    bool isRunning = false;
+
 private:
 
     double passedTime = 0;

@@ -18,6 +18,7 @@ public:
 
     bool colorMode = false;
     double bigestGravitation = 0;
+    double kineticEnergie = 0;
 
     // Methode zur Aktualisierung der Position basierend auf der Geschwindigkeit
     void UpdatePosition(double deltaTime) 
@@ -35,7 +36,7 @@ public:
     {
         glm::dvec3 zero = { 0,0,0 };
 
-        if (position == zero && other.position == zero || mass == 0 || other.mass == 0)
+        if (/*position == zero && other.position == zero || */mass == 0 || other.mass == 0)
         {
             return { 0 , 0 , 0 };
         }
@@ -81,4 +82,9 @@ public:
         // Return the force vector
         return forceMagnitude * direction;
     }
+    
+    void calcKineticEnergie() {
+		kineticEnergie = 0.5 * mass * glm::length(velocity) * glm::length(velocity);
+	}
+    
 };

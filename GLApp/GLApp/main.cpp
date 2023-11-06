@@ -9,6 +9,10 @@
 #include "Particle.h"
 #include "Engine.h"
 #include "Physics.h"
+#include <Windows.h>
+#include <debugapi.h>
+#include <iostream>
+#include <string>
 
 
 int main()
@@ -38,6 +42,14 @@ int main()
     // Haupt-Render-Schleife
     while (!glfwWindowShouldClose(engine.window))
     {
+        // check for exit Programm with Key ESC
+        if (GetAsyncKeyState(27) & 0x8000)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
+            OutputDebugString(L"ESC KEY\n");
+            glfwSetWindowShouldClose(engine.window, true);
+        }
+
         double currentFrameTime = glfwGetTime();
         frameTime = currentFrameTime - lastFrameTime;
         lastFrameTime = currentFrameTime;
@@ -51,8 +63,12 @@ int main()
 
         if (counter < physics.numTimeSteps)
         {
+            // update particles
             engine.update(counter, particles);
-            counter++;
+            // add time when engine is running
+            if (engine.isRunning) {
+                counter++;
+            }
         }
 
 
@@ -62,7 +78,15 @@ int main()
         // Wenn eine Sekunde vergangen ist, zeigen Sie die FPS an
         if (secondCounter >= 1.0)
         {
-            std::cout << "FPS: " << frameCount << std::endl;
+            char numStr[20]; // Ein char-Array zur Speicherung der Zeichenkette
+            // Verwende sprintf, um die Ganzzahl in das char-Array umzuwandeln
+            snprintf(numStr, sizeof(numStr), "%d", frameCount);
+
+            //std::cout << "Die umgewandelte Zeichenkette: " << numStr << std::endl;
+            strcat(numStr, " FPS");
+
+            glfwSetWindowTitle(engine.window, numStr);
+            //std::cout << "FPS: " << frameCount << std::endl;
             frameCount = 0;
             secondCounter = 0.0;
         }

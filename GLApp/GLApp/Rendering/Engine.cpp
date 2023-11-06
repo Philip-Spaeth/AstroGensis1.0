@@ -137,7 +137,12 @@ void Engine::start(std::vector<std::vector<Particle>>& particles)
 void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles)
 {
     //calculate the time
-    calcTime(deltaTime);
+    if (isRunning) {
+        calcTime(deltaTime);
+    }
+
+    //print out the kinetic energy of the first particle
+	std::cout << "kinetic energy: " << particles[deltaTime][0].kineticEnergie << std::endl;
 
     if (false)
     {
@@ -161,7 +166,7 @@ void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles
     //dely before it starts
     if (deltaTime == 0)
     {
-        while (true) 
+        /*while (true) 
         {
             processMouseInput();
             processInput();
@@ -173,14 +178,17 @@ void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles
             }
             Sleep(10);
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));*/
     }
 
     //pause if space is pressed
+    // now in main Function -> reason: exit program listen for ESC in main.
     if (GetAsyncKeyState(32) & 0x8000)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
-        while (true) 
+        isRunning = !isRunning;
+        // old Code:
+        /*while (true) 
         {
             processMouseInput();
             processInput();
@@ -192,7 +200,7 @@ void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles
             }
             Sleep(10);
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));*/
     }
 
     //cam movement after the last particle

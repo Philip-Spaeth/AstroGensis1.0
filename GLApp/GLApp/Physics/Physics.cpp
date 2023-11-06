@@ -95,6 +95,9 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
                 // Berechnen der neuen Position
                 currentParticle.UpdatePosition(faktor);
 
+                // calc Energie of system with each particle
+                particles[t][p].calcKineticEnergie();
+
                 //just for color not effecient
                 if (currentParticle.colorMode == true)
                 {

@@ -142,18 +142,30 @@ void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 
 	for (int j = 0; j < physics.particlesSize; j++)
 	{
-		//One sun with a lot of mass
+		//barycenter
 		if (j == 0)
 		{
 			Particle particle;
 			particle.position = glm::vec3(0, 0, 0);
 			particle.velocity = glm::vec3(0, 0, 0);
-			particle.mass = 1.989e30;
-			particle.radius = 6;
+			particle.mass = 0;
+			particle.radius = 0.5;
+			particle.color = glm::vec3(1, 1, 1);
+			particles[0][j] = particle;
+		}
+
+		//One sun with a lot of mass
+		if (j == 1)
+		{
+			Particle particle;
+			particle.position = glm::vec3(0, 0, 0);
+			particle.velocity = glm::vec3(0, 0, 0);
+			particle.mass = 5.972e24;
+			particle.radius = 7;
 			particle.color = glm::vec3(1, 1, 0);
 			particles[0][j] = particle;
 		}
-		else
+		if(j == 2)
 		{
 			Particle particle;
 			particle.position = glm::vec3(j * distanceFaktor, 0,0);
@@ -192,7 +204,7 @@ void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 			}
 			else if (size == 1)
 			{
-				particle.radius = 3;
+				particle.radius = 6;
 			}
 			else if (size == 2)
 			{
