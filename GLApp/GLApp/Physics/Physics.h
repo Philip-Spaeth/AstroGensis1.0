@@ -38,8 +38,11 @@ public:
     // one year per second = 31536000
 
     //set the simulated time per second
-    const double faktor = 864000000 / TARGET_FPS;
     //const double faktor = 6e17 / TARGET_FPS;
+    const double faktor = 1000000;
+
+    //the time per frame
+    double deltaTime = faktor / TARGET_FPS;
 
 private:
     int calulations = 0;

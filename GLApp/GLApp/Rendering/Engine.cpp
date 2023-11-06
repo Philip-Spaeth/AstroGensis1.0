@@ -134,52 +134,36 @@ void Engine::start(std::vector<std::vector<Particle>>& particles)
     std::cout << "Data loaded" << std::endl;
 }
 
-void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles)
+void Engine::update(int index, std::vector<std::vector<Particle>>& particles)
 {
     //calculate the time
     if (isRunning) {
-        calcTime(deltaTime);
+        calcTime(index);
     }
 
     //print out the kinetic energy of the first particle
-	std::cout << "kinetic energy: " << particles[deltaTime][0].kineticEnergie << std::endl;
+	//std::cout << "kinetic energy: " << particles[index][0].kineticEnergie << std::endl;
 
+    /*
     if (false)
     {
         //follow an Object
         int index = 0;
         double distance = 1000;
-        double x = particles[deltaTime][index].position.x * globalScale;
-        double y = particles[deltaTime][index].position.y * globalScale;
-        double z = particles[deltaTime][index].position.z * globalScale + distance;
+        double x = particles[index][index].position.x * globalScale;
+        double y = particles[index][index].position.y * globalScale;
+        double z = particles[index][index].position.z * globalScale + distance;
         cameraPosition = glm::vec3(x, y, z);
     }
+    */
 
     processMouseInput();
     processInput();
 
-    renderParticles(deltaTime, particles);
+    renderParticles(index, particles);
 
     glfwSwapBuffers(window);
     glfwPollEvents();
-
-    //dely before it starts
-    if (deltaTime == 0)
-    {
-        /*while (true) 
-        {
-            processMouseInput();
-            processInput();
-            renderParticles(deltaTime, particles);
-            glfwSwapBuffers(window);
-            glfwPollEvents();
-            if (GetAsyncKeyState(32) & 0x8000) {
-                break;
-            }
-            Sleep(10);
-        }
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));*/
-    }
 
     //pause if space is pressed
     // now in main Function -> reason: exit program listen for ESC in main.
@@ -187,37 +171,23 @@ void Engine::update(int deltaTime, std::vector<std::vector<Particle>>& particles
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
         isRunning = !isRunning;
-        // old Code:
-        /*while (true) 
-        {
-            processMouseInput();
-            processInput();
-            renderParticles(deltaTime, particles);
-            glfwSwapBuffers(window);
-            glfwPollEvents();
-            if (GetAsyncKeyState(32) & 0x8000) {
-                break;
-            }
-            Sleep(10);
-        }
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));*/
     }
 
     //cam movement after the last particle
-    if (deltaTime == (particles.size() - 1))
+    if (index == (particles.size() - 1))
     {
         while (true)
         {
             processMouseInput();
             processInput();
-            renderParticles(deltaTime, particles);
+            renderParticles(index, particles);
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
     }
 }
 
-void Engine::renderParticles(int deltaTime, std::vector<std::vector<Particle>>& particles)
+void Engine::renderParticles(int index, std::vector<std::vector<Particle>>& particles)
 {
     // Löschen des Bildschirms
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -244,21 +214,20 @@ void Engine::renderParticles(int deltaTime, std::vector<std::vector<Particle>>& 
 
     // Partikel zeichnen
 
-    for (unsigned int p = 0; p < particles[deltaTime].size(); ++p) 
+    for (unsigned int p = 0; p < particles[index].size(); ++p) 
     {
-        glPointSize(particles[deltaTime][p].radius); // Größe der Partikelpunkte festlegen
+        glPointSize(particles[index][p].radius);
 
         glm::vec3 scaledPosition = glm::vec3(
-            particles[deltaTime][p].position.x * globalScale,
-            particles[deltaTime][p].position.y * globalScale,
-            particles[deltaTime][p].position.z * globalScale
+            particles[index][p].position.x * globalScale,
+            particles[index][p].position.y * globalScale,
+            particles[index][p].position.z * globalScale
         );
-
         // Setzen Sie die Position im Shader
         glUniform3fv(glGetUniformLocation(shaderProgram, "particlePosition"), 1, glm::value_ptr(scaledPosition));
 
         // Setzen Sie die Farbe im Shader
-        glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(particles[deltaTime][p].color));
+        glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(particles[index][p].color));
 
         // Zeichnen Sie den Punkt
         glDrawArrays(GL_POINTS, 0, 1);
@@ -266,17 +235,16 @@ void Engine::renderParticles(int deltaTime, std::vector<std::vector<Particle>>& 
     
     /*
     //print out all the properties of the particle
-    int index = 0;
-    int mass = particles[deltaTime][index].mass;
-    double x = particles[deltaTime][index].position.x;
-    double y = particles[deltaTime][index].position.y;
-    double z = particles[deltaTime][index].position.z;
-    double vx = particles[deltaTime][index].velocity.x;
-    double vy = particles[deltaTime][index].velocity.y;
-    double vz = particles[deltaTime][index].velocity.z;
-    //print out the position of the particle
-    std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
+    int i = 0;
+    double x = particles[index][i].position.x;
+    double y = particles[index][i].position.y;
+    double z = particles[index][i].position.z;
+
+    std::cout << i << " mass: " << particles[index][i].mass << std::endl;
     */
+
+
+
     // VAO lösen
     glBindVertexArray(0);
 }
@@ -286,28 +254,28 @@ void Engine::processInput()
     if (GetAsyncKeyState(VK_CONTROL) < 0)
     {
         // Kamerabewegung
-        float deltaTime = 0.1f; // Ändern Sie diesen Wert je nach Bedarf
+        float index = 0.1f; // Ändern Sie diesen Wert je nach Bedarf
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-            cameraPosition += rushSpeed * deltaTime * cameraFront;
+            cameraPosition += rushSpeed * index * cameraFront;
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-            cameraPosition -= rushSpeed * deltaTime * cameraFront;
+            cameraPosition -= rushSpeed * index * cameraFront;
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-            cameraPosition -= rushSpeed * deltaTime * glm::normalize(glm::cross(cameraFront, cameraUp));
+            cameraPosition -= rushSpeed * index * glm::normalize(glm::cross(cameraFront, cameraUp));
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            cameraPosition += rushSpeed * deltaTime * glm::normalize(glm::cross(cameraFront, cameraUp));
+            cameraPosition += rushSpeed * index * glm::normalize(glm::cross(cameraFront, cameraUp));
     }
     else
     {
         // Kamerabewegung
-        float deltaTime = 0.1f; // Ändern Sie diesen Wert je nach Bedarf
+        float index = 0.1f; // Ändern Sie diesen Wert je nach Bedarf
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-            cameraPosition += cameraSpeed * deltaTime * cameraFront;
+            cameraPosition += cameraSpeed * index * cameraFront;
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-            cameraPosition -= cameraSpeed * deltaTime * cameraFront;
+            cameraPosition -= cameraSpeed * index * cameraFront;
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-            cameraPosition -= cameraSpeed * deltaTime * glm::normalize(glm::cross(cameraFront, cameraUp));
+            cameraPosition -= cameraSpeed * index * glm::normalize(glm::cross(cameraFront, cameraUp));
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            cameraPosition += cameraSpeed * deltaTime * glm::normalize(glm::cross(cameraFront, cameraUp));
+            cameraPosition += cameraSpeed * index * glm::normalize(glm::cross(cameraFront, cameraUp));
     }
     // Aktualisieren der Ansichtsmatrix (Kameraposition und Blickrichtung)
     view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
@@ -388,9 +356,9 @@ bool Engine::clean()
     return true;
 }
 
-void Engine::calcTime(int deltaTime)
+void Engine::calcTime(int index)
 {
-    passedTime = (deltaTime * faktor * TARGET_FPS) / TARGET_FPS;
+    passedTime = (index * faktor * TARGET_FPS) / TARGET_FPS;
 
     int passedTimeInSec = passedTime / 86400;
 

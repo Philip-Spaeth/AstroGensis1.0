@@ -15,7 +15,7 @@ public:
 
     bool init(double physicsFaktor);
     void start(std::vector<std::vector<Particle>>& particles);
-    void update(int deltaTime, std::vector<std::vector<Particle>>& particles);
+    void update(int index, std::vector<std::vector<Particle>>& particles);
     bool clean();
 
     GLFWwindow* window;
@@ -26,7 +26,8 @@ private:
 
     double passedTime = 0;
 
-    double globalScale = 1e-9;
+    double globalScale = 1;
+    //double globalScale = 1e-9;
     //double globalScale = 1e-18;
 
     glm::vec3 cameraPosition;
@@ -44,10 +45,10 @@ private:
 
     GLuint shaderProgram;
     GLuint VAO;
-    void renderParticles(int deltaTime, std::vector<std::vector<Particle>>& particles);
+    void renderParticles(int index, std::vector<std::vector<Particle>>& particles);
     void checkShaderCompileStatus(GLuint shader, const char* shaderType);
     void checkShaderLinkStatus(GLuint program);
-    void calcTime(int deltaTime);
+    void calcTime(int index);
     double faktor = -1;
 };
 

@@ -51,7 +51,8 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
             std::string fileName = "Data/particles_" + std::to_string(t) + ".dat";
             std::ofstream outfile(fileName, std::ios::binary);
             if (outfile.is_open()) {
-                for (int p = 0; p < particlesSize; ++p) {
+                for (int p = 0; p < particlesSize; ++p) 
+                {
                     outfile.write(reinterpret_cast<const char*>(&particles[t][p]), sizeof(Particle));
                 }
                 outfile.close();
@@ -67,36 +68,26 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
             {
                 Particle& currentParticle = particles[t][p];
                 const Particle& previousParticle = particles[t - 1][p];
-
-                // Übernehmen der alten Werte
-                currentParticle.position = previousParticle.position;
-                currentParticle.velocity = previousParticle.velocity;
-                currentParticle.mass = previousParticle.mass;
-                currentParticle.radius = previousParticle.radius;
-                currentParticle.color = previousParticle.color;
+                currentParticle = previousParticle;
 
                 for (int i = 0; i < particlesSize; i++)
                 {
-
-                    if (i == p) 
+                    if (i == p)
                     {
                         continue;
                     }
-                    if (particles[t][p].mass == 0 || particles[t][i].mass == 0)
-                    {
-						continue;
-					}
-
-                    glm::dvec3 force = currentParticle.CalculateGravitationalForce(particles[t][i], G, softening, faktor);
+                    glm::dvec3 force = currentParticle.calculateGravitationalForce(particles[t][i], G, softening, deltaTime);
+                    glm::dvec3 acceleration = currentParticle.calcAcceleration(force);
+                    currentParticle.eulerUpdateVelocity(acceleration, deltaTime);
 
                     calulations++;
                 }
 
                 // Berechnen der neuen Position
-                currentParticle.UpdatePosition(faktor);
+                currentParticle.eulerUpdatePosition(deltaTime);
 
                 // calc Energie of system with each particle
-                particles[t][p].calcKineticEnergie();
+                //particles[t][p].calcKineticEnergie();
 
                 //just for color not effecient
                 if (currentParticle.colorMode == true)

@@ -135,85 +135,39 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::vec3 positi
 
 void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 {
-	
-	Physics physics;
 
-	double distanceFaktor = 1.4848e11;
+	//four particles with the same mass in a circle
 
-	for (int j = 0; j < physics.particlesSize; j++)
-	{
-		//barycenter
-		if (j == 0)
-		{
-			Particle particle;
-			particle.position = glm::vec3(0, 0, 0);
-			particle.velocity = glm::vec3(0, 0, 0);
-			particle.mass = 0;
-			particle.radius = 0.5;
-			particle.color = glm::vec3(1, 1, 1);
-			particles[0][j] = particle;
-		}
+	//Particle 0
+	Particle particle0;
+	particle0.position = glm::vec3(0, 0, 0);
+	particle0.velocity = glm::vec3(0, 0, 0);
+	particle0.mass = 0.0001;
+	particle0.radius = 0.5;
+	particle0.color = glm::vec3(1, 1, 1);
+	particles[0][0] = particle0;
 
-		//One sun with a lot of mass
-		if (j == 1)
-		{
-			Particle particle;
-			particle.position = glm::vec3(0, 0, 0);
-			particle.velocity = glm::vec3(0, 0, 0);
-			particle.mass = 5.972e24;
-			particle.radius = 7;
-			particle.color = glm::vec3(1, 1, 0);
-			particles[0][j] = particle;
-		}
-		if(j == 2)
-		{
-			Particle particle;
-			particle.position = glm::vec3(j * distanceFaktor, 0,0);
 
-			//Fz = Fg
-			//m*v^2/r = G * M * m / r^2
-			// v^2 = G * M / r
-			//v = sqrt(G * M / r)
+	//Particle 1
+	Particle particle;
+	particle.position = glm::vec3(100, 0, 0);
+	particle.velocity = glm::vec3(0, 0, 0);
+	particle.mass = 1000000;
+	particle.radius = 5;
+	particle.color = glm::vec3(1, 1, 1);
+	particles[0][2] = particle;
 
-			double v = std::sqrt((physics.G * particles[0][0].mass) / (j * distanceFaktor));
 
-			particle.velocity = glm::vec3(0, v, 0);
-			particle.mass = 5.972e24;
+	//Particle 2
+	Particle particle2;
+	particle2.position = glm::vec3(0, 100, 0);
+	particle2.velocity = glm::vec3(0, 0, 0);
+	particle2.mass = 1000000;
+	particle2.radius = 5;
+	particle2.color = glm::vec3(1, 1, 1);
+	particles[0][1] = particle2;
 
-			//diffrent color for every planet
 
-			int color = j % 3;
-			if (color == 0)
-			{
-				particle.color = glm::vec3(1, 0, 0);
-			}
-			else if (color == 1)
-			{
-				particle.color = glm::vec3(0, 0, 1);
-			}
-			else if (color == 2)
-			{
-				particle.color = glm::vec3(0, 1, 0);
-			}
-
-			//diffrent size for every planet
-			int size = j % 3;
-			if (size == 0)
-			{
-				particle.radius = 2;
-			}
-			else if (size == 1)
-			{
-				particle.radius = 6;
-			}
-			else if (size == 2)
-			{
-				particle.radius = 4;
-			}
-			particles[0][j] = particle;
-		}
-	}
-	
 	/*
 	// Data from JPL Horizons Nasa date: 2023-11-03 https://ssd.jpl.nasa.gov/horizons/app.html#/
 
