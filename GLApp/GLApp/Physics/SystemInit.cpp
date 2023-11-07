@@ -5,7 +5,7 @@
 
 void SystemInit::start(std::vector<std::vector<Particle>>& particles)
 {
-	solarSystem(particles);
+	//solarSystem(particles);
 
 	//ellipticalGalaxy(0, 999, { 0,0,0 }, { 0,0,0 }, particles);
 	//ellipticalGalaxy(1000, 1999, { 2e22, 0, 0}, { 0,0,0 }, particles);
@@ -135,37 +135,6 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::vec3 positi
 
 void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 {
-
-	//four particles with the same mass in a circle
-
-	//Particle 0
-	Particle particle0;
-	particle0.position = glm::vec3(0, 0, 0);
-	particle0.velocity = glm::vec3(0, 0, 0);
-	particle0.mass = 0.0001;
-	particle0.radius = 0.5;
-	particle0.color = glm::vec3(1, 1, 1);
-	particles[0][0] = particle0;
-
-
-	//Particle 1
-	Particle particle;
-	particle.position = glm::vec3(100, 0, 0);
-	particle.velocity = glm::vec3(0, 0, 0);
-	particle.mass = 1000000;
-	particle.radius = 5;
-	particle.color = glm::vec3(1, 1, 1);
-	particles[0][2] = particle;
-
-
-	//Particle 2
-	Particle particle2;
-	particle2.position = glm::vec3(0, 100, 0);
-	particle2.velocity = glm::vec3(0, 0, 0);
-	particle2.mass = 1000000;
-	particle2.radius = 5;
-	particle2.color = glm::vec3(1, 1, 1);
-	particles[0][1] = particle2;
 
 
 	/*

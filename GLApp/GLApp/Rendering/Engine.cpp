@@ -94,12 +94,11 @@ bool Engine::init(double physicsFaktor)
 }
 void Engine::start(std::vector<std::vector<Particle>>& particles)
 {
-
     // Laden der Daten für die Darstellung
     std::cout << "loading data ..." << std::endl;
     Physics py;
     for (int t = 0; t < py.numTimeSteps; ++t) {
-        std::string fileName = "Data/particles_" + std::to_string(t) + ".dat";
+        std::string fileName = "Data/Time_" + std::to_string(t) + ".dat";
         std::ifstream infile(fileName, std::ios::binary);
         if (infile.is_open()) {
             particles[t].resize(py.particlesSize);
@@ -131,6 +130,12 @@ void Engine::start(std::vector<std::vector<Particle>>& particles)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
+    int index = 1;
+    double x = particles[0][index].position.x;
+    double y = particles[0][index].position.y;
+    double z = particles[0][index].position.z;
+    std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
+
     std::cout << "Data loaded" << std::endl;
 }
 
@@ -143,19 +148,7 @@ void Engine::update(int index, std::vector<std::vector<Particle>>& particles)
 
     //print out the kinetic energy of the first particle
 	//std::cout << "kinetic energy: " << particles[index][0].kineticEnergie << std::endl;
-
-    /*
-    if (false)
-    {
-        //follow an Object
-        int index = 0;
-        double distance = 1000;
-        double x = particles[index][index].position.x * globalScale;
-        double y = particles[index][index].position.y * globalScale;
-        double z = particles[index][index].position.z * globalScale + distance;
-        cameraPosition = glm::vec3(x, y, z);
-    }
-    */
+    
 
     processMouseInput();
     processInput();

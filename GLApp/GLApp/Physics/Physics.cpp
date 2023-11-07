@@ -44,11 +44,26 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
         //Start values of the particles
         if (t == 0)
         {
-            systemInit = new SystemInit();
-            systemInit->start(particles);
+            //systemInit = new SystemInit();
+            //systemInit->start(particles);
+            // 
+            //Particle 2
+
+            particles[t][0].position = { -100, 0, 0 };
+            particles[t][0].velocity = { 0, 0, 0 };
+            particles[t][0].mass = 1e15;
+            particles[t][0].radius = 2;
+            particles[t][0].color = glm::vec3(1, 1, 1);
+
+            //Particle 1
+            particles[t][1].position = { 100, 0, 0 };
+            particles[t][1].velocity = { 0, 0, 0 };
+            particles[t][1].mass = 1e15;
+            particles[t][1].radius = 2;
+            particles[t][1].color = glm::vec3(1, 1, 1);
 
             // Save data to a file for this time step
-            std::string fileName = "Data/particles_" + std::to_string(t) + ".dat";
+            std::string fileName = "Data/Time_" + std::to_string(t) + ".dat";
             std::ofstream outfile(fileName, std::ios::binary);
             if (outfile.is_open()) {
                 for (int p = 0; p < particlesSize; ++p) 
@@ -70,16 +85,25 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
                 const Particle& previousParticle = particles[t - 1][p];
                 currentParticle = previousParticle;
 
+                //print out all attributes of the particle mass x y z vx vy vz
+                //std::cout << "Particle " << p << " " << currentParticle.mass << " " << currentParticle.position.x << " " << currentParticle.position.y << " " << currentParticle.position.z << " " << currentParticle.velocity.x << " " << currentParticle.velocity.y << " " << currentParticle.velocity.z << std::endl;
+
+
                 for (int i = 0; i < particlesSize; i++)
                 {
-                    if (i == p)
+                    Particle& otherParticle = particles[t][i];
+                    const Particle& previousOtherParticle = particles[t - 1][i];
+                    otherParticle = previousOtherParticle;
+
+                    if (&otherParticle == &currentParticle)
                     {
-                        continue;
-                    }
-                    glm::dvec3 force = currentParticle.calculateGravitationalForce(particles[t][i], G, softening, deltaTime);
+						continue;
+					}
+
+                    glm::dvec3 force = currentParticle.calculateGravitationalForce(otherParticle, G, softening, deltaTime);
                     glm::dvec3 acceleration = currentParticle.calcAcceleration(force);
                     currentParticle.eulerUpdateVelocity(acceleration, deltaTime);
-
+                  
                     calulations++;
                 }
 
@@ -88,33 +112,10 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
 
                 // calc Energie of system with each particle
                 //particles[t][p].calcKineticEnergie();
-
-                //just for color not effecient
-                if (currentParticle.colorMode == true)
-                {
-                    if (currentParticle.mass < 1000)
-                    {
-                        double gravityForce = particles[t][p].bigestGravitation;
-
-                        if (gravityForce > highestForce)
-                        {
-                            if (particles[t][p].mass < 1000)
-                            {
-                                highestForce = gravityForce;
-                            }
-                        }
-
-                        double color = gravityForce * 5 / highestForce;
-                        double extraLight = 0.7;
-                        particles[t][p].color = glm::dvec3(color/2 + extraLight, color/5 + extraLight, color + extraLight);
-                    }
-                }
             }
 
-            highestForce = 0;
-
             // Save data to a file for this time step
-            std::string fileName = "Data/particles_" + std::to_string(t) + ".dat";
+            std::string fileName = "Data/Time_" + std::to_string(t) + ".dat";
             std::ofstream outfile(fileName, std::ios::binary);
             if (outfile.is_open()) {
                 for (int p = 0; p < particlesSize; ++p) {
@@ -156,7 +157,7 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
             }
             
             //printing out the progress
-            std::cout << "Progress: " << (t * 100) / numTimeSteps << "%  "  << (int)newtime << timeUnit << " left" << std::endl;
+            //std::cout << "Progress: " << (t * 100) / numTimeSteps << "%  "  << (int)newtime << timeUnit << " left" << std::endl;
         }
     }
     std::cout << "Total Calculations: " << calulations << std::endl;

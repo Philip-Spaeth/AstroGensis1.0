@@ -23,8 +23,8 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    const int numTimeSteps = 500;
-    const int particlesSize = 3;
+    const int numTimeSteps = 300;
+    const int particlesSize = 2;
 
     const int batchSize = 10000;
 
@@ -39,14 +39,13 @@ public:
 
     //set the simulated time per second
     //const double faktor = 6e17 / TARGET_FPS;
-    const double faktor = 1000000;
+    const double faktor = 1e15;
 
     //the time per frame
-    double deltaTime = faktor / TARGET_FPS;
+    const double deltaTime = faktor / TARGET_FPS;
 
 private:
     int calulations = 0;
-    double highestForce = 0;
     SystemInit* systemInit;
 };
 

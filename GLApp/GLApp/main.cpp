@@ -35,8 +35,8 @@ int main()
     double lastFrameTime = glfwGetTime(); // Zeit des letzten Frames
     double frameTime; // Zeitdauer eines Frames
 
-    int frameCount = 0; // Anzahl der Frames in einer Sekunde
-    double secondCounter = 0.0; // Zähler für Sekunden
+    int frameCount = 0;
+    double secondCounter = 0.0;
     int counter = 0;
 
     // Haupt-Render-Schleife
@@ -66,7 +66,8 @@ int main()
             // update particles
             engine.update(counter, particles);
             // add time when engine is running
-            if (engine.isRunning) {
+            if (engine.isRunning) 
+            {
                 counter++;
             }
         }

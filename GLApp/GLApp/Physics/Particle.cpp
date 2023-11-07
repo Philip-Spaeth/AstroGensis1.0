@@ -8,7 +8,7 @@ Particle::Particle(double x, double y, double z)  : position(x, y, z), velocity(
 
 //Numerical methods
 
-//Euler
+//Semi-Implicit Euler
 void Particle::eulerUpdateVelocity(glm::dvec3 acceleration, double deltaTime)
 {
 	velocity += acceleration * deltaTime;
@@ -25,11 +25,6 @@ void Particle::eulerUpdatePosition(double deltaTime)
 
 glm::dvec3 Particle::calculateGravitationalForce(const Particle& other, double G, double softening, double deltaTime)
 {
-    if (mass == 0 || other.mass == 0 || &other == this)
-    {
-        return { 0, 0, 0 }; // Die Gravitationskraft ist null, wenn eine der Massen null ist oder die Teilchen identisch sind.
-    }
-
     glm::dvec3 delta = other.position - position;
     double distance = glm::length(delta);
 
