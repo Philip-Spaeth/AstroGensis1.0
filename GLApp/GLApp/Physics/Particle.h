@@ -32,7 +32,7 @@ public:
 
     //Diffrent numerical methods
     void eulerUpdateVelocity(glm::dvec3 acceleration, double deltaTime);
-    void eulerUpdatePosition(double deltaTime);
+    void eulerUpdatePosition(glm::dvec3 velocity, double deltaTime);
 
     //Energie functions
     void calcKineticEnergie();

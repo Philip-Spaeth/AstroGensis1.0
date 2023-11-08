@@ -14,7 +14,7 @@ void Particle::eulerUpdateVelocity(glm::dvec3 acceleration, double deltaTime)
 	velocity += acceleration * deltaTime;
 }
 
-void Particle::eulerUpdatePosition(double deltaTime)
+void Particle::eulerUpdatePosition(glm::dvec3 velocity, double deltaTime)
 {
     position += velocity * deltaTime;
 }
@@ -41,6 +41,12 @@ glm::dvec3 Particle::calculateGravitationalForce(const Particle& other, double G
 
 glm::dvec3 Particle::calcAcceleration(glm::dvec3 force)
 {
+    //no division by zero
+    if (mass == 0)
+    {
+		return { 0, 0, 0 };
+	}
+
 	glm::dvec3 acceleration = force / mass;
 	return acceleration;
 }

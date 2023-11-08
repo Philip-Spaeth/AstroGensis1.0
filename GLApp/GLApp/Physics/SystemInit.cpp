@@ -5,7 +5,7 @@
 
 void SystemInit::start(std::vector<std::vector<Particle>>& particles)
 {
-	//solarSystem(particles);
+	solarSystem(particles);
 
 	//ellipticalGalaxy(0, 999, { 0,0,0 }, { 0,0,0 }, particles);
 	//ellipticalGalaxy(1000, 1999, { 2e22, 0, 0}, { 0,0,0 }, particles);
@@ -135,9 +135,21 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::vec3 positi
 
 void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 {
-
-
 	/*
+	particles[0][0].position = { -100, 0, 0 };
+	particles[0][0].velocity = { 0, 0, 0 };
+	particles[0][0].mass = 1e20;
+	particles[0][0].radius = 2;
+	particles[0][0].color = glm::vec3(1, 1, 1);
+
+	//Particle 1
+	particles[0][1].position = { 100, 0, 0 };
+	particles[0][1].velocity = { 0, 0, 0 };
+	particles[0][1].mass = 1e20;
+	particles[0][1].radius = 2;
+	particles[0][1].color = glm::vec3(1, 1, 1);
+	*/
+	
 	// Data from JPL Horizons Nasa date: 2023-11-03 https://ssd.jpl.nasa.gov/horizons/app.html#/
 
 	Physics physics;
@@ -264,5 +276,4 @@ void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 			particles[0][j] = particle;
 		}
 	}
-	*/
 }

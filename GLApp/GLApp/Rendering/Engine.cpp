@@ -54,10 +54,10 @@ bool Engine::init(double physicsFaktor)
         "layout (location = 0) in vec3 position;\n"
         "uniform mat4 projection;\n"
         "uniform mat4 view;\n"
-        "uniform vec3 particlePosition; // Neue Uniform-Variable für die Partikelposition\n"
+        "uniform vec3 particlePosition; // Neue Uniform-Variable fï¿½r die Partikelposition\n"
         "void main()\n"
         "{\n"
-        "    // Berechnen Sie die endgültige Position des Partikels, indem Sie die Partikelposition hinzufügen\n"
+        "    // Berechnen Sie die endgï¿½ltige Position des Partikels, indem Sie die Partikelposition hinzufï¿½gen\n"
         "    vec4 finalPosition = projection * view * vec4(position + particlePosition, 1.0);\n"
         "    gl_Position = finalPosition;\n"
         "}\0";
@@ -67,7 +67,7 @@ bool Engine::init(double physicsFaktor)
         "uniform vec3 particleColor;\n"
         "void main()\n"
         "{\n"
-        "    FragColor = vec4(particleColor, 1.0); // Weiß\n"
+        "    FragColor = vec4(particleColor, 1.0); // Weiï¿½\n"
         "}\n\0";
 
     // Erstellen des Shader-Programms und kompilieren
@@ -94,7 +94,7 @@ bool Engine::init(double physicsFaktor)
 }
 void Engine::start(std::vector<std::vector<Particle>>& particles)
 {
-    // Laden der Daten für die Darstellung
+    // Laden der Daten fï¿½r die Darstellung
     std::cout << "loading data ..." << std::endl;
     Physics py;
     for (int t = 0; t < py.numTimeSteps; ++t) {
@@ -103,16 +103,16 @@ void Engine::start(std::vector<std::vector<Particle>>& particles)
         if (infile.is_open()) {
             particles[t].resize(py.particlesSize);
             for (int p = 0; p < py.particlesSize; ++p) {
-                Particle particle; // Erstellen eines temporären Particle-Objekts
+                Particle particle; // Erstellen eines temporï¿½ren Particle-Objekts
                 infile.read(reinterpret_cast<char*>(&particle), sizeof(Particle));
 
-                // Den Partikel zum Partikelvektor hinzufügen
+                // Den Partikel zum Partikelvektor hinzufï¿½gen
                 particles[t][p] = particle;
             }
             infile.close();
         }
         else {
-            std::cerr << "Fehler beim Öffnen von: " << fileName << std::endl;
+            std::cerr << "Fehler beim ï¿½ffnen von: " << fileName << std::endl;
         }
     }
 
@@ -126,7 +126,7 @@ void Engine::start(std::vector<std::vector<Particle>>& particles)
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
-    // Konfigurieren des VAO für das VBO
+    // Konfigurieren des VAO fï¿½r das VBO
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
@@ -182,7 +182,7 @@ void Engine::update(int index, std::vector<std::vector<Particle>>& particles)
 
 void Engine::renderParticles(int index, std::vector<std::vector<Particle>>& particles)
 {
-    // Löschen des Bildschirms
+    // Lï¿½schen des Bildschirms
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Deaktivieren Sie den Tiefentest und das Z-Buffering
@@ -238,7 +238,7 @@ void Engine::renderParticles(int index, std::vector<std::vector<Particle>>& part
 
 
 
-    // VAO lösen
+    // VAO lï¿½sen
     glBindVertexArray(0);
 }
 
@@ -247,7 +247,7 @@ void Engine::processInput()
     if (GetAsyncKeyState(VK_CONTROL) < 0)
     {
         // Kamerabewegung
-        float index = 0.1f; // Ändern Sie diesen Wert je nach Bedarf
+        float index = 0.1f; // ï¿½ndern Sie diesen Wert je nach Bedarf
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
             cameraPosition += rushSpeed * index * cameraFront;
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -260,7 +260,7 @@ void Engine::processInput()
     else
     {
         // Kamerabewegung
-        float index = 0.1f; // Ändern Sie diesen Wert je nach Bedarf
+        float index = 0.1f; // ï¿½ndern Sie diesen Wert je nach Bedarf
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
             cameraPosition += cameraSpeed * index * cameraFront;
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -278,7 +278,7 @@ void Engine::processInput()
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 }
 
-// Fügen Sie diese Methode zur Engine-Klasse hinzu
+// Fï¿½gen Sie diese Methode zur Engine-Klasse hinzu
 void Engine::processMouseInput()
 {
 
@@ -290,7 +290,7 @@ void Engine::processMouseInput()
     static double lastMouseY = mouseY;
 
     double xOffset = mouseX - lastMouseX;
-    double yOffset = lastMouseY - mouseY; // Umgekehrtes Vorzeichen für umgekehrte Mausrichtung
+    double yOffset = lastMouseY - mouseY; // Umgekehrtes Vorzeichen fï¿½r umgekehrte Mausrichtung
 
     lastMouseX = mouseX;
     lastMouseY = mouseY;
@@ -302,7 +302,7 @@ void Engine::processMouseInput()
     cameraYaw += xOffset;
     cameraPitch += yOffset;
 
-    // Begrenzen Sie die Kamerapitch, um ein Überdrehen zu verhindern
+    // Begrenzen Sie die Kamerapitch, um ein ï¿½berdrehen zu verhindern
     if (cameraPitch > 89.0f)
         cameraPitch = 89.0f;
     if (cameraPitch < -89.0f)
@@ -344,7 +344,7 @@ void Engine::checkShaderLinkStatus(GLuint program)
 }
 bool Engine::clean()
 {
-    // Aufräumen und beenden
+    // Aufrï¿½umen und beenden
     glfwTerminate();
     return true;
 }
@@ -393,7 +393,7 @@ void Engine::calcTime(int index)
         case 12: daysInMonth = 31; break;
         }
 
-        // Überprüfen Sie, ob das aktuelle Jahr ein Schaltjahr ist
+        // ï¿½berprï¿½fen Sie, ob das aktuelle Jahr ein Schaltjahr ist
         bool isLeapYear = false;
         if (currentYear % 4 == 0) {
             if (currentYear % 100 == 0) {
@@ -406,12 +406,12 @@ void Engine::calcTime(int index)
             }
         }
 
-        // Überprüfen Sie, ob das aktuelle Jahr ein Schaltjahr ist
+        // ï¿½berprï¿½fen Sie, ob das aktuelle Jahr ein Schaltjahr ist
         if (isLeapYear && currentMonth == 2) {
             daysInMonth = 29;
         }
 
-        // Überprüfen Sie, ob das aktuelle Jahr ein Schaltjahr ist
+        // ï¿½berprï¿½fen Sie, ob das aktuelle Jahr ein Schaltjahr ist
         if (currentDay == daysInMonth) {
             currentDay = 1;
             if (currentMonth == 12) {

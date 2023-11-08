@@ -1,4 +1,4 @@
-#define _USE_MATH_DEFINES
+ï»¿#define _USE_MATH_DEFINES
 #include "Physics.h"
 #include <cstdlib>
 #include <ctime>
@@ -19,7 +19,7 @@ Physics::Physics()
 
 bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
 {
-    // Nur neu berechnen, wenn Enter gedrückt wird
+    // Nur neu berechnen, wenn Enter gedrÃ¼ckt wird
     std::cout << "Press enter to start the calculations and press o to use render the old calculations" << std::endl;
 
     std::string input;
@@ -44,23 +44,8 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
         //Start values of the particles
         if (t == 0)
         {
-            //systemInit = new SystemInit();
-            //systemInit->start(particles);
-            // 
-            //Particle 2
-
-            particles[t][0].position = { -100, 0, 0 };
-            particles[t][0].velocity = { 0, 0, 0 };
-            particles[t][0].mass = 1e15;
-            particles[t][0].radius = 2;
-            particles[t][0].color = glm::vec3(1, 1, 1);
-
-            //Particle 1
-            particles[t][1].position = { 100, 0, 0 };
-            particles[t][1].velocity = { 0, 0, 0 };
-            particles[t][1].mass = 1e15;
-            particles[t][1].radius = 2;
-            particles[t][1].color = glm::vec3(1, 1, 1);
+            systemInit = new SystemInit();
+            systemInit->start(particles);
 
             // Save data to a file for this time step
             std::string fileName = "Data/Time_" + std::to_string(t) + ".dat";
@@ -79,39 +64,37 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
 
         else
         {
+            //load the old particle attributes in the new particle attributes
+            for (int i = 0; i < particlesSize; i++)
+            {
+				Particle& currentParticle = particles[t][i];
+				const Particle& previousParticle = particles[t - 1][i];
+				currentParticle.position = previousParticle.position;
+				currentParticle.velocity = previousParticle.velocity;
+				currentParticle.mass = previousParticle.mass;
+				currentParticle.radius = previousParticle.radius;
+				currentParticle.color = previousParticle.color;
+			}
+
             for (int p = 0; p < particlesSize; ++p)
             {
                 Particle& currentParticle = particles[t][p];
-                const Particle& previousParticle = particles[t - 1][p];
-                currentParticle = previousParticle;
+                glm::dvec3 totalForce(0.0, 0.0, 0.0);
 
-                //print out all attributes of the particle mass x y z vx vy vz
-                //std::cout << "Particle " << p << " " << currentParticle.mass << " " << currentParticle.position.x << " " << currentParticle.position.y << " " << currentParticle.position.z << " " << currentParticle.velocity.x << " " << currentParticle.velocity.y << " " << currentParticle.velocity.z << std::endl;
-
-
-                for (int i = 0; i < particlesSize; i++)
+                for (size_t j = 0; j < particles[t].size(); j++)
                 {
-                    Particle& otherParticle = particles[t][i];
-                    const Particle& previousOtherParticle = particles[t - 1][i];
-                    otherParticle = previousOtherParticle;
-
-                    if (&otherParticle == &currentParticle)
+                    if (p != j)
                     {
-						continue;
-					}
-
-                    glm::dvec3 force = currentParticle.calculateGravitationalForce(otherParticle, G, softening, deltaTime);
-                    glm::dvec3 acceleration = currentParticle.calcAcceleration(force);
-                    currentParticle.eulerUpdateVelocity(acceleration, deltaTime);
-                  
-                    calulations++;
+                        Particle& otherParticle = particles[t][j];
+                        glm::dvec3 force = currentParticle.calculateGravitationalForce(otherParticle, G, softening, deltaTime);
+                        totalForce += force;
+                        calulations++;
+                    }
                 }
 
-                // Berechnen der neuen Position
-                currentParticle.eulerUpdatePosition(deltaTime);
+                currentParticle.eulerUpdateVelocity(currentParticle.calcAcceleration(totalForce), deltaTime);
+                currentParticle.eulerUpdatePosition(currentParticle.velocity, deltaTime);
 
-                // calc Energie of system with each particle
-                //particles[t][p].calcKineticEnergie();
             }
 
             // Save data to a file for this time step
@@ -157,7 +140,7 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
             }
             
             //printing out the progress
-            //std::cout << "Progress: " << (t * 100) / numTimeSteps << "%  "  << (int)newtime << timeUnit << " left" << std::endl;
+            std::cout << "Progress: " << (t * 100) / numTimeSteps << "%  "  << (int)newtime << timeUnit << " left" << std::endl;
         }
     }
     std::cout << "Total Calculations: " << calulations << std::endl;
@@ -172,7 +155,7 @@ void Physics::setRandomSeed(unsigned int seed)
 
 double Physics::random(double min, double max)
 {
-    // Generiere eine zufällige Gleitkommazahl zwischen min und max
+    // Generiere eine zufÃ¤llige Gleitkommazahl zwischen min und max
     double randomFloat = min + static_cast<double>(rand()) / static_cast<double>(RAND_MAX) * (max - min);
 
     return randomFloat;
