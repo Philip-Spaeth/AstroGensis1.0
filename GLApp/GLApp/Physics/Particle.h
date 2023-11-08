@@ -31,8 +31,26 @@ public:
     glm::dvec3 calcAcceleration(glm::dvec3 force);
 
     //Diffrent numerical methods
+    //semi-implicit Euler
     void eulerUpdateVelocity(glm::dvec3 acceleration, double deltaTime);
     void eulerUpdatePosition(glm::dvec3 velocity, double deltaTime);
+
+    //Midpoint order 2
+    void midpointUpdateVelocity(glm::dvec3 acceleration, double deltaTime);
+    void midpointUpdatePosition(glm::dvec3 velocity, double deltaTime);
+    //Runge-Kutta order 4
+    void rungeKuttaUpdateVelocity(glm::dvec3 acceleration, double deltaTime);
+	void rungeKuttaUpdatePosition(glm::dvec3 velocity, double deltaTime);
+
+    //verlet
+    void verletUpdatePosition(glm::dvec3 acceleration, double deltaTime);
+	void verletUpdateVelocity(glm::dvec3 acceleration, glm::dvec3 oldAcceleration, double deltaTime);
+    //leapfrog
+    void leapfrogUpdatePosition(glm::dvec3 velocity, double deltaTime);
+	void leapfrogUpdateVelocity(glm::dvec3 acceleration, double deltaTime);
+
+
+
 
     //Energie functions
     double calcKineticEnergie();

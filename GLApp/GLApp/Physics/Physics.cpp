@@ -79,6 +79,9 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
 				currentParticle.color = previousParticle.color;
 			}
 
+
+            glm::dvec3 oldTotalForce(0.0, 0.0, 0.0);
+
             for (int p = 0; p < particlesSize; ++p)
             {
                 Particle& currentParticle = particles[t][p];
@@ -98,9 +101,25 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
 
                 totalEnergie[t][p] += currentParticle.calcKineticEnergie();
 
-                currentParticle.eulerUpdateVelocity(currentParticle.calcAcceleration(totalForce), deltaTime);
-                currentParticle.eulerUpdatePosition(currentParticle.velocity, deltaTime);
+                //currentParticle.eulerUpdateVelocity(currentParticle.calcAcceleration(totalForce), deltaTime);
+                //currentParticle.eulerUpdatePosition(currentParticle.velocity, deltaTime);
+                //currentParticle.midpointUpdateVelocity(currentParticle.calcAcceleration(totalForce), deltaTime);
+                //currentParticle.midpointUpdatePosition(currentParticle.velocity, deltaTime);
+                //currentParticle.rungeKuttaUpdateVelocity(currentParticle.calcAcceleration(totalForce), deltaTime);
+				//currentParticle.rungeKuttaUpdatePosition(currentParticle.velocity, deltaTime);
+                //currentParticle.verletUpdatePosition(currentParticle.calcAcceleration(totalForce), deltaTime);
+                //currentParticle.verletUpdateVelocity(currentParticle.calcAcceleration(totalForce), particles[t - 1][p].calcAcceleration(oldTotalForce), deltaTime);
+                // Aufrufen der Funktionen im Simulationszyklus
+                // 1. Geschwindigkeitsaktualisierung
+                currentParticle.leapfrogUpdateVelocity(currentParticle.calcAcceleration(totalForce), 0.5 * deltaTime);
 
+                // 2. Positionaktualisierung
+                currentParticle.leapfrogUpdatePosition(currentParticle.velocity,deltaTime);
+
+                // 3. Erneute Geschwindigkeitsaktualisierung
+                currentParticle.leapfrogUpdateVelocity(currentParticle.calcAcceleration(totalForce), 0.5 * deltaTime);
+
+                oldTotalForce = totalForce;
             }
 
             double energy = 0;

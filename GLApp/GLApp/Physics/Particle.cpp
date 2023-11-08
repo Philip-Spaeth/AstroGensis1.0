@@ -17,6 +17,55 @@ void Particle::eulerUpdatePosition(glm::dvec3 velocity, double deltaTime)
     position += velocity * deltaTime;
 }
 
+//Midpoint 2nd order
+void Particle::midpointUpdateVelocity(glm::dvec3 acceleration, double deltaTime)
+{
+	glm::dvec3 velocityHalf = velocity + acceleration * deltaTime / 2.0;
+	velocity += acceleration * deltaTime;
+}
+void Particle::midpointUpdatePosition(glm::dvec3 velocity, double deltaTime)
+{
+	position += velocity * deltaTime;
+}
+
+//Runge-Kutta 4th order
+void Particle::rungeKuttaUpdateVelocity(glm::dvec3 acceleration, double deltaTime)
+{
+	glm::dvec3 k1 = acceleration * deltaTime;
+	glm::dvec3 k2 = acceleration * deltaTime * 0.5;
+	glm::dvec3 k3 = acceleration * deltaTime * 0.5;
+	glm::dvec3 k4 = acceleration * deltaTime;
+
+	velocity += (k1 + (double)2 * k2 + (double)2 * k3 + k4) / 6.0;
+}
+void Particle::rungeKuttaUpdatePosition(glm::dvec3 velocity, double deltaTime)
+{
+	position += velocity * deltaTime;
+}
+
+//Verlet
+void Particle::verletUpdatePosition(glm::dvec3 acceleration, double deltaTime)
+{
+	position += velocity * deltaTime + acceleration * deltaTime * deltaTime / 2.0;
+}
+void Particle::verletUpdateVelocity(glm::dvec3 acceleration, glm::dvec3 accelerationOld, double deltaTime)
+{
+	velocity += (acceleration + accelerationOld) * deltaTime / 2.0;
+}
+
+//Leapfrog
+void Particle::leapfrogUpdateVelocity(glm::dvec3 acceleration, double deltaTime)
+{
+	// Zuerst die Geschwindigkeit halbieren
+	velocity += 0.5 * acceleration * deltaTime;
+}
+
+void Particle::leapfrogUpdatePosition(glm::dvec3 velocity, double deltaTime)
+{
+	// Dann die Position basierend auf der aktualisierten Geschwindigkeit aktualisieren
+	position += velocity * deltaTime;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
 
 
