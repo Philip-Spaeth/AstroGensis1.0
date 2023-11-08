@@ -35,5 +35,7 @@ public:
     void eulerUpdatePosition(glm::dvec3 velocity, double deltaTime);
 
     //Energie functions
-    void calcKineticEnergie();
+    double calcKineticEnergie();
+    double calcPotentialEnergie(const Particle& other, double G, double softening);
+
 };

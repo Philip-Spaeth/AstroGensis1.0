@@ -37,9 +37,12 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
     std::string dataFolder = "Data";
     std::filesystem::create_directory(dataFolder);
 
+    totalEnergie.resize(numTimeSteps);
+
     for (int t = 0; t < numTimeSteps; ++t) 
     {
         particles[t].resize(particlesSize);
+        totalEnergie[t].resize(particlesSize);
 
         //Start values of the particles
         if (t == 0)
@@ -87,20 +90,31 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
                     {
                         Particle& otherParticle = particles[t][j];
                         glm::dvec3 force = currentParticle.calculateGravitationalForce(otherParticle, G, softening, deltaTime);
+                        totalEnergie[t][p] += currentParticle.calcPotentialEnergie(otherParticle, G, softening);
                         totalForce += force;
                         calulations++;
                     }
                 }
+
+                totalEnergie[t][p] += currentParticle.calcKineticEnergie();
 
                 currentParticle.eulerUpdateVelocity(currentParticle.calcAcceleration(totalForce), deltaTime);
                 currentParticle.eulerUpdatePosition(currentParticle.velocity, deltaTime);
 
             }
 
+            double energy = 0;
+            for (int i = 0; i < particlesSize; i++)
+            {
+				energy += totalEnergie[t][i];
+			}
+            std::cout << energy << ";" << std::endl;
+
             // Save data to a file for this time step
             std::string fileName = "Data/Time_" + std::to_string(t) + ".dat";
             std::ofstream outfile(fileName, std::ios::binary);
-            if (outfile.is_open()) {
+            if (outfile.is_open()) 
+            {
                 for (int p = 0; p < particlesSize; ++p) {
                     outfile.write(reinterpret_cast<const char*>(&particles[t][p]), sizeof(Particle));
                 }
@@ -140,7 +154,7 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
             }
             
             //printing out the progress
-            std::cout << "Progress: " << (t * 100) / numTimeSteps << "%  "  << (int)newtime << timeUnit << " left" << std::endl;
+            //std::cout << "Progress: " << (t * 100) / numTimeSteps << "%  "  << (int)newtime << timeUnit << " left" << std::endl;
         }
     }
     std::cout << "Total Calculations: " << calulations << std::endl;
