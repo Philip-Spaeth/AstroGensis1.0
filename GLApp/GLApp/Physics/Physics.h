@@ -39,10 +39,10 @@ public:
 
     //set the simulated time per second
     //const double faktor = 6e17;
-    const double faktor = 864000;
+    const double faktor = 3600;
 
     //the time per frame
-    const double deltaTime = faktor / TARGET_FPS;
+    const double deltaTime = 1000;
 
 private:
     std::vector<std::vector<double>> totalEnergie;

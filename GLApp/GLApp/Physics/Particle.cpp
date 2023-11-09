@@ -17,17 +17,6 @@ void Particle::eulerUpdatePosition(glm::dvec3 velocity, double deltaTime)
     position += velocity * deltaTime;
 }
 
-//Midpoint 2nd order
-void Particle::midpointUpdateVelocity(glm::dvec3 acceleration, double deltaTime)
-{
-	glm::dvec3 velocityHalf = velocity + acceleration * deltaTime / 2.0;
-	velocity += acceleration * deltaTime;
-}
-void Particle::midpointUpdatePosition(glm::dvec3 velocity, double deltaTime)
-{
-	position += velocity * deltaTime;
-}
-
 //Runge-Kutta 4th order
 void Particle::rungeKuttaUpdateVelocity(glm::dvec3 acceleration, double deltaTime)
 {

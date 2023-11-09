@@ -35,9 +35,6 @@ public:
     void eulerUpdateVelocity(glm::dvec3 acceleration, double deltaTime);
     void eulerUpdatePosition(glm::dvec3 velocity, double deltaTime);
 
-    //Midpoint order 2
-    void midpointUpdateVelocity(glm::dvec3 acceleration, double deltaTime);
-    void midpointUpdatePosition(glm::dvec3 velocity, double deltaTime);
     //Runge-Kutta order 4
     void rungeKuttaUpdateVelocity(glm::dvec3 acceleration, double deltaTime);
 	void rungeKuttaUpdatePosition(glm::dvec3 velocity, double deltaTime);

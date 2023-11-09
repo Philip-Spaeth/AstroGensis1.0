@@ -8,6 +8,7 @@
 #include <gtc/constants.hpp>
 #include <fstream>
 #include "SystemInit.h"
+#include <locale>
 #include <string.h>
 
 
@@ -103,31 +104,14 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
 
                 //currentParticle.eulerUpdateVelocity(currentParticle.calcAcceleration(totalForce), deltaTime);
                 //currentParticle.eulerUpdatePosition(currentParticle.velocity, deltaTime);
-                //currentParticle.midpointUpdateVelocity(currentParticle.calcAcceleration(totalForce), deltaTime);
-                //currentParticle.midpointUpdatePosition(currentParticle.velocity, deltaTime);
+                
                 //currentParticle.rungeKuttaUpdateVelocity(currentParticle.calcAcceleration(totalForce), deltaTime);
 				//currentParticle.rungeKuttaUpdatePosition(currentParticle.velocity, deltaTime);
-                //currentParticle.verletUpdatePosition(currentParticle.calcAcceleration(totalForce), deltaTime);
-                //currentParticle.verletUpdateVelocity(currentParticle.calcAcceleration(totalForce), particles[t - 1][p].calcAcceleration(oldTotalForce), deltaTime);
-                // Aufrufen der Funktionen im Simulationszyklus
-                // 1. Geschwindigkeitsaktualisierung
+                
                 currentParticle.leapfrogUpdateVelocity(currentParticle.calcAcceleration(totalForce), 0.5 * deltaTime);
-
-                // 2. Positionaktualisierung
                 currentParticle.leapfrogUpdatePosition(currentParticle.velocity,deltaTime);
-
-                // 3. Erneute Geschwindigkeitsaktualisierung
                 currentParticle.leapfrogUpdateVelocity(currentParticle.calcAcceleration(totalForce), 0.5 * deltaTime);
-
-                oldTotalForce = totalForce;
             }
-
-            double energy = 0;
-            for (int i = 0; i < particlesSize; i++)
-            {
-				energy += totalEnergie[t][i];
-			}
-            std::cout << energy << ";" << std::endl;
 
             // Save data to a file for this time step
             std::string fileName = "Data/Time_" + std::to_string(t) + ".dat";
@@ -173,9 +157,47 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
             }
             
             //printing out the progress
-            //std::cout << "Progress: " << (t * 100) / numTimeSteps << "%  "  << (int)newtime << timeUnit << " left" << std::endl;
+            std::cout << "Progress: " << (t * 100) / numTimeSteps << "%  "  << (int)newtime << timeUnit << " left" << std::endl;
         }
     }
+
+    // Dateipfad angeben
+    std::string filename = "../Energie_Daten/1000sec/Leapfrog_Data.txt";
+
+    // Einen Datei-Stream erstellen und die Datei öffnen
+    std::ofstream outputFile;
+    outputFile.open(filename, std::ios::out);
+
+    if (!outputFile.is_open()) {
+        std::cerr << "Fehler beim Öffnen der Datei!" << std::endl;
+        return 1;
+    }
+
+    // Ändere das Dezimaltrennzeichen von Punkt zu Komma
+    std::locale germanLocale("de_DE.utf8");
+    outputFile.imbue(germanLocale);
+
+    // Durch die Werte in der Schleife iterieren und in die Datei schreiben
+    for (size_t i = 1; i < numTimeSteps; ++i)
+    {
+        double energy = 0;
+
+        for (int j = 0; j < particlesSize; j++)
+        {
+            energy += totalEnergie[i][j];
+        }
+        std::cout << energy << std::endl;
+        outputFile << energy;
+
+        // Nur ein Semikolon schreiben, wenn es nicht das letzte Element ist
+        if (i < numTimeSteps - 1) {
+            outputFile << "\n";
+        }
+    }
+
+    // Datei schließen
+    outputFile.close();
+
     std::cout << "Total Calculations: " << calulations << std::endl;
     return true;
 }
