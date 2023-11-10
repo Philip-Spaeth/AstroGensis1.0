@@ -39,9 +39,6 @@ public:
     void rungeKuttaUpdateVelocity(glm::dvec3 acceleration, double deltaTime);
 	void rungeKuttaUpdatePosition(glm::dvec3 velocity, double deltaTime);
 
-    //verlet
-    void verletUpdatePosition(glm::dvec3 acceleration, double deltaTime);
-	void verletUpdateVelocity(glm::dvec3 acceleration, glm::dvec3 oldAcceleration, double deltaTime);
     //leapfrog
     void leapfrogUpdatePosition(glm::dvec3 velocity, double deltaTime);
 	void leapfrogUpdateVelocity(glm::dvec3 acceleration, double deltaTime);

@@ -25,7 +25,7 @@ int main()
 
     Engine engine;
 
-    if (!engine.init(physics.faktor)) {
+    if (!engine.init(physics.deltaTime)) {
         std::cerr << "Engine initialization failed." << std::endl;
         return -1;
     }

@@ -9,10 +9,12 @@
 #include "Particle.h"
 #include <glm.hpp>
 #include "Engine.h"
+#include "FileManager.h"
 
 #define TARGET_FPS 30
 
 class SystemInit;
+class FileManager;
 
 class Physics {
 public:
@@ -23,10 +25,10 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    const int numTimeSteps = 1000;
+    const int numTimeSteps = 100000;
     const int particlesSize = 10;
 
-    const int batchSize = 10000;
+    const int batchSize = 1000;
 
     //Physikalische Konstanten
     const double G = 6.67430e-11;
@@ -42,12 +44,14 @@ public:
     const double faktor = 3600;
 
     //the time per frame
-    const double deltaTime = 1000;
+    const double deltaTime = 10;
 
 private:
     std::vector<std::vector<double>> totalEnergie;
     int calulations = 0;
     SystemInit* systemInit;
+    FileManager* fileManager;
+    void calcTime(int index, std::chrono::steady_clock::time_point current_time);
 };
 
 #endif // PHYSICS_H

@@ -6,8 +6,10 @@
 #include <GLFW/glfw3.h>
 #include "Particle.h"
 #include "Physics.h"
+#include "FileManager.h"
 
 class Physics;
+class FileManager;
 
 class Engine {
 public:
@@ -50,6 +52,7 @@ private:
     void checkShaderLinkStatus(GLuint program);
     void calcTime(int index);
     double faktor = -1;
+    FileManager* fileManager;
 };
 
 #endif

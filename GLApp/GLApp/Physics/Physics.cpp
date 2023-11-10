@@ -10,7 +10,7 @@
 #include "SystemInit.h"
 #include <locale>
 #include <string.h>
-
+#include "FileManager.h"
 
 Physics::Physics()
 {
@@ -50,20 +50,8 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
         {
             systemInit = new SystemInit();
             systemInit->start(particles);
-
-            // Save data to a file for this time step
-            std::string fileName = "Data/Time_" + std::to_string(t) + ".dat";
-            std::ofstream outfile(fileName, std::ios::binary);
-            if (outfile.is_open()) {
-                for (int p = 0; p < particlesSize; ++p) 
-                {
-                    outfile.write(reinterpret_cast<const char*>(&particles[t][p]), sizeof(Particle));
-                }
-                outfile.close();
-            }
-            else {
-                std::cerr << "Error opening file for writing: " << fileName << std::endl;
-            }
+            fileManager = new FileManager();
+            fileManager->saveParticles(t, particles[t], "Data");
         }
 
         else
@@ -102,101 +90,25 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
 
                 totalEnergie[t][p] += currentParticle.calcKineticEnergie();
 
-                //currentParticle.eulerUpdateVelocity(currentParticle.calcAcceleration(totalForce), deltaTime);
-                //currentParticle.eulerUpdatePosition(currentParticle.velocity, deltaTime);
+                currentParticle.eulerUpdateVelocity(currentParticle.calcAcceleration(totalForce), deltaTime);
+                currentParticle.eulerUpdatePosition(currentParticle.velocity, deltaTime);
                 
                 //currentParticle.rungeKuttaUpdateVelocity(currentParticle.calcAcceleration(totalForce), deltaTime);
 				//currentParticle.rungeKuttaUpdatePosition(currentParticle.velocity, deltaTime);
                 
-                currentParticle.leapfrogUpdateVelocity(currentParticle.calcAcceleration(totalForce), 0.5 * deltaTime);
-                currentParticle.leapfrogUpdatePosition(currentParticle.velocity,deltaTime);
-                currentParticle.leapfrogUpdateVelocity(currentParticle.calcAcceleration(totalForce), 0.5 * deltaTime);
+                //currentParticle.leapfrogUpdateVelocity(currentParticle.calcAcceleration(totalForce), 0.5 * deltaTime);
+                //currentParticle.leapfrogUpdatePosition(currentParticle.velocity,deltaTime);
+                //currentParticle.leapfrogUpdateVelocity(currentParticle.calcAcceleration(totalForce), 0.5 * deltaTime);
             }
 
-            // Save data to a file for this time step
-            std::string fileName = "Data/Time_" + std::to_string(t) + ".dat";
-            std::ofstream outfile(fileName, std::ios::binary);
-            if (outfile.is_open()) 
-            {
-                for (int p = 0; p < particlesSize; ++p) {
-                    outfile.write(reinterpret_cast<const char*>(&particles[t][p]), sizeof(Particle));
-                }
-                outfile.close();
-            }
-            else {
-                std::cerr << "Error opening file for writing: " << fileName << std::endl;
-            }
+            fileManager->saveParticles(t, particles[t], "Data");
 
-            std::chrono::duration<double> elapsed_time = current_time - std::chrono::high_resolution_clock::now();
-
-            double time = elapsed_time.count() * -1;
-            std::string timeUnit;
-
-            //calculation of what to multiply with the time to get the remaining time so the it is 100
-            double newtime = time * (numTimeSteps - t) / t;
-
-
-            if (newtime <= 60)
-            {
-                timeUnit = " sec";
-            }
-            else if (newtime <= 3600)
-            {
-                timeUnit = " min";
-                newtime /= 60;
-            }
-            else if (newtime <= 86400)
-            {
-                timeUnit = " h";
-                newtime /= 3600;
-            }
-            else if (newtime > 86400)
-            {
-                timeUnit = " days";
-                newtime /= 86400;
-            }
-            
-            //printing out the progress
-            std::cout << "Progress: " << (t * 100) / numTimeSteps << "%  "  << (int)newtime << timeUnit << " left" << std::endl;
+            calcTime(t, current_time);
         }
     }
 
-    // Dateipfad angeben
-    std::string filename = "../Energie_Daten/1000sec/Leapfrog_Data.txt";
 
-    // Einen Datei-Stream erstellen und die Datei öffnen
-    std::ofstream outputFile;
-    outputFile.open(filename, std::ios::out);
-
-    if (!outputFile.is_open()) {
-        std::cerr << "Fehler beim Öffnen der Datei!" << std::endl;
-        return 1;
-    }
-
-    // Ändere das Dezimaltrennzeichen von Punkt zu Komma
-    std::locale germanLocale("de_DE.utf8");
-    outputFile.imbue(germanLocale);
-
-    // Durch die Werte in der Schleife iterieren und in die Datei schreiben
-    for (size_t i = 1; i < numTimeSteps; ++i)
-    {
-        double energy = 0;
-
-        for (int j = 0; j < particlesSize; j++)
-        {
-            energy += totalEnergie[i][j];
-        }
-        std::cout << energy << std::endl;
-        outputFile << energy;
-
-        // Nur ein Semikolon schreiben, wenn es nicht das letzte Element ist
-        if (i < numTimeSteps - 1) {
-            outputFile << "\n";
-        }
-    }
-
-    // Datei schließen
-    outputFile.close();
+    fileManager->saveEnergieData(totalEnergie, "../Energie_Daten/1000sec/Euler_Data.txt");
 
     std::cout << "Total Calculations: " << calulations << std::endl;
     return true;
@@ -214,4 +126,39 @@ double Physics::random(double min, double max)
     double randomFloat = min + static_cast<double>(rand()) / static_cast<double>(RAND_MAX) * (max - min);
 
     return randomFloat;
+}
+
+void Physics::calcTime(int index, std::chrono::steady_clock::time_point current_time)
+{
+    std::chrono::duration<double> elapsed_time = current_time - std::chrono::high_resolution_clock::now();
+
+    double time = elapsed_time.count() * -1;
+    std::string timeUnit;
+
+    //calculation of what to multiply with the time to get the remaining time so the it is 100
+    double newtime = time * (numTimeSteps - index) / index;
+
+
+    if (newtime <= 60)
+    {
+        timeUnit = " sec";
+    }
+    else if (newtime <= 3600)
+    {
+        timeUnit = " min";
+        newtime /= 60;
+    }
+    else if (newtime <= 86400)
+    {
+        timeUnit = " h";
+        newtime /= 3600;
+    }
+    else if (newtime > 86400)
+    {
+        timeUnit = " days";
+        newtime /= 86400;
+    }
+
+    //printing out the progress
+    std::cout << "Progress: " << (index * 100) / numTimeSteps << "%  " << (int)newtime << timeUnit << " left" << std::endl;
 }

@@ -94,27 +94,10 @@ bool Engine::init(double physicsFaktor)
 }
 void Engine::start(std::vector<std::vector<Particle>>& particles)
 {
-    // Laden der Daten f�r die Darstellung
-    std::cout << "loading data ..." << std::endl;
-    Physics py;
-    for (int t = 0; t < py.numTimeSteps; ++t) {
-        std::string fileName = "Data/Time_" + std::to_string(t) + ".dat";
-        std::ifstream infile(fileName, std::ios::binary);
-        if (infile.is_open()) {
-            particles[t].resize(py.particlesSize);
-            for (int p = 0; p < py.particlesSize; ++p) {
-                Particle particle; // Erstellen eines tempor�ren Particle-Objekts
-                infile.read(reinterpret_cast<char*>(&particle), sizeof(Particle));
-
-                // Den Partikel zum Partikelvektor hinzuf�gen
-                particles[t][p] = particle;
-            }
-            infile.close();
-        }
-        else {
-            std::cerr << "Fehler beim �ffnen von: " << fileName << std::endl;
-        }
-    }
+    // Erstellen des FileManagers
+    fileManager = new FileManager();
+    // Laden der Daten für die Darstellung
+    fileManager->loadParticles(particles);
 
     // Hier VBO und VAO erstellen und konfigurieren
     GLuint VBO;
@@ -130,12 +113,6 @@ void Engine::start(std::vector<std::vector<Particle>>& particles)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    int index = 1;
-    double x = particles[0][index].position.x;
-    double y = particles[0][index].position.y;
-    double z = particles[0][index].position.z;
-    std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
-
     std::cout << "Data loaded" << std::endl;
 }
 
@@ -145,10 +122,6 @@ void Engine::update(int index, std::vector<std::vector<Particle>>& particles)
     if (isRunning) {
         calcTime(index);
     }
-
-    //print out the kinetic energy of the first particle
-	//std::cout << "kinetic energy: " << particles[index][0].kineticEnergie << std::endl;
-    
 
     processMouseInput();
     processInput();
@@ -351,7 +324,7 @@ bool Engine::clean()
 
 void Engine::calcTime(int index)
 {
-    passedTime = (index * faktor * TARGET_FPS) / TARGET_FPS;
+    passedTime = (index * faktor);
 
     int passedTimeInSec = passedTime / 86400;
 

@@ -32,15 +32,6 @@ void Particle::rungeKuttaUpdatePosition(glm::dvec3 velocity, double deltaTime)
 	position += velocity * deltaTime;
 }
 
-//Verlet
-void Particle::verletUpdatePosition(glm::dvec3 acceleration, double deltaTime)
-{
-	position += velocity * deltaTime + acceleration * deltaTime * deltaTime / 2.0;
-}
-void Particle::verletUpdateVelocity(glm::dvec3 acceleration, glm::dvec3 accelerationOld, double deltaTime)
-{
-	velocity += (acceleration + accelerationOld) * deltaTime / 2.0;
-}
 
 //Leapfrog
 void Particle::leapfrogUpdateVelocity(glm::dvec3 acceleration, double deltaTime)
