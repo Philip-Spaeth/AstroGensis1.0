@@ -10,10 +10,9 @@ public:
 
 
     //Physically variables
-    glm::dvec3 position;
-    glm::dvec3 velocity;
+    glm::dvec3 position = { 0,0,0 };
+    glm::dvec3 velocity = { 0,0,0 };
     double mass;
-
 
 
 
@@ -40,9 +39,8 @@ public:
 	void rungeKuttaUpdatePosition(glm::dvec3 velocity, double deltaTime);
 
     //leapfrog
+    void leapfrogUpdateVelocity(glm::dvec3 acceleration, double deltaTime);
     void leapfrogUpdatePosition(glm::dvec3 velocity, double deltaTime);
-	void leapfrogUpdateVelocity(glm::dvec3 acceleration, double deltaTime);
-
 
 
 

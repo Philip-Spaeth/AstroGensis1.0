@@ -50,7 +50,7 @@ private:
     void renderParticles(int index, std::vector<std::vector<Particle>>& particles);
     void checkShaderCompileStatus(GLuint shader, const char* shaderType);
     void checkShaderLinkStatus(GLuint program);
-    void calcTime(int index);
+    void calcTime(glm::dvec3 position, int index);
     double faktor = -1;
     FileManager* fileManager;
 };

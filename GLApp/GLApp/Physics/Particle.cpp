@@ -20,13 +20,18 @@ void Particle::eulerUpdatePosition(glm::dvec3 velocity, double deltaTime)
 //Runge-Kutta 4th order
 void Particle::rungeKuttaUpdateVelocity(glm::dvec3 acceleration, double deltaTime)
 {
+	//calculate the k1
 	glm::dvec3 k1 = acceleration * deltaTime;
-	glm::dvec3 k2 = acceleration * deltaTime * 0.5;
-	glm::dvec3 k3 = acceleration * deltaTime * 0.5;
+	//calculate the k2
+	glm::dvec3 k2 = acceleration * (deltaTime / 2);
+	//calculate the k3
+	glm::dvec3 k3 = acceleration * (deltaTime / 2);
+	//calculate the k4
 	glm::dvec3 k4 = acceleration * deltaTime;
 
 	velocity += (k1 + (double)2 * k2 + (double)2 * k3 + k4) / 6.0;
 }
+
 void Particle::rungeKuttaUpdatePosition(glm::dvec3 velocity, double deltaTime)
 {
 	position += velocity * deltaTime;
@@ -36,14 +41,14 @@ void Particle::rungeKuttaUpdatePosition(glm::dvec3 velocity, double deltaTime)
 //Leapfrog
 void Particle::leapfrogUpdateVelocity(glm::dvec3 acceleration, double deltaTime)
 {
-	// Zuerst die Geschwindigkeit halbieren
-	velocity += 0.5 * acceleration * deltaTime;
+	//vn+1 = vn + an * dt/2
+	velocity = velocity + acceleration * (deltaTime);
 }
 
 void Particle::leapfrogUpdatePosition(glm::dvec3 velocity, double deltaTime)
 {
-	// Dann die Position basierend auf der aktualisierten Geschwindigkeit aktualisieren
-	position += velocity * deltaTime;
+	//xn+1 = xn + vn+1/2 * dt/2
+	position = position + velocity * (deltaTime);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
@@ -63,7 +68,6 @@ glm::dvec3 Particle::calculateGravitationalForce(const Particle& other, double G
 
     double forceMagnitude = (G * mass * other.mass) / (distance * distance + softening);
     glm::dvec3 force = forceMagnitude * glm::normalize(delta);
-
     return force;
 }
 

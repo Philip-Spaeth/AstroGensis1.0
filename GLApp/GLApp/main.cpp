@@ -23,6 +23,12 @@ int main()
 
     physics.Calc(particles);
 
+    std::cout << std::endl;
+    std::cout << "Press enter to start" << std::endl;
+
+    std::string input;
+    std::getline(std::cin, input);
+
     Engine engine;
 
     if (!engine.init(physics.deltaTime)) {

@@ -1,6 +1,7 @@
 ﻿ #include "FileManager.h"
 #include <filesystem>
 #include "Physics.h"
+#include <cmath>
 
 FileManager::FileManager(){}
 
@@ -54,10 +55,8 @@ void FileManager::loadParticles(std::vector<std::vector<Particle>>& particles)
         }
     }
 }
-void FileManager::saveEnergieData(std::vector<std::vector<double>>& totalEnergie, std::string path) {
-    double startEnergie = 0;
-    double endEnergie = 0;
-    double lostEnergie = 0;
+void FileManager::saveEnergieData(std::vector<std::vector<double>>& totalEnergie, std::string path) 
+{
 
     std::string filename = path;
     std::ofstream outputFile;
@@ -71,28 +70,36 @@ void FileManager::saveEnergieData(std::vector<std::vector<double>>& totalEnergie
     std::locale germanLocale("de_DE.utf8");
     outputFile.imbue(germanLocale);
 
+    double startEnergy = 0;
+    double lostEnergy = 0;
+
     for (size_t i = 1; i < totalEnergie.size(); ++i) {
         double energy = 0;
 
         for (int j = 0; j < totalEnergie[i].size(); j++) {
             energy += totalEnergie[i][j];
         }
-        if (i == 1) {
-            startEnergie = energy;
-        }
-        if (i == totalEnergie.size() - 1) {
-            endEnergie = energy;
-            lostEnergie = startEnergie - endEnergie;
-            std::cout << std::fixed << std::setprecision(20) << "lost Energy : " << lostEnergie << " or:  " << std::setprecision(20) << (lostEnergie / startEnergie) * 100 << "%" << std::endl;
-        }
+        if (i == 1)
+        {
+            startEnergy = energy;
+			lostEnergy = energy;
+		}
 
+        if (i == totalEnergie.size() - 1)
+        {
+            lostEnergy = std::abs(lostEnergy) - std::abs(energy);
+        }
         // Set precision for output file
-        outputFile << std::fixed << std::setprecision(30) << energy;
+        outputFile << std::fixed << std::setprecision(20) << energy;
 
         if (i < totalEnergie.size() - 1) {
             outputFile << "\n";
         }
     }
+
+    std::cout << std::endl;
+    std::cout << std::setprecision(20) << "Lost Energy: " << lostEnergy << std::endl;
+    std::cout << std::setprecision(10) << "or : " << std::abs((lostEnergy/ (startEnergy))) * 100 <<"%" << std::endl;
 
     outputFile.close();
 }

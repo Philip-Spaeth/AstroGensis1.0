@@ -120,7 +120,7 @@ void Engine::update(int index, std::vector<std::vector<Particle>>& particles)
 {
     //calculate the time
     if (isRunning) {
-        calcTime(index);
+        calcTime(particles[index][4].position, index);
     }
 
     processMouseInput();
@@ -322,7 +322,7 @@ bool Engine::clean()
     return true;
 }
 
-void Engine::calcTime(int index)
+void Engine::calcTime(glm::dvec3 position, int index)
 {
     passedTime = (index * faktor);
 
@@ -338,9 +338,9 @@ void Engine::calcTime(int index)
     else { passedTime /= 31536000; Unit = " years"; }
 
     // Berechne das Enddatum basierend auf der "passedTime"
-    int startYear = 2023;
-    int startMonth = 11;
-    int startDay = 3;
+    int startYear = 2020;
+    int startMonth = 01;
+    int startDay = 01;
 
     // Berechnen Sie das aktuellen datums basierend auf der "passedTimeInSec"
     int currentYear = startYear;
@@ -411,6 +411,14 @@ void Engine::calcTime(int index)
     {
 		month = "0" + month;
 	}
+
+    if (month == "01")
+    {
+        if (day == "01")
+        {
+            std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+		}
+    }
 
     if (passedTime < 1000000)
     {
