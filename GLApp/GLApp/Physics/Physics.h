@@ -25,7 +25,7 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    const int numTimeSteps = 17592;
+    const int numTimeSteps = 100000;
     const int particlesSize = 10;
 
     const int batchSize = 1000;
@@ -44,7 +44,7 @@ public:
     //const double faktor = 3600;
 
     //the time per frame
-    const double deltaTime = 3600;
+    const double deltaTime = 10;
 
 private:
     std::vector<std::vector<double>> totalEnergie;

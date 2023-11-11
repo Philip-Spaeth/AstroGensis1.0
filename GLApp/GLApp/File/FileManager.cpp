@@ -87,7 +87,7 @@ void FileManager::saveEnergieData(std::vector<std::vector<double>>& totalEnergie
 
         if (i == totalEnergie.size() - 1)
         {
-            lostEnergy = std::abs(lostEnergy) - std::abs(energy);
+            lostEnergy = lostEnergy - energy;
         }
         // Set precision for output file
         outputFile << std::fixed << std::setprecision(20) << energy;

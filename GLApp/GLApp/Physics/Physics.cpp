@@ -75,7 +75,7 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
                 glm::dvec3 totalForce(0.0, 0.0, 0.0);
 
                 //Drift-Kick-Drift leapfrog
-                //currentParticle.leapfrogUpdatePosition(currentParticle.velocity, deltaTime / 2);
+                currentParticle.leapfrogUpdatePosition(currentParticle.velocity, deltaTime / 2);
 
                 for (size_t j = 0; j < particles[t].size(); j++)
                 {
@@ -92,16 +92,16 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
                 totalEnergie[t][p] += currentParticle.calcKineticEnergie();
 
                 //semi implicit euler
-                currentParticle.eulerUpdateVelocity(currentParticle.calcAcceleration(totalForce), deltaTime);
-                currentParticle.eulerUpdatePosition(currentParticle.velocity, deltaTime);
+                //currentParticle.eulerUpdateVelocity(currentParticle.calcAcceleration(totalForce), deltaTime);
+                //currentParticle.eulerUpdatePosition(currentParticle.velocity, deltaTime);
                 
                 //Runge-Kutta
                 //currentParticle.rungeKuttaUpdateVelocity(currentParticle.calcAcceleration(totalForce), deltaTime);
 				//currentParticle.rungeKuttaUpdatePosition(currentParticle.velocity, deltaTime);
 
                 //Drift-Kick-Drift leapfrog
-                //currentParticle.leapfrogUpdateVelocity(currentParticle.calcAcceleration(totalForce), deltaTime);
-                //currentParticle.leapfrogUpdatePosition(currentParticle.velocity, deltaTime/2);
+                currentParticle.leapfrogUpdateVelocity(currentParticle.calcAcceleration(totalForce), deltaTime);
+                currentParticle.leapfrogUpdatePosition(currentParticle.velocity, deltaTime/2);
             }
 
             fileManager->saveParticles(t, particles[t], "Data");
