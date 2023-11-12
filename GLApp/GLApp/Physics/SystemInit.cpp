@@ -2,18 +2,20 @@
 #include <iostream>
 #include <cmath>
 #include <random>
+#include <gtc/quaternion.hpp>
+#include <gtx/quaternion.hpp>
 
 void SystemInit::start(std::vector<std::vector<Particle>>& particles)
 {
-	solarSystem(particles);
+	//solarSystem(particles);
 
-	//ellipticalGalaxy(0, 999, { 0,0,0 }, { 0,0,0 }, particles);
-	//ellipticalGalaxy(1000, 1999, { 2e22, 0, 0}, { 0,0,0 }, particles);
-	//spiralGalaxy(0, 999, { 0,0,0 }, { 0, 0, 0}, particles);
-	//spiralGalaxy(1000, 1999, { 1.5e22, 0.5e22, 0 }, { 0,0,0 }, particles);
+	ellipticalGalaxy(0, 999, { 0,0,0 }, { 0,300,0 }, { 0,0,0 }, particles);
+	ellipticalGalaxy(1000, 1999, { 2e22, 0, 0}, { 90,0,180 }, { 0,0,0 } , particles);
+	spiralGalaxy(2000, 2999, { 0,2e22,2e22 }, { 220, 17, 45}, { 0,0,0 }, particles);
+	spiralGalaxy(3000, 3999, { 1.5e22, 0.5e22, 0 }, { 234,30,129 }, { 0,0,0 }, particles);
 }
 
-void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 velocity, std::vector<std::vector<Particle>>& particles)
+void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, std::vector<std::vector<Particle>>& particles)
 {
 	int size = endIndex + 1 - startIndex; 
 
@@ -24,7 +26,7 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position,
 	double armDensity = 0.3;
 	double interArmDensity = 1;
 
-	double depth = 1e20;
+	double depth = diskRadius / 40;
 
 	int i = 0;
 
@@ -71,7 +73,7 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position,
 	} 
 }	
 
-void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 velocity, std::vector<std::vector<Particle>>& particles)
+void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, std::vector<std::vector<Particle>>& particles)
 {
 	int size = endIndex + 1;
 
@@ -79,7 +81,7 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 posit
 
 	double starSpeed = 1;
 
-	double depth = 1e19;
+	double depth = diskRadius / 40;
 
 	int i = 0;
 
@@ -104,9 +106,6 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 posit
 
 			double r = ((diskRadius / size) * i);
 
-			//change the r so that the midlle is more dense by the faktor 1.5 but the disk radius is still the same
-			r = r * std::exp(10 * r / diskRadius) / 100;
-
 			double angle = physics.random(0, 2 * 3.14);
 
 			//Fz = Fg
@@ -117,6 +116,7 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 posit
 
 			double v = std::sqrt((physics.G * particles[0][startIndex].mass) / r) * starSpeed;
 
+
 			particles[0][j].position = glm::dvec3(r * std::cos(angle), r * std::sin(angle), physics.random(-depth , depth)) + position;
 			particles[0][j].velocity = glm::dvec3(-v * std::sin(angle), v * std::cos(angle), 0) + velocity;
 			particles[0][j].mass = 1e30;
@@ -124,17 +124,6 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 posit
 			particle.color = glm::vec3(1, 1, 1);
 		}
 		i++;
-	}
-	//set the other particles to 0
-	for (int j = endIndex; j < particles.size(); j++)
-	{
-		Particle particle;
-		particle.position = glm::vec3(1e20, 0, 0);
-		particle.velocity = glm::vec3(0, 0, 0);
-		particle.mass = 0;
-		particle.radius = 0;
-		particle.color = glm::vec3(0, 0, 0);
-		particles[0][j] = particle;
 	}
 }
 

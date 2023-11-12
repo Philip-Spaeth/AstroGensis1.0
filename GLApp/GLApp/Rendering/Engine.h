@@ -28,22 +28,21 @@ private:
 
     double passedTime = 0;
 
-    //double globalScale = 1;
-    double globalScale = 1e-9;
+    double globalScale = 1e-18;
     //double globalScale = 1e-18;
 
     bool BGstars = true;
     int amountOfStars = 1000;
     std::vector<glm::vec3> stars;
 
-    glm::vec3 cameraPosition;
-    glm::vec3 cameraFront;
-    glm::vec3 cameraUp;
-    float cameraSpeed = 100;
-    float rushSpeed = 1000;
-    float cameraYaw;
-    float cameraPitch;
-    float cameraViewDistance = 1e15;
+    glm::dvec3 cameraPosition;
+    glm::dvec3 cameraFront;
+    glm::dvec3 cameraUp;
+    double cameraSpeed = 100;
+    double rushSpeed = 1000;
+    double cameraYaw;
+    double cameraPitch;
+    double cameraViewDistance = 1e15;
     glm::mat4 view;
 
     // Funktionen für Kamerasteuerung 

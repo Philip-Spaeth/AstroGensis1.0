@@ -179,7 +179,7 @@ void Engine::renderParticles(int index, std::vector<std::vector<Particle>>& part
     glUseProgram(shaderProgram);
 
     // Erstellen der Projektionsmatrix und far !!!!!!!
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, cameraViewDistance);
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, (float)cameraViewDistance);
 
     // Setzen der Matrizen im Shader
     GLuint projectionLoc = glGetUniformLocation(shaderProgram, "projection");

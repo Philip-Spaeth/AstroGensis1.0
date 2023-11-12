@@ -14,13 +14,13 @@ public:
     glm::dvec3 velocity = { 0,0,0 };
     double mass;
 
+    //dark matter or not
+    bool darkMatter = false;
 
 
     //variables for render
-    bool colorMode = false;
     double radius;
     glm::vec3 color;
-    double bigestGravitation = 0;
 
     //Help functions
     double CalculateDistance(const Particle& other) const;

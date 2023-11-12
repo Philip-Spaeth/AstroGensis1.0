@@ -90,7 +90,7 @@ int main()
             snprintf(numStr, sizeof(numStr), "%d", frameCount);
 
             //std::cout << "Die umgewandelte Zeichenkette: " << numStr << std::endl;
-            strcat(numStr, " FPS");
+            strcat_s(numStr, " FPS");
 
             glfwSetWindowTitle(engine.window, numStr);
             //std::cout << "FPS: " << frameCount << std::endl;

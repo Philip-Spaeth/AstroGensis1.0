@@ -89,7 +89,7 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
                     }
                 }
 
-                totalEnergie[t][p] += currentParticle.calcKineticEnergie();
+                totalEnergie[t][p] = currentParticle.calcKineticEnergie();
 
                 //semi implicit euler
                 //currentParticle.eulerUpdateVelocity(currentParticle.calcAcceleration(totalForce), deltaTime);
