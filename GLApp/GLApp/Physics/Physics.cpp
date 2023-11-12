@@ -100,6 +100,7 @@ bool Physics::Calc(std::vector<std::vector<Particle>>& particles)
 				//currentParticle.rungeKuttaUpdatePosition(currentParticle.velocity, deltaTime);
 
                 //Drift-Kick-Drift leapfrog
+                
                 currentParticle.leapfrogUpdateVelocity(currentParticle.calcAcceleration(totalForce), deltaTime);
                 currentParticle.leapfrogUpdatePosition(currentParticle.velocity, deltaTime/2);
             }

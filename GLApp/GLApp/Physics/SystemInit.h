@@ -15,9 +15,13 @@ public:
 
 private:
 	Physics physics;
-	void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::vec3 position, glm::vec3 velocity, std::vector<std::vector<Particle>>& particles);
-	void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::vec3 position, glm::vec3 velocity, std::vector<std::vector<Particle>>& particles);
+	void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 velocity, std::vector<std::vector<Particle>>& particles);
+	void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 velocity, std::vector<std::vector<Particle>>& particles);
 	void solarSystem(std::vector<std::vector<Particle>>& particles);
+
+	// help functions
+	double calculateRadius(double diskRadius, int size, int i, double steepness);
+	double calculateDensity(double steepness, double distanceFromCenter, double diskRadius);
 };
 
 #endif

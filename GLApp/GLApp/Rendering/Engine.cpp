@@ -113,6 +113,19 @@ void Engine::start(std::vector<std::vector<Particle>>& particles)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
+    //place the BGstars in the background
+    if (BGstars)
+    {
+        for (int i = 0; i < amountOfStars; i++)
+        {
+            double x = random(-1e14, 1e14);
+			double y = random(-1e14, 1e14);
+			double z = random(-1e14, 1e14);
+			stars.push_back(glm::vec3(x, y, z));
+		}   
+    }
+
+
     std::cout << "Data loaded" << std::endl;
 }
 
@@ -166,7 +179,7 @@ void Engine::renderParticles(int index, std::vector<std::vector<Particle>>& part
     glUseProgram(shaderProgram);
 
     // Erstellen der Projektionsmatrix und far !!!!!!!
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 1000000.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, cameraViewDistance);
 
     // Setzen der Matrizen im Shader
     GLuint projectionLoc = glGetUniformLocation(shaderProgram, "projection");
@@ -178,8 +191,26 @@ void Engine::renderParticles(int index, std::vector<std::vector<Particle>>& part
     // Vertex Array Object (VAO) binden
     glBindVertexArray(VAO);
 
-    // Partikel zeichnen
+    if (BGstars)
+    {
+        //render the background stars
+        for (int i = 0; i < amountOfStars; i++)
+        {
+            glPointSize(0.5);
 
+            // Setzen Sie die Position im Shader
+            glUniform3fv(glGetUniformLocation(shaderProgram, "particlePosition"), 1, glm::value_ptr(stars[i]));
+
+            // Setzen Sie die Farbe im Shader
+            glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
+            glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(color));
+
+            // Zeichnen Sie den Punkt
+            glDrawArrays(GL_POINTS, 0, 1);
+        }
+    }
+
+    // Partikel zeichnen
     for (unsigned int p = 0; p < particles[index].size(); ++p) 
     {
         glPointSize(particles[index][p].radius);
@@ -208,7 +239,6 @@ void Engine::renderParticles(int index, std::vector<std::vector<Particle>>& part
 
     std::cout << i << " mass: " << particles[index][i].mass << std::endl;
     */
-
 
 
     // VAO l�sen
@@ -429,4 +459,11 @@ void Engine::calcTime(glm::dvec3 position, int index)
         //print out the past time in the right unit
         std::cout << std::scientific << std::setprecision(0) << "passed time: " << passedTime << Unit << "    date: " << currentYear << "." << month << "." << day << std::endl;
     }
+}
+double Engine::random(double min, double max)
+{
+    // Generiere eine zufällige Gleitkommazahl zwischen min und max
+    double randomFloat = min + static_cast<double>(rand()) / static_cast<double>(RAND_MAX) * (max - min);
+
+    return randomFloat;
 }

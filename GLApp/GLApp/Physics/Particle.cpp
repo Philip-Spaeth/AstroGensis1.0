@@ -104,7 +104,7 @@ double Particle::calcPotentialEnergie(const Particle& other, double G, double so
 		return 0; // Verhindere eine Division durch Null.
 	}
 
-	double potentialEnergie = -G * mass * other.mass / (distance + softening);
+	double potentialEnergie = -G * mass * other.mass / (distance);
 	return potentialEnergie;
 }
 

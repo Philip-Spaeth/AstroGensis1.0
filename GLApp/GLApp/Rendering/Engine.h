@@ -32,6 +32,10 @@ private:
     double globalScale = 1e-9;
     //double globalScale = 1e-18;
 
+    bool BGstars = true;
+    int amountOfStars = 1000;
+    std::vector<glm::vec3> stars;
+
     glm::vec3 cameraPosition;
     glm::vec3 cameraFront;
     glm::vec3 cameraUp;
@@ -39,6 +43,7 @@ private:
     float rushSpeed = 1000;
     float cameraYaw;
     float cameraPitch;
+    float cameraViewDistance = 1e15;
     glm::mat4 view;
 
     // Funktionen für Kamerasteuerung 
@@ -53,6 +58,7 @@ private:
     void calcTime(glm::dvec3 position, int index);
     double faktor = -1;
     FileManager* fileManager;
+    double random(double min, double max);
 };
 
 #endif
