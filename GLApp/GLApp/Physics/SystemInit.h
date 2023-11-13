@@ -18,8 +18,8 @@ private:
 
 	void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, std::vector<std::vector<Particle>>& particles);
 	void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, std::vector<std::vector<Particle>>& particles);
-	
 	void solarSystem(std::vector<std::vector<Particle>>& particles);
+	void ourSolarSystem(std::vector<std::vector<Particle>>& particles);
 };
 
 #endif
