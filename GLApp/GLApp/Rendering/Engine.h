@@ -23,17 +23,21 @@ public:
     GLFWwindow* window;
 
     bool isRunning = false;
+    void renderParticleBatch(int start, int end, std::vector<std::vector<Particle>>& particles);
+
 
 private:
 
     double passedTime = 0;
 
-    double globalScale = 1e-9;
-    //double globalScale = 1e-18;
+    //double globalScale = 1e-9;
+    double globalScale = 1e-18;
 
     bool BGstars = true;
     int amountOfStars = 1000;
     std::vector<glm::vec3> stars;
+
+    bool tracks = false;
 
     glm::dvec3 cameraPosition;
     glm::dvec3 cameraFront;
@@ -51,6 +55,7 @@ private:
 
     GLuint shaderProgram;
     GLuint VAO;
+    GLuint instanceVBO;
     void renderParticles(int index, std::vector<std::vector<Particle>>& particles);
     void checkShaderCompileStatus(GLuint shader, const char* shaderType);
     void checkShaderLinkStatus(GLuint program);

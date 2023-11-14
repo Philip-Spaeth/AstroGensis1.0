@@ -71,24 +71,27 @@ void FileManager::saveEnergieData(std::vector<std::vector<double>>& totalEnergie
     outputFile.imbue(germanLocale);
 
     double startEnergy = 0;
-    double lostEnergy = 0;
+    double endEnergy = 0;
 
-    for (size_t i = 1; i < totalEnergie.size(); ++i) {
+    for (size_t i = 1; i < totalEnergie.size(); ++i) 
+    {
         double energy = 0;
 
         for (int j = 0; j < totalEnergie[i].size(); j++) {
             energy += totalEnergie[i][j];
         }
+
         if (i == 1)
         {
             startEnergy = energy;
-			lostEnergy = energy;
 		}
 
         if (i == totalEnergie.size() - 1)
         {
-            lostEnergy = lostEnergy - energy;
+            endEnergy = energy;
         }
+
+
         // Set precision for output file
         outputFile << std::fixed << std::setprecision(20) << energy;
 
@@ -96,10 +99,25 @@ void FileManager::saveEnergieData(std::vector<std::vector<double>>& totalEnergie
             outputFile << "\n";
         }
     }
+    double lostEnergy = startEnergy - endEnergy;
 
     std::cout << std::endl;
-    std::cout << std::setprecision(20) << "Lost Energy: " << lostEnergy << std::endl;
-    std::cout << std::setprecision(10) << "or : " << std::abs((lostEnergy/ (startEnergy))) * 100 <<"%" << std::endl;
+    std::cout << 1 << ": " << std::setprecision(20) << "Start Energy : " << startEnergy << std::endl;
+    std::cout << totalEnergie.size() <<": " << std::setprecision(20) << "End Energy : " << endEnergy << std::endl;
+    std::cout << std::endl;
+
+    
+
+    if (abs(startEnergy) > abs(endEnergy))
+    {
+        std::cout << std::setprecision(20) << "Lost Energy: " << lostEnergy << std::endl;
+        std::cout << std::setprecision(10) << "or : " << (abs(lostEnergy) / abs(startEnergy)) * 100 << "%" << std::endl;
+    }
+    else
+    {
+        std::cout << std::setprecision(20) << "Added Energy: " << lostEnergy << std::endl;
+        std::cout << std::setprecision(10) << "More energy than before: " << (lostEnergy / startEnergy) * 100 << "%" << std::endl;
+    }
 
     outputFile.close();
 }

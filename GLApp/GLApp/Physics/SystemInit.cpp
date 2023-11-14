@@ -7,10 +7,12 @@
 
 void SystemInit::start(std::vector<std::vector<Particle>>& particles)
 {
-	solarSystem(particles);
+	//solarSystem(particles);
 	//ourSolarSystem(particles);
-	//ellipticalGalaxy(0, 999, { 0,0,0 }, { 0,300,0 }, { 0,0,0 }, particles);
+
+	ellipticalGalaxy(0, 99999, { 0,0,0 }, { 0,300,0 }, { 0,0,0 }, particles);
 	//ellipticalGalaxy(1000, 1999, { 2e22, 0, 0}, { 90,0,180 }, { 0,0,0 } , particles);
+	
 	//spiralGalaxy(2000, 2999, { 0,2e22,2e22 }, { 220, 17, 45}, { 0,0,0 }, particles);
 	//spiralGalaxy(3000, 3999, { 1.5e22, 0.5e22, 0 }, { 234,30,129 }, { 0,0,0 }, particles);
 }
@@ -151,7 +153,7 @@ void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 			particles[0][j].velocity = glm::vec3(0, v, 0);
 			particles[0][j].mass = 5.972e24;
 			std::cout << particles[0][j].velocity.y << std::endl;
-			particles[0][j].radius = 4;
+			particles[0][j].radius = 0.5;
 			particles[0][j].color = glm::vec3(physics.random(0,1), physics.random(0, 1), physics.random(0, 1));
 		}
 	}

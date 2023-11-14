@@ -92,6 +92,7 @@ bool Engine::init(double physicsFaktor)
     
     return true;
 }
+
 void Engine::start(std::vector<std::vector<Particle>>& particles)
 {
     // Erstellen des FileManagers
@@ -133,7 +134,7 @@ void Engine::update(int index, std::vector<std::vector<Particle>>& particles)
 {
     //calculate the time
     if (isRunning) {
-        calcTime(particles[index][4].position, index);
+      calcTime(particles[index][4].position, index);
     }
 
     processMouseInput();
@@ -209,42 +210,64 @@ void Engine::renderParticles(int index, std::vector<std::vector<Particle>>& part
             glDrawArrays(GL_POINTS, 0, 1);
         }
     }
-
-    // Partikel zeichnen
-    for (unsigned int p = 0; p < particles[index].size(); ++p) 
+    if (tracks == false)
     {
-        glPointSize(particles[index][p].radius);
+        for (int p = 0; p < particles[index].size(); p++)
+        {
+            glm::vec3 scaledPosition = glm::vec3(
+                particles[index][p].position.x * globalScale,
+                particles[index][p].position.y * globalScale,
+                particles[index][p].position.z * globalScale
+            );
 
-        glm::vec3 scaledPosition = glm::vec3(
-            particles[index][p].position.x * globalScale,
-            particles[index][p].position.y * globalScale,
-            particles[index][p].position.z * globalScale
-        );
-        // Setzen Sie die Position im Shader
-        glUniform3fv(glGetUniformLocation(shaderProgram, "particlePosition"), 1, glm::value_ptr(scaledPosition));
+            // Setzen Sie die Position im Shader
+            glUniform3fv(glGetUniformLocation(shaderProgram, "particlePosition"), 1, glm::value_ptr(scaledPosition));
 
-        // Setzen Sie die Farbe im Shader
-        glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(particles[index][p].color));
+            glPointSize(particles[index][p].radius);
+            // Setzen Sie die Farbe im Shader
+            glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(particles[index][p].color));
 
-        // Zeichnen Sie den Punkt
-        glDrawArrays(GL_POINTS, 0, 1);
+            // Zeichnen Sie den Punkt
+            glDrawArrays(GL_POINTS, 0, 1);
+        }
     }
-    
-    /*
-    //print out all the properties of the particle
-    int i = 0;
-    double x = particles[index][i].position.x;
-    double y = particles[index][i].position.y;
-    double z = particles[index][i].position.z;
+    else
+    {
+        //draw old and current particles position
+        for (int t = 0; t < index; t++)
+        {
+            for (int p = 0; p < particles[t].size(); p++)
+            {
+                glm::vec3 scaledPosition = glm::vec3(
+                    particles[t][p].position.x * globalScale,
+                    particles[t][p].position.y * globalScale,
+                    particles[t][p].position.z * globalScale
+                );
+                // Setzen Sie die Position im Shader
+                glUniform3fv(glGetUniformLocation(shaderProgram, "particlePosition"), 1, glm::value_ptr(scaledPosition));
 
-    std::cout << i << " mass: " << particles[index][i].mass << std::endl;
-    */
+                if (t == index - 1)
+                {
+                    glPointSize(10);
+                    // Setzen Sie die Farbe im Shader
+                    glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(particles[t][p].color));
+                }
+                else
+                {
+                    glPointSize(1);
+                    // Setzen Sie die Farbe im Shader
+                    glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(glm::vec3(1, 1, 1)));
+                }
 
+                // Zeichnen Sie den Punkt
+                glDrawArrays(GL_POINTS, 0, 1);
+            }
+        }
+    }
 
     // VAO l�sen
     glBindVertexArray(0);
 }
-
 void Engine::processInput()
 {
     if (GetAsyncKeyState(VK_CONTROL) < 0)

@@ -90,7 +90,7 @@ glm::dvec3 Particle::calcAcceleration(glm::dvec3 force)
 
 double Particle::calcKineticEnergie()
 {
-	double kineticEnergie = 0.5 * mass * glm::length(velocity) * glm::length(velocity);
+	double kineticEnergie = 0.5 * mass * (glm::length(velocity) * glm::length(velocity));
 	return kineticEnergie;
 }
 
@@ -104,7 +104,7 @@ double Particle::calcPotentialEnergie(const Particle& other, double G, double so
 		return 0; // Verhindere eine Division durch Null.
 	}
 
-	double potentialEnergie = -G * mass * other.mass / (distance);
+	double potentialEnergie =(1/2)*( - G * mass * other.mass / (distance));
 	return potentialEnergie;
 }
 
