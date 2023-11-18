@@ -23,15 +23,14 @@ public:
     GLFWwindow* window;
 
     bool isRunning = false;
-    void renderParticleBatch(int start, int end, std::vector<std::vector<Particle>>& particles);
 
 
 private:
 
     double passedTime = 0;
 
-    //double globalScale = 1e-9;
-    double globalScale = 1e-18;
+    double globalScale = 1e-9;
+    //double globalScale = 1e-18;
 
     bool BGstars = true;
     int amountOfStars = 1000;
@@ -54,6 +53,7 @@ private:
     void processInput();
 
     GLuint shaderProgram;
+    bool shouldClose = false;
     GLuint VAO;
     GLuint instanceVBO;
     void renderParticles(int index, std::vector<std::vector<Particle>>& particles);

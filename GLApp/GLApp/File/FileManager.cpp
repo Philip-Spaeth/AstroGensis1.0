@@ -99,7 +99,7 @@ void FileManager::saveEnergieData(std::vector<std::vector<double>>& totalEnergie
             outputFile << "\n";
         }
     }
-    double lostEnergy = startEnergy - endEnergy;
+    double lostEnergy =startEnergy - endEnergy;
 
     std::cout << std::endl;
     std::cout << 1 << ": " << std::setprecision(20) << "Start Energy : " << startEnergy << std::endl;

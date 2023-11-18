@@ -133,7 +133,8 @@ void Engine::start(std::vector<std::vector<Particle>>& particles)
 void Engine::update(int index, std::vector<std::vector<Particle>>& particles)
 {
     //calculate the time
-    if (isRunning) {
+    if (isRunning) 
+    {
       calcTime(particles[index][4].position, index);
     }
 
@@ -156,14 +157,19 @@ void Engine::update(int index, std::vector<std::vector<Particle>>& particles)
     //cam movement after the last particle
     if (index == (particles.size() - 1))
     {
-        while (true)
+        while (shouldClose == false)
         {
             processMouseInput();
             processInput();
             renderParticles(index, particles);
             glfwSwapBuffers(window);
             glfwPollEvents();
+            if (GetAsyncKeyState(27) & 0x8000)
+            {
+                shouldClose = true;
+			}
         }
+        glfwSetWindowShouldClose(window, true);
     }
 }
 
@@ -454,6 +460,8 @@ void Engine::calcTime(glm::dvec3 position, int index)
 
         passedTimeInSec--;
     }
+
+    
     std::string day = std::to_string(currentDay);
     if (currentDay < 10)
     {
@@ -464,7 +472,7 @@ void Engine::calcTime(glm::dvec3 position, int index)
     {
 		month = "0" + month;
 	}
-
+    
     if (month == "01")
     {
         if (day == "01")

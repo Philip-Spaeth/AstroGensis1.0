@@ -8,9 +8,9 @@
 void SystemInit::start(std::vector<std::vector<Particle>>& particles)
 {
 	//solarSystem(particles);
-	//ourSolarSystem(particles);
+	ourSolarSystem(particles);
 
-	ellipticalGalaxy(0, 99999, { 0,0,0 }, { 0,300,0 }, { 0,0,0 }, particles);
+	//ellipticalGalaxy(0, 99999, { 0,0,0 }, { 0,300,0 }, { 0,0,0 }, particles);
 	//ellipticalGalaxy(1000, 1999, { 2e22, 0, 0}, { 90,0,180 }, { 0,0,0 } , particles);
 	
 	//spiralGalaxy(2000, 2999, { 0,2e22,2e22 }, { 220, 17, 45}, { 0,0,0 }, particles);
@@ -153,7 +153,7 @@ void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 			particles[0][j].velocity = glm::vec3(0, v, 0);
 			particles[0][j].mass = 5.972e24;
 			std::cout << particles[0][j].velocity.y << std::endl;
-			particles[0][j].radius = 0.5;
+			particles[0][j].radius = 3;
 			particles[0][j].color = glm::vec3(physics.random(0,1), physics.random(0, 1), physics.random(0, 1));
 		}
 	}
@@ -279,7 +279,7 @@ void SystemInit::ourSolarSystem(std::vector<std::vector<Particle>>& particles)
 		if (j == 9)
 		{
 			Particle particle;
-			particle.position = glm::vec3(4.374094185858724E+12, 9.514046294520888E+011, -8.121285263483042E+010);
+			particle.position = glm::vec3(4.374094185858724E+12, -9.514046294520888E+011, -8.121285263483042E+010);
 			particle.velocity = glm::vec3(1.119118833334523E+03, 5.343445550714678E+03, -1.357620460013313E-04);
 			particle.mass = 1.024e26;
 			particle.radius = 3;
