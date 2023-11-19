@@ -25,7 +25,7 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    const int numTimeSteps = 1000;
+    const int numTimeSteps = 18000;
     const int particlesSize = 10;
 
     // one hour = 3600
