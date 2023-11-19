@@ -16,21 +16,22 @@ public:
     Engine();
 
     bool init(double physicsFaktor);
-    void start(std::vector<std::vector<Particle>>& particles);
-    void update(int index, std::vector<std::vector<Particle>>& particles);
+    void start();
+    void update(int index, std::vector<Particle>& particles);
     bool clean();
 
     GLFWwindow* window;
 
     bool isRunning = false;
 
+    double playSpeed = 1;
 
 private:
 
     double passedTime = 0;
 
-    double globalScale = 1e-9;
-    //double globalScale = 1e-18;
+    //double globalScale = 1e-9;
+    double globalScale = 1e-18;
 
     bool BGstars = true;
     int amountOfStars = 1000;
@@ -56,7 +57,7 @@ private:
     bool shouldClose = false;
     GLuint VAO;
     GLuint instanceVBO;
-    void renderParticles(int index, std::vector<std::vector<Particle>>& particles);
+    void renderParticles(std::vector<Particle>& particles);
     void checkShaderCompileStatus(GLuint shader, const char* shaderType);
     void checkShaderLinkStatus(GLuint program);
     void calcTime(glm::dvec3 position, int index);

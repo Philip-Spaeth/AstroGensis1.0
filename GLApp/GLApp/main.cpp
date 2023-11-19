@@ -13,15 +13,14 @@
 #include <debugapi.h>
 #include <iostream>
 #include <string>
+#include "FileManager.h"
 
 
 int main()
 {
     Physics physics;
 
-    std::vector<std::vector<Particle>> particles(physics.numTimeSteps);
-
-    physics.Calc(particles);
+    physics.Calc();
 
     std::cout << std::endl;
     std::cout << "Press enter to start" << std::endl;
@@ -36,7 +35,7 @@ int main()
         return -1;
     }
 
-    engine.start(particles);
+    engine.start();
 
     double lastFrameTime = glfwGetTime(); // Zeit des letzten Frames
     double frameTime; // Zeitdauer eines Frames
@@ -44,6 +43,9 @@ int main()
     int frameCount = 0;
     double secondCounter = 0.0;
     int counter = 0;
+
+
+    std::vector<Particle> currentParticles;
 
     // Haupt-Render-Schleife
     while (!glfwWindowShouldClose(engine.window))
@@ -66,18 +68,35 @@ int main()
             std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>((1.0 / TARGET_FPS - frameTime) * 1000)));
         }
 
+        FileManager fileManager;
+        fileManager.loadParticles(counter, currentParticles);
 
-        if (counter < physics.numTimeSteps)
+        // update particles
+        engine.update(counter, currentParticles);
+        // add time when engine is running
+        if (engine.isRunning)
         {
-            // update particles
-            engine.update(counter, particles);
-            // add time when engine is running
-            if (engine.isRunning) 
+            if (counter >= 0 && counter <= physics.numTimeSteps - 1)
             {
-                counter++;
+                counter = counter + engine.playSpeed;
             }
+            if (counter >= physics.numTimeSteps && engine.playSpeed < 0)
+            {
+                counter = counter + engine.playSpeed;
+			}
+            if (counter < 0 && engine.playSpeed > 0)
+            {
+				counter = counter + engine.playSpeed;
+			}
         }
-
+        if (counter >= physics.numTimeSteps - 1)
+        {
+			counter = physics.numTimeSteps - 1;
+		}
+        if (counter < 0)
+        {
+            counter = 0;
+        }
 
         frameCount++;
         secondCounter += frameTime;

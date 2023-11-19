@@ -93,18 +93,19 @@ bool Engine::init(double physicsFaktor)
     return true;
 }
 
-void Engine::start(std::vector<std::vector<Particle>>& particles)
+void Engine::start()
 {
     // Erstellen des FileManagers
     fileManager = new FileManager();
     // Laden der Daten für die Darstellung
-    fileManager->loadParticles(particles);
+    std::vector<Particle> particles;
+    fileManager->loadParticles(0,particles);
 
     // Hier VBO und VAO erstellen und konfigurieren
     GLuint VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * particles[0].size(), &particles[0][0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * particles.size(), &particles[0], GL_STATIC_DRAW);
 
     // Erstellen des Vertex Array Objects (VAO)
     glGenVertexArrays(1, &VAO);
@@ -130,50 +131,42 @@ void Engine::start(std::vector<std::vector<Particle>>& particles)
     std::cout << "Data loaded" << std::endl;
 }
 
-void Engine::update(int index, std::vector<std::vector<Particle>>& particles)
+void Engine::update(int index, std::vector<Particle>& particles)
 {
     //calculate the time
     if (isRunning) 
     {
-      calcTime(particles[index][4].position, index);
+      calcTime(particles[4].position, index);
     }
 
     processMouseInput();
     processInput();
 
-    renderParticles(index, particles);
+    renderParticles(particles);
 
     glfwSwapBuffers(window);
     glfwPollEvents();
 
     //pause if space is pressed
-    // now in main Function -> reason: exit program listen for ESC in main.
     if (GetAsyncKeyState(32) & 0x8000)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
         isRunning = !isRunning;
     }
 
-    //cam movement after the last particle
-    if (index == (particles.size() - 1))
+    //speed up if right arrow is pressed
+    if (GetAsyncKeyState(39) & 0x8000)
     {
-        while (shouldClose == false)
-        {
-            processMouseInput();
-            processInput();
-            renderParticles(index, particles);
-            glfwSwapBuffers(window);
-            glfwPollEvents();
-            if (GetAsyncKeyState(27) & 0x8000)
-            {
-                shouldClose = true;
-			}
-        }
-        glfwSetWindowShouldClose(window, true);
+		playSpeed = playSpeed + 0.1;
+	}
+    //slow down if left arrow is pressed
+    if (GetAsyncKeyState(37) & 0x8000)
+    {
+        playSpeed = playSpeed - 0.1;
     }
 }
 
-void Engine::renderParticles(int index, std::vector<std::vector<Particle>>& particles)
+void Engine::renderParticles(std::vector<Particle>& particles)
 {
     // L�schen des Bildschirms
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -218,25 +211,26 @@ void Engine::renderParticles(int index, std::vector<std::vector<Particle>>& part
     }
     if (tracks == false)
     {
-        for (int p = 0; p < particles[index].size(); p++)
+        for (int p = 0; p < particles.size(); p++)
         {
             glm::vec3 scaledPosition = glm::vec3(
-                particles[index][p].position.x * globalScale,
-                particles[index][p].position.y * globalScale,
-                particles[index][p].position.z * globalScale
+                particles[p].position.x * globalScale,
+                particles[p].position.y * globalScale,
+                particles[p].position.z * globalScale
             );
 
             // Setzen Sie die Position im Shader
             glUniform3fv(glGetUniformLocation(shaderProgram, "particlePosition"), 1, glm::value_ptr(scaledPosition));
 
-            glPointSize(particles[index][p].radius);
+            glPointSize(particles[p].radius);
             // Setzen Sie die Farbe im Shader
-            glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(particles[index][p].color));
+            glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(particles[p].color));
 
             // Zeichnen Sie den Punkt
             glDrawArrays(GL_POINTS, 0, 1);
         }
     }
+    /*
     else
     {
         //draw old and current particles position
@@ -270,6 +264,7 @@ void Engine::renderParticles(int index, std::vector<std::vector<Particle>>& part
             }
         }
     }
+    */
 
     // VAO l�sen
     glBindVertexArray(0);
@@ -472,7 +467,7 @@ void Engine::calcTime(glm::dvec3 position, int index)
     {
 		month = "0" + month;
 	}
-    
+    /*
     if (month == "01")
     {
         if (day == "01")
@@ -480,7 +475,7 @@ void Engine::calcTime(glm::dvec3 position, int index)
             std::cout << position.x << " " << position.y << " " << position.z << std::endl;
 		}
     }
-
+    */
     if (passedTime < 1000000)
     {
         std::cout << "passed time: " << (int)passedTime << Unit << "    date: " << currentYear << "." << month << "." << day << std::endl;

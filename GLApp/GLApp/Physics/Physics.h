@@ -20,27 +20,29 @@ class Physics {
 public:
     Physics();
 
-    bool Calc(std::vector<std::vector<Particle>>& particles);
+    bool Calc();
 
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    const int numTimeSteps = 18000;
-    const int particlesSize = 10;
+    static const int numTimeSteps = 100;
+    static const int particlesSize = 1000;
 
     // one hour = 3600
     // one day = 86400
     // one year = 31536000
-    // galaxy = 1e17
+    // galaxy = 1e16
 
     //the time per frame
-    const double deltaTime = 3600;
+    const double deltaTime = 4e15;
 
 
     //Physikalische Konstanten
     const double G = 6.67430e-11;
-    const double softening = 0;
+    const double softening = 1;
 
+
+    std::vector<Particle> currentParticles;
 private:
     std::vector<std::vector<double>> totalEnergie;
     int calulations = 0;

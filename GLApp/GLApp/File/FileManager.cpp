@@ -7,7 +7,7 @@ FileManager::FileManager(){}
 
 FileManager::~FileManager(){}
 
-void FileManager::saveParticles(int timestep,std::vector<Particle> &particles, std::string path)
+void FileManager::saveParticles(int timestep, std::vector<Particle> &particles, std::string path)
 {
     std::string dataFolder = "Data";
     std::filesystem::create_directory(dataFolder);
@@ -28,31 +28,31 @@ void FileManager::saveParticles(int timestep,std::vector<Particle> &particles, s
     }
 }
 
-void FileManager::loadParticles(std::vector<std::vector<Particle>>& particles)
+void FileManager::loadParticles(int timestep, std::vector<Particle>& particles)
 {
     // Laden der Daten für die Darstellung
-    std::cout << "loading data ..." << std::endl;
+    //std::cout << "loading data ..." << std::endl;
 
     Physics physics;
 
-    for (int t = 0; t < physics.numTimeSteps; ++t) {
-        std::string fileName = "Data/Time_" + std::to_string(t) + ".dat";
-        std::ifstream infile(fileName, std::ios::binary);
-        if (infile.is_open()) {
-            particles[t].resize(physics.particlesSize);
-            for (int p = 0; p < physics.particlesSize; ++p) 
-            {
-                Particle particle; // Erstellen eines tempor�ren Particle-Objekts
-                infile.read(reinterpret_cast<char*>(&particle), sizeof(Particle));
+    std::string fileName = "Data/Time_" + std::to_string(timestep) + ".dat";
+    std::ifstream infile(fileName, std::ios::binary);
+    if (infile.is_open()) 
+    {
+        particles.resize(physics.particlesSize);
+        for (int p = 0; p < physics.particlesSize; ++p) 
+        {
+            Particle particle; // Erstellen eines tempor�ren Particle-Objekts
+            infile.read(reinterpret_cast<char*>(&particle), sizeof(Particle));
 
-                // Den Partikel zum Partikelvektor hinzuf�gen
-                particles[t][p] = particle;
-            }
-            infile.close();
+            // Den Partikel zum Partikelvektor hinzuf�gen
+            particles[p] = particle;
         }
-        else {
-            std::cerr << "Error opening: " << fileName << std::endl;
-        }
+        infile.close();
+    }
+    else 
+    {
+        std::cerr << "Error opening: " << fileName << std::endl;
     }
 }
 void FileManager::saveEnergieData(std::vector<std::vector<double>>& totalEnergie, std::string path) 

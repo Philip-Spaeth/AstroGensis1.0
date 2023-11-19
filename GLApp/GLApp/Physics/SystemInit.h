@@ -11,15 +11,15 @@
 class SystemInit 
 {
 public:
-	void start(std::vector<std::vector<Particle>>& particles);
+	void start(std::vector<Particle>& particles);
 
 private:
 	Physics physics;
 
-	void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, std::vector<std::vector<Particle>>& particles);
-	void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, std::vector<std::vector<Particle>>& particles);
-	void solarSystem(std::vector<std::vector<Particle>>& particles);
-	void ourSolarSystem(std::vector<std::vector<Particle>>& particles);
+	void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity,std::vector<Particle>& particles);
+	void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, std::vector<Particle>& particles);
+	void solarSystem(std::vector<Particle>& particles);
+	void ourSolarSystem(std::vector<Particle>& particles);
 };
 
 #endif

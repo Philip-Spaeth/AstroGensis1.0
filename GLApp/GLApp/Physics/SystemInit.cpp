@@ -5,19 +5,19 @@
 #include <gtc/quaternion.hpp>
 #include <gtx/quaternion.hpp>
 
-void SystemInit::start(std::vector<std::vector<Particle>>& particles)
+void SystemInit::start(std::vector<Particle>& particles)
 {
 	//solarSystem(particles);
-	ourSolarSystem(particles);
+	//ourSolarSystem(particles);
 
-	//ellipticalGalaxy(0, 99999, { 0,0,0 }, { 0,300,0 }, { 0,0,0 }, particles);
+	ellipticalGalaxy(0, 999, { 0,0,0 }, { 0,300,0 }, { 0,0,0 }, particles);
 	//ellipticalGalaxy(1000, 1999, { 2e22, 0, 0}, { 90,0,180 }, { 0,0,0 } , particles);
 	
 	//spiralGalaxy(2000, 2999, { 0,2e22,2e22 }, { 220, 17, 45}, { 0,0,0 }, particles);
 	//spiralGalaxy(3000, 3999, { 1.5e22, 0.5e22, 0 }, { 234,30,129 }, { 0,0,0 }, particles);
 }
 
-void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, std::vector<std::vector<Particle>>& particles)
+void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, std::vector<Particle>& particles)
 {
 	int size = endIndex + 1 - startIndex; 
 
@@ -44,7 +44,7 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position,
 			particle.mass = 1e36;
 			particle.radius = 2;
 			particle.color = glm::vec3(1, 1, 1);
-			particles[0][startIndex] =  particle;
+			particles[startIndex] =  particle;
 		}
 
 		// Sterne in Spiralarmen um das schwarze Loch
@@ -60,7 +60,7 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position,
 			//m*v^2/r = G * M * m / r^2
 			// v^2 = G * M / r
 			//v = sqrt(G * M / r)
-			double v = std::sqrt((physics.G * particles[0][startIndex].mass) / r);
+			double v = std::sqrt((physics.G * particles[startIndex].mass) / r);
 
 			double armAngle = 2 * 3.14 * (j - startIndex) / numArms; // Winkel für die Anzahl der Arme
 
@@ -69,13 +69,13 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position,
 			particle.mass = 1e30;
 			particle.radius = 0.01;
 			//particle.color = glm::vec3(1, 1, 1);
-			particles[0][j] = particle;
+			particles[j] = particle;
 		}
 		i++;
 	} 
 }	
 
-void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, std::vector<std::vector<Particle>>& particles)
+void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, std::vector<Particle>& particles)
 {
 	int size = endIndex + 1;
 
@@ -93,11 +93,11 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 posit
 		// Mass Sagittarius A
 		if (j == startIndex)
 		{
-			particles[0][j].position = position;
-			particles[0][j].velocity = velocity;
-			particles[0][j].mass = 1e36;
-			particles[0][j].radius = 2;
-			particles[0][j].color = glm::vec3(1, 1, 1);
+			particles[j].position = position;
+			particles[j].velocity = velocity;
+			particles[j].mass = 1e36;
+			particles[j].radius = 2;
+			particles[j].color = glm::vec3(1, 1, 1);
 		}
 
 		//stars like our sun
@@ -116,13 +116,13 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 posit
 			//v = sqrt(G * M / r)
 			//double v = 0;
 
-			double v = std::sqrt((physics.G * particles[0][startIndex].mass) / r) * starSpeed;
+			double v = std::sqrt((physics.G * particles[startIndex].mass) / r) * starSpeed;
 
 
-			particles[0][j].position = glm::dvec3(r * std::cos(angle), r * std::sin(angle), physics.random(-depth , depth)) + position;
-			particles[0][j].velocity = glm::dvec3(-v * std::sin(angle), v * std::cos(angle), 0) + velocity;
-			particles[0][j].mass = 1e30;
-			particles[0][j].radius = 0.01;
+			particles[j].position = glm::dvec3(r * std::cos(angle), r * std::sin(angle), physics.random(-depth , depth)) + position;
+			particles[j].velocity = glm::dvec3(-v * std::sin(angle), v * std::cos(angle), 0) + velocity;
+			particles[j].mass = 1e30;
+			particles[j].radius = 0.01;
 			particle.color = glm::vec3(1, 1, 1);
 		}
 		i++;
@@ -130,7 +130,7 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 posit
 }
 
 
-void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
+void SystemInit::solarSystem(std::vector<Particle>& particles)
 {
 	Physics physics;
 	double distanceFaktor = 1.4848e11;
@@ -139,27 +139,27 @@ void SystemInit::solarSystem(std::vector<std::vector<Particle>>& particles)
 	{
 		if (j == 0)
 		{
-			particles[0][j].position = glm::vec3(0, 0, 0);
-			particles[0][j].velocity = glm::vec3(0, 0, 0);
-			particles[0][j].mass = 1.989e30;
-			particles[0][j].radius = 6;
-			particles[0][j].color = glm::vec3(1, 1, 0);
+			particles[j].position = glm::vec3(0, 0, 0);
+			particles[j].velocity = glm::vec3(0, 0, 0);
+			particles[j].mass = 1.989e30;
+			particles[j].radius = 6;
+			particles[j].color = glm::vec3(1, 1, 0);
 		}
 		else
 		{
 			double x = j * distanceFaktor;
-			double v = std::sqrt((physics.G * particles[0][0].mass) / (x));
-			particles[0][j].position = glm::dvec3(x, 0, 0);
-			particles[0][j].velocity = glm::vec3(0, v, 0);
-			particles[0][j].mass = 5.972e24;
-			std::cout << particles[0][j].velocity.y << std::endl;
-			particles[0][j].radius = 3;
-			particles[0][j].color = glm::vec3(physics.random(0,1), physics.random(0, 1), physics.random(0, 1));
+			double v = std::sqrt((physics.G * particles[0].mass) / (x));
+			particles[j].position = glm::dvec3(x, 0, 0);
+			particles[j].velocity = glm::vec3(0, v, 0);
+			particles[j].mass = 5.972e24;
+			std::cout << particles[j].velocity.y << std::endl;
+			particles[j].radius = 3;
+			particles[j].color = glm::vec3(physics.random(0,1), physics.random(0, 1), physics.random(0, 1));
 		}
 	}
 }
 
-void SystemInit::ourSolarSystem(std::vector<std::vector<Particle>>& particles)
+void SystemInit::ourSolarSystem(std::vector<Particle>& particles)
 {
 	// Data from JPL Horizons Nasa date: 2020-01-01 https://ssd.jpl.nasa.gov/horizons/app.html#/
 
@@ -176,7 +176,7 @@ void SystemInit::ourSolarSystem(std::vector<std::vector<Particle>>& particles)
 			particle.mass = 0;
 			particle.radius = 0.5;
 			particle.color = glm::vec3(1, 1, 1);
-			particles[0][j] = particle;
+			particles[j] = particle;
 		}
 
 		//Sun
@@ -188,7 +188,7 @@ void SystemInit::ourSolarSystem(std::vector<std::vector<Particle>>& particles)
 			particle.mass = 1.989e30;
 			particle.radius = 6;
 			particle.color = glm::vec3(1, 1, 0);
-			particles[0][j] = particle;
+			particles[j] = particle;
 		}
 
 		//Mercury
@@ -200,7 +200,7 @@ void SystemInit::ourSolarSystem(std::vector<std::vector<Particle>>& particles)
 			particle.mass = 3.285e23;
 			particle.radius = 3;
 			particle.color = glm::vec3(1, 1, 1);
-			particles[0][j] = particle;
+			particles[j] = particle;
 		}
 
 		//Venus
@@ -212,7 +212,7 @@ void SystemInit::ourSolarSystem(std::vector<std::vector<Particle>>& particles)
 			particle.mass = 4.867e24;
 			particle.radius = 3;
 			particle.color = glm::vec3(1, 1, 1);
-			particles[0][j] = particle;
+			particles[j] = particle;
 		}
 
 		//Earth
@@ -224,7 +224,7 @@ void SystemInit::ourSolarSystem(std::vector<std::vector<Particle>>& particles)
 			particle.mass = 5.972e24;
 			particle.radius = 3;
 			particle.color = glm::vec3(0, 0, 1);
-			particles[0][j] = particle;
+			particles[j] = particle;
 		}
 
 		//Mars
@@ -236,7 +236,7 @@ void SystemInit::ourSolarSystem(std::vector<std::vector<Particle>>& particles)
 			particle.mass = 6.39e23;
 			particle.radius = 3;
 			particle.color = glm::vec3(1, 0, 0);
-			particles[0][j] = particle;
+			particles[j] = particle;
 		}
 
 		//Jupiter
@@ -248,7 +248,7 @@ void SystemInit::ourSolarSystem(std::vector<std::vector<Particle>>& particles)
 			particle.mass = 1.898e27;
 			particle.radius = 3;
 			particle.color = glm::vec3(194, 152, 0);
-			particles[0][j] = particle;
+			particles[j] = particle;
 		}
 
 		//Saturn
@@ -260,7 +260,7 @@ void SystemInit::ourSolarSystem(std::vector<std::vector<Particle>>& particles)
 			particle.mass = 5.683e26;
 			particle.radius = 3;
 			particle.color = glm::vec3(194, 152, 0);
-			particles[0][j] = particle;
+			particles[j] = particle;
 		}
 
 		//Uranus
@@ -272,7 +272,7 @@ void SystemInit::ourSolarSystem(std::vector<std::vector<Particle>>& particles)
 			particle.mass = 8.681e25;
 			particle.radius = 3;
 			particle.color = glm::vec3(150, 150, 150);
-			particles[0][j] = particle;
+			particles[j] = particle;
 		}
 
 		//Neptune
@@ -284,7 +284,7 @@ void SystemInit::ourSolarSystem(std::vector<std::vector<Particle>>& particles)
 			particle.mass = 1.024e26;
 			particle.radius = 3;
 			particle.color = glm::vec3(0, 0, 1);
-			particles[0][j] = particle;
+			particles[j] = particle;
 		}
 	}
 }
