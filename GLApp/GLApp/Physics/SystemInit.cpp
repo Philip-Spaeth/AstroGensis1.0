@@ -13,7 +13,7 @@ void SystemInit::start(std::vector<Particle>& particles)
 	ellipticalGalaxy(0, 999, { 0,0,0 }, { 0,300,0 }, { 0,0,0 }, particles);
 	//ellipticalGalaxy(1000, 1999, { 2e22, 0, 0}, { 90,0,180 }, { 0,0,0 } , particles);
 	
-	//spiralGalaxy(2000, 2999, { 0,2e22,2e22 }, { 220, 17, 45}, { 0,0,0 }, particles);
+	//spiralGalaxy(0, 9999, { 0,0,0 }, { 220, 17, 45}, { 0,0,0 }, particles);
 	//spiralGalaxy(3000, 3999, { 1.5e22, 0.5e22, 0 }, { 234,30,129 }, { 0,0,0 }, particles);
 }
 
@@ -28,7 +28,7 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position,
 	double armDensity = 0.3;
 	double interArmDensity = 1;
 
-	double depth = diskRadius / 40;
+	double depth = 0;
 
 	int i = 0;
 
@@ -52,20 +52,32 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position,
 		{
 			Particle particle;
 
-			double r = physics.random(0,diskRadius/3);
 
-			r = r * std::exp(1 * r / diskRadius);
+			double r = physics.random(0, physics.random(0, diskRadius));
+			depth = physics.random(0, physics.random(0, physics.random(0, diskRadius))) / 5;
+
 
 			//Fz = Fg
 			//m*v^2/r = G * M * m / r^2
 			// v^2 = G * M / r
 			//v = sqrt(G * M / r)
-			double v = std::sqrt((physics.G * particles[startIndex].mass) / r);
 
-			double armAngle = 2 * 3.14 * (j - startIndex) / numArms; // Winkel für die Anzahl der Arme
+			double armAngle = 2 * 3.14 * ((j - startIndex)*1000/particles.size()) / numArms; // Winkel für die Anzahl der Arme
+
+			int randomInt = (int)physics.random(0, 3);
+			if (randomInt == 1)
+			{
+				double r = physics.random(0, physics.random(0, physics.random(0, physics.random(0, diskRadius))));
+				depth = physics.random(0, physics.random(0, physics.random(0, diskRadius))) / 5;
+				armAngle = physics.random(0, 2 * 3.14);
+			}
+			
 
 			particle.position = glm::dvec3(r * std::cos(armAngle), r * std::sin(armAngle), physics.random(-depth, depth)) + position;
+
+			double v = std::sqrt((physics.G * particles[startIndex].mass) / particles[startIndex].CalculateDistance(particles[j]));
 			particle.velocity = glm::dvec3(-v * std::sin(armAngle), v * std::cos(armAngle), 0) + velocity;
+
 			particle.mass = 1e30;
 			particle.radius = 0.01;
 			//particle.color = glm::vec3(1, 1, 1);
@@ -83,7 +95,7 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 posit
 
 	double starSpeed = 1;
 
-	double depth = diskRadius / 40;
+	double depth = 0;
 
 	int i = 0;
 
@@ -105,8 +117,8 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 posit
 		{
 			Particle particle;
 
-
-			double r = ((diskRadius / size) * i);
+			double r = physics.random(0, physics.random(0,diskRadius));
+			depth = physics.random(0, physics.random(0, physics.random(0, diskRadius))) / 5;
 
 			double angle = physics.random(0, 2 * 3.14);
 
