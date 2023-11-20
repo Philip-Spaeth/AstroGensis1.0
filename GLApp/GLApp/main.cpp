@@ -80,22 +80,16 @@ int main()
             {
                 counter = counter + engine.playSpeed;
             }
-            if (counter >= physics.numTimeSteps && engine.playSpeed < 0)
-            {
-                counter = counter + engine.playSpeed;
-			}
-            if (counter < 0 && engine.playSpeed > 0)
-            {
-				counter = counter + engine.playSpeed;
-			}
         }
         if (counter >= physics.numTimeSteps - 1)
         {
 			counter = physics.numTimeSteps - 1;
+            engine.playSpeed = 0;
 		}
         if (counter < 0)
         {
             counter = 0;
+            engine.playSpeed= 0;
         }
 
         frameCount++;

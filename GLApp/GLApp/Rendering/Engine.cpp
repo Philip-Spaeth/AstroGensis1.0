@@ -467,7 +467,7 @@ void Engine::calcTime(glm::dvec3 position, int index)
     {
 		month = "0" + month;
 	}
-    /*
+    
     if (month == "01")
     {
         if (day == "01")
@@ -475,7 +475,7 @@ void Engine::calcTime(glm::dvec3 position, int index)
             std::cout << position.x << " " << position.y << " " << position.z << std::endl;
 		}
     }
-    */
+    
     if (passedTime < 1000000)
     {
         std::cout << "passed time: " << (int)passedTime << Unit << "    date: " << currentYear << "." << month << "." << day << std::endl;

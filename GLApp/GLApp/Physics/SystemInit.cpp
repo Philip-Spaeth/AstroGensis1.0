@@ -8,9 +8,9 @@
 void SystemInit::start(std::vector<Particle>& particles)
 {
 	//solarSystem(particles);
-	//ourSolarSystem(particles);
+	ourSolarSystem(particles);
 
-	ellipticalGalaxy(0, 999, { 0,0,0 }, { 0,300,0 }, { 0,0,0 }, particles);
+	//ellipticalGalaxy(0, 999, { 0,0,0 }, { 0,300,0 }, { 0,0,0 }, particles);
 	//ellipticalGalaxy(1000, 1999, { 2e22, 0, 0}, { 90,0,180 }, { 0,0,0 } , particles);
 	
 	//spiralGalaxy(0, 9999, { 0,0,0 }, { 220, 17, 45}, { 0,0,0 }, particles);

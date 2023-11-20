@@ -30,8 +30,8 @@ private:
 
     double passedTime = 0;
 
-    //double globalScale = 1e-9;
-    double globalScale = 1e-18;
+    double globalScale = 1e-9;
+    //double globalScale = 1e-18;
 
     bool BGstars = true;
     int amountOfStars = 1000;
