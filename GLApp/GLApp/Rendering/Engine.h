@@ -32,10 +32,10 @@ private:
 
     double passedTime = 0;
 
-    double globalScale = 1e-9;
-    //double globalScale = 1e-18;
+    //double globalScale = 1e-9;
+    double globalScale = 1e-18;
 
-    bool BGstars = false;
+    bool BGstars = true;
     int amountOfStars = 1000;
     std::vector<glm::vec3> stars;
 

@@ -86,7 +86,7 @@ int main()
 			counter = physics.numTimeSteps - 1;
             if (engine.playSpeed != 0)
             {
-                fileManager.saveRotationCurve(currentParticles, "");
+                //fileManager.saveRotationCurve(currentParticles, "");
             }
             engine.playSpeed = 0;
 		}

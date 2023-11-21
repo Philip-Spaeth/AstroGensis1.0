@@ -8,12 +8,12 @@
 void SystemInit::start(std::vector<Particle>& particles)
 {
 	//solarSystem(particles);
-	ourSolarSystem(particles);
+	//ourSolarSystem(particles);
 
-	//ellipticalGalaxy(0, 1999, { 0,0,0 }, { 0,300,0 }, { 0,0,0 }, particles);
+	//ellipticalGalaxy(0, 9999, { 0,0,0 }, { 0,300,0 }, { 0,0,0 }, particles);
 	//ellipticalGalaxy(1000, 1999, { 2e22, 0, 0}, { 90,0,180 }, { 0,0,0 } , particles);
 	
-	//spiralGalaxy(0, 9999, { 0,0,0 }, { 220, 17, 45}, { 0,0,0 }, particles);
+	spiralGalaxy(0, 999, { 0,0,0 }, { 220, 17, 45}, { 0,0,0 }, particles);
 	//spiralGalaxy(3000, 3999, { 1.5e22, 0.5e22, 0 }, { 234,30,129 }, { 0,0,0 }, particles);
 }
 
@@ -67,8 +67,8 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position,
 			int randomInt = (int)physics.random(0, 3);
 			if (randomInt == 1)
 			{
-				double r = physics.random(0, physics.random(0, physics.random(0, physics.random(0, diskRadius))));
-				depth = physics.random(0, physics.random(0, physics.random(0, diskRadius))) / 5;
+				//double r = physics.random(0, physics.random(0, physics.random(0, physics.random(0, physics.random(0, physics.random(0, diskRadius))))));
+				//depth = physics.random(0, physics.random(0, physics.random(0, physics.random(0, physics.random(0, diskRadius))))) / 5;
 				armAngle = physics.random(0, 2 * 3.14);
 			}
 			
@@ -80,62 +80,12 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position,
 
 			particle.mass = 1e30;
 			particle.radius = 0.01;
-			//particle.color = glm::vec3(1, 1, 1);
+			//make the stars in the center brighter
+			double brightness = 1 - (particles[j].CalculateDistance(particles[startIndex]) / diskRadius);
+			particles[j].color = glm::vec3(brightness, brightness, brightness);
 			particles[j] = particle;
 		}
-		i++;
-	} 
-}	
-
-void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, std::vector<Particle>& particles)
-{
-	int size = endIndex + 1;
-
-	double diskRadius = 1e21;
-
-	double starSpeed = 1;
-
-	double depth = 0;
-
-	int i = 0;
-
-	// Erstellen einer Spiralgalaxie
-	for (int j = startIndex; j < size; j++)
-	{
-		// Mass Sagittarius A
-		if (j == startIndex)
-		{
-			particles[j].position = position;
-			particles[j].velocity = velocity;
-			particles[j].mass = 1e36;
-			particles[j].radius = 2;
-			particles[j].color = glm::vec3(1, 1, 1);
-		}
-
-		//stars like our sun
-		if(j > startIndex && j < 1000)
-		{
-			double r = physics.random(0, physics.random(0,diskRadius));
-			depth = physics.random(0, physics.random(0, physics.random(0, diskRadius))) / 5;
-
-			double angle = physics.random(0, 2 * 3.14);
-
-			//Fz = Fg
-			//m*v^2/r = G * M * m / r^2
-			// v^2 = G * M / r
-			//v = sqrt(G * M / r)
-			//double v = 0;
-
-			double v = std::sqrt((physics.G * particles[startIndex].mass) / r) * starSpeed;
-
-
-			particles[j].position = glm::dvec3(r * std::cos(angle), r * std::sin(angle), physics.random(-depth , depth)) + position;
-			particles[j].velocity = glm::dvec3(-v * std::sin(angle), v * std::cos(angle), 0) + velocity;
-			particles[j].mass = 1e30;
-			particles[j].radius = 0.01;
-			particles[j].color = glm::vec3(1, 1, 1);
-		}
-
+		/*
 		//dark matter in the outer regions
 		if (j >= 1000)
 		{
@@ -159,6 +109,53 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 posit
 			particles[j].radius = 0.01;
 			particles[j].color = glm::vec3(1, 1, 1);
 			particles[j].darkMatter = true;
+		}
+		*/
+		i++;
+	} 
+}	
+
+void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, std::vector<Particle>& particles)
+{
+	int size = endIndex + 1;
+
+	double galaxyRadius = 1e21; // Radius der kugelförmigen Galaxie
+
+	double starSpeed = 1;
+
+	int i = 0;
+
+	// Erstellen einer kugelförmigen Galaxie
+	for (int j = startIndex; j < size; j++)
+	{
+		// Mass Sagittarius A
+		if (j == startIndex)
+		{
+			particles[j].position = position;
+			particles[j].velocity = velocity;
+			particles[j].mass = 1e36;
+			particles[j].radius = 2;
+			particles[j].color = glm::vec3(1, 1, 1);
+		}
+		else
+		{
+			double theta = physics.random(0, glm::pi<double>());
+			double phi = physics.random(0, 2 * glm::pi<double>());
+			double r = physics.random(0, physics.random(0, galaxyRadius));
+
+			double x = r * std::sin(theta) * std::cos(phi);
+			double y = r * std::sin(theta) * std::sin(phi);
+			double z = r * std::cos(theta);
+
+			double v = std::sqrt((physics.G * particles[startIndex].mass) / r) * starSpeed;
+
+			particles[j].position = glm::dvec3(x, y, z) + position;
+			particles[j].velocity = glm::dvec3(-v * std::sin(phi), v * std::cos(phi), 0) + velocity;
+			particles[j].mass = 1e30;
+			particles[j].radius = 0.01;
+			//make the stars in the center brighter
+			double brightness = 1 - (particles[j].CalculateDistance(particles[startIndex]) / galaxyRadius);
+			particles[j].color = glm::vec3(brightness - 0.1, brightness - 0.1, brightness);
 		}
 
 		i++;
