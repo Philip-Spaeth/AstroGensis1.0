@@ -21,20 +21,24 @@ void Particle::eulerUpdatePosition(glm::dvec3 velocity, double deltaTime)
 void Particle::rungeKuttaUpdateVelocity(glm::dvec3 acceleration, double deltaTime, int rungeKutaStep)
 {
     YnVelocity = acceleration * deltaTime;
-    if (rungeKutaStep == 0) {
+    if (rungeKutaStep == 0) 
+    {
         k1Velocity = YnVelocity;
     }
-    else if (rungeKutaStep == 1) {
+    else if (rungeKutaStep == 1) 
+    {
         k2Velocity = YnVelocity;
     }
-    else if (rungeKutaStep == 2) {
+    else if (rungeKutaStep == 2) 
+    {
         k3Velocity = YnVelocity;
     }
-    else if (rungeKutaStep == 3) {
+    else if (rungeKutaStep == 3) 
+    {
         k4Velocity = YnVelocity;
 
         // alle Ergebnisse Zusammenfassen:
-        velocity += (k1Velocity + 2.0 * k2Velocity + 2.0 * k3Velocity + k4Velocity) * 0.16666666666666666666666666666667;
+        velocity += (k1Velocity + 2.0 * k2Velocity + 2.0 * k3Velocity + k4Velocity) * (1.0 / 6.0);
     }
 }
 
@@ -53,7 +57,7 @@ void Particle::rungeKuttaUpdatePosition(double deltaTime, int rungeKutaStep)
         k4Position = (velocity + k3Velocity * 0.5) * deltaTime;
 
         // alle Ergebnisse zusammenfassen:
-        position += (k1Position + 2.0 * k2Position + 2.0 * k3Position + k4Position) * 0.16666666666666666666666666666667;
+        position += (k1Position + 2.0 * k2Position + 2.0 * k3Position + k4Position) * (1.0/6.0);
     }
 }
 
@@ -97,14 +101,18 @@ glm::dvec3 Particle::calculateGravitationalForce(const Particle& other, double G
     if (k == 1) {
         // hier villeicht auch so: delta = other.position + other.k1Position  - position + k1Position;
         // und bei k2, k3 auch so
-        delta = other.position  - position + k1Position;
+        delta = other.position + other.k1Position - position + k1Position;
 	}
 	else if (k == 2) {
-		delta = other.position  - position + k2Position;
+        delta = other.position + other.k2Position - position + k1Position;
 	}
     else if (k == 3) {
-        delta = other.position  - position + k3Position;
+        delta = other.position + other.k3Position - position + k1Position;
     }
+    else if (k == 4) {
+        delta = other.position + other.k4Position - position + k1Position;
+	}
+
     double distance = glm::length(delta);
 
     if (distance == 0)

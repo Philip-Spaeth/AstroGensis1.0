@@ -84,6 +84,10 @@ int main()
         if (counter >= physics.numTimeSteps - 1)
         {
 			counter = physics.numTimeSteps - 1;
+            if (engine.playSpeed != 0)
+            {
+                fileManager.saveRotationCurve(currentParticles, "");
+            }
             engine.playSpeed = 0;
 		}
         if (counter < 0)
@@ -91,6 +95,13 @@ int main()
             counter = 0;
             engine.playSpeed= 0;
         }
+
+        //restart if R is pressed
+        if (GetAsyncKeyState(82) & 0x8000)
+        {
+			counter = 0;
+			engine.playSpeed = 0;
+		}
 
         frameCount++;
         secondCounter += frameTime;

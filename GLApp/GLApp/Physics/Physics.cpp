@@ -57,67 +57,75 @@ bool Physics::Calc()
 
         else
         {
-            //Runge Kuta schritte
-            for (int k = 0; k < 4; k++) {
-                // Runge Kuta schritt fuer jeden Particle
-                for (int p = 0; p < particlesSize; ++p) {
+            
+            //Runge Kuta 
+            if(true)
+            {
+                for (int k = 0; k < 4; k++) {
+                    // Runge Kuta schritt fuer jeden Particle
+                    for (int p = 0; p < particlesSize; ++p) {
 
-                    // Das ergebniss dieser Berechnung gleibt bei jedem Zeitschritt gleich.
+                        // Das ergebniss dieser Berechnung gleibt bei jedem Zeitschritt gleich.
+                        glm::dvec3 totalForce(0.0, 0.0, 0.0);
+                        for (size_t j = 0; j < currentParticles.size(); j++)
+                        {
+                            if (p != j)
+                            {
+                                Particle& otherParticle = currentParticles[j];
+                                glm::dvec3 force = currentParticles[p].calculateGravitationalForce(otherParticle, G, softening, deltaTime, k);
+                                totalForce += force;
+                                totalEnergie[t][p] += currentParticles[p].calcPotentialEnergie(otherParticle, G, softening, k);
+                                calulations++;
+                            }
+                        }
+                        totalEnergie[t][p] = currentParticles[p].calcKineticEnergie();
+
+                        //Runge-Kutta Schritte berechnen
+                        currentParticles[p].rungeKuttaUpdateVelocity(currentParticles[p].calcAcceleration(totalForce), deltaTime, k);
+                        currentParticles[p].rungeKuttaUpdatePosition(deltaTime, k);
+                    }
+                }
+            }
+
+
+            //Other methods
+            if (false)
+            {
+                // particlesSize ist die Anzahl der Partikel
+                for (int p = 0; p < particlesSize; ++p)
+                {
                     glm::dvec3 totalForce(0.0, 0.0, 0.0);
+
+                    //Drift-Kick-Drift leapfrog
+                    //currentParticles[p].leapfrogUpdatePosition(currentParticles[p].velocity, deltaTime / 2);
+
                     for (size_t j = 0; j < currentParticles.size(); j++)
                     {
                         if (p != j)
                         {
                             Particle& otherParticle = currentParticles[j];
-                            glm::dvec3 force = currentParticles[p].calculateGravitationalForce(otherParticle, G, softening, deltaTime, k);
+                            glm::dvec3 force = currentParticles[p].calculateGravitationalForce(otherParticle, G, softening, deltaTime);
+                            totalEnergie[t][p] += currentParticles[p].calcPotentialEnergie(otherParticle, G, softening);
                             totalForce += force;
-                            totalEnergie[t][p] += currentParticles[p].calcPotentialEnergie(otherParticle, G, softening, k);
                             calulations++;
                         }
                     }
+
                     totalEnergie[t][p] = currentParticles[p].calcKineticEnergie();
 
-                    //Runge-Kutta Schritte berechnen
-                    currentParticles[p].rungeKuttaUpdateVelocity(currentParticles[p].calcAcceleration(totalForce), deltaTime, k);
-                    currentParticles[p].rungeKuttaUpdatePosition(deltaTime, k);
+                    //semi implicit euler
+                    currentParticles[p].eulerUpdateVelocity(currentParticles[p].calcAcceleration(totalForce), deltaTime);
+                    currentParticles[p].eulerUpdatePosition(currentParticles[p].velocity, deltaTime);
+
+                    //Runge-Kutta
+                    //currentParticles[p].rungeKuttaUpdateVelocity(currentParticles[p].calcAcceleration(totalForce), deltaTime);
+                    ////currentParticles[p].rungeKuttaUpdatePosition(currentParticles[p].velocity, deltaTime);
+
+                    //Drift-Kick-Drift leapfrog
+                    //currentParticles[p].leapfrogUpdateVelocity(currentParticles[p].calcAcceleration(totalForce), deltaTime);
+                    //currentParticles[p].leapfrogUpdatePosition(currentParticles[p].velocity, deltaTime/2);
                 }
             }
-
-
-            // particlesSize ist die Anzahl der Partikel
-            /*for (int p = 0; p < particlesSize; ++p)
-            {
-                glm::dvec3 totalForce(0.0, 0.0, 0.0);
-
-                //Drift-Kick-Drift leapfrog
-                //currentParticles[p].leapfrogUpdatePosition(currentParticles[p].velocity, deltaTime / 2);
-
-                for (size_t j = 0; j < currentParticles.size(); j++)
-                {
-                    if (p != j)
-                    {
-                        Particle& otherParticle = currentParticles[j];
-                        glm::dvec3 force = currentParticles[p].calculateGravitationalForce(otherParticle, G, softening, deltaTime);
-                        totalEnergie[t][p] += currentParticles[p].calcPotentialEnergie(otherParticle, G, softening);
-                        totalForce += force;
-                        calulations++;
-                    }
-                }
-
-                totalEnergie[t][p] = currentParticles[p].calcKineticEnergie();
-
-                //semi implicit euler
-                currentParticles[p].eulerUpdateVelocity(currentParticles[p].calcAcceleration(totalForce), deltaTime);
-                currentParticles[p].eulerUpdatePosition(currentParticles[p].velocity, deltaTime);
-                
-                //Runge-Kutta
-                //currentParticles[p].rungeKuttaUpdateVelocity(currentParticles[p].calcAcceleration(totalForce), deltaTime);
-				////currentParticles[p].rungeKuttaUpdatePosition(currentParticles[p].velocity, deltaTime);
-
-                //Drift-Kick-Drift leapfrog
-                //currentParticles[p].leapfrogUpdateVelocity(currentParticles[p].calcAcceleration(totalForce), deltaTime);
-                //currentParticles[p].leapfrogUpdatePosition(currentParticles[p].velocity, deltaTime/2);
-            }*/
 
             fileManager->saveParticles(t, currentParticles, "Data");
 

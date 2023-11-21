@@ -10,7 +10,7 @@ void SystemInit::start(std::vector<Particle>& particles)
 	//solarSystem(particles);
 	ourSolarSystem(particles);
 
-	//ellipticalGalaxy(0, 999, { 0,0,0 }, { 0,300,0 }, { 0,0,0 }, particles);
+	//ellipticalGalaxy(0, 1999, { 0,0,0 }, { 0,300,0 }, { 0,0,0 }, particles);
 	//ellipticalGalaxy(1000, 1999, { 2e22, 0, 0}, { 90,0,180 }, { 0,0,0 } , particles);
 	
 	//spiralGalaxy(0, 9999, { 0,0,0 }, { 220, 17, 45}, { 0,0,0 }, particles);
@@ -113,10 +113,8 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 posit
 		}
 
 		//stars like our sun
-		else
+		if(j > startIndex && j < 1000)
 		{
-			Particle particle;
-
 			double r = physics.random(0, physics.random(0,diskRadius));
 			depth = physics.random(0, physics.random(0, physics.random(0, diskRadius))) / 5;
 
@@ -135,8 +133,34 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 posit
 			particles[j].velocity = glm::dvec3(-v * std::sin(angle), v * std::cos(angle), 0) + velocity;
 			particles[j].mass = 1e30;
 			particles[j].radius = 0.01;
-			particle.color = glm::vec3(1, 1, 1);
+			particles[j].color = glm::vec3(1, 1, 1);
 		}
+
+		//dark matter in the outer regions
+		if (j >= 1000)
+		{
+			double r = physics.random(physics.random(0, diskRadius), diskRadius);
+			depth = physics.random(0, physics.random(0, physics.random(0, diskRadius))) / 5;
+
+			double angle = physics.random(0, 2 * 3.14);
+
+			//Fz = Fg
+			//m*v^2/r = G * M * m / r^2
+			// v^2 = G * M / r
+			//v = sqrt(G * M / r)
+			//double v = 0;
+
+			double v = std::sqrt((physics.G * particles[startIndex].mass) / r) * starSpeed;
+
+
+			particles[j].position = glm::dvec3(r * std::cos(angle), r * std::sin(angle), physics.random(-depth, depth)) + position;
+			particles[j].velocity = glm::dvec3(-v * std::sin(angle), v * std::cos(angle), 0) + velocity;
+			particles[j].mass = 1e33;
+			particles[j].radius = 0.01;
+			particles[j].color = glm::vec3(1, 1, 1);
+			particles[j].darkMatter = true;
+		}
+
 		i++;
 	}
 }

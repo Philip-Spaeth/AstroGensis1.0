@@ -20,5 +20,11 @@ class FileManager
 
 	void saveEnergieData(std::vector<std::vector<double>>& totalEnergie, std::string path);
 
+	//rotationCurve in galaxy, dark and visible matter
+	void saveRotationCurve(std::vector<Particle>& particles, std::string path);
+
+	//massCurve in galaxy, dark and visible matter
+	void saveMassCurve(std::vector<Particle>& particles, std::string path);
+
 	private:
 };

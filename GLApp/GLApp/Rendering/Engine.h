@@ -25,15 +25,17 @@ public:
     bool isRunning = false;
 
     double playSpeed = 1;
-
+    double changeSpeed = 1;
 private:
+
+    bool showDarkMatter = true;
 
     double passedTime = 0;
 
     double globalScale = 1e-9;
     //double globalScale = 1e-18;
 
-    bool BGstars = true;
+    bool BGstars = false;
     int amountOfStars = 1000;
     std::vector<glm::vec3> stars;
 

@@ -121,3 +121,50 @@ void FileManager::saveEnergieData(std::vector<std::vector<double>>& totalEnergie
 
     outputFile.close();
 }
+
+void FileManager::saveRotationCurve(std::vector<Particle>& particles, std::string path)
+{
+    std::vector<double> velocity;
+    std::vector<double> distance;
+    velocity.resize(particles.size());
+    distance.resize(particles.size());
+    //print out the velocity and the distance to the center of mass
+    for (int i = 0; i < particles.size(); i++)
+	{
+        distance[i] = sqrt(pow(particles[i].position.x, 2) + pow(particles[i].position.y, 2) + pow(particles[i].position.z, 2));
+        velocity[i] = sqrt(pow(particles[i].velocity.x, 2) + pow(particles[i].velocity.y, 2) + pow(particles[i].velocity.z, 2));
+	}
+    //sort the velocity by the distance
+    for (int i = 0; i < particles.size(); i++)
+    {
+        for (int j = 0; j < particles.size() - 1; j++)
+        {
+            if (distance[j] > distance[j + 1])
+            {
+				double temp = distance[j];
+				distance[j] = distance[j + 1];
+				distance[j + 1] = temp;
+
+				double temp2 = velocity[j];
+				velocity[j] = velocity[j + 1];
+				velocity[j + 1] = temp2;
+			}
+		}
+	}
+
+    //print out the velocity and the distance to the center of mass
+    for (int i = 0; i < particles.size(); i++)
+    {
+		std::cout << distance[i] << ";" << velocity[i] << std::endl;
+	}
+}
+
+void FileManager::saveMassCurve(std::vector<Particle>& particles, std::string path)
+{
+	//print out the velocity and the distance to the center of mass
+	for (int i = 0; i < particles.size(); i++)
+	{
+		double distance = sqrt(pow(particles[i].position.x, 2) + pow(particles[i].position.y, 2) + pow(particles[i].position.z, 2));
+		std::cout << time << ";" << particles[i].mass << ";" << distance << std::endl;
+	}
+}

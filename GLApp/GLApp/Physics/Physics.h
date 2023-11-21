@@ -34,7 +34,7 @@ public:
     // galaxy = 1e16
 
     //the time per frame
-    const double deltaTime = 86400;
+    const double deltaTime = 8640;
 
 
     //Physikalische Konstanten

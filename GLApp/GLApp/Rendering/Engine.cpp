@@ -157,13 +157,20 @@ void Engine::update(int index, std::vector<Particle>& particles)
     //speed up if right arrow is pressed
     if (GetAsyncKeyState(39) & 0x8000)
     {
-		playSpeed = playSpeed + 0.1;
+		playSpeed = playSpeed + changeSpeed;
 	}
     //slow down if left arrow is pressed
     if (GetAsyncKeyState(37) & 0x8000)
     {
-        playSpeed = playSpeed - 0.1;
+        playSpeed = playSpeed - changeSpeed;
     }
+
+    //if 1 is pressed
+    if (GetAsyncKeyState(49) & 0x8000)
+    {
+		//set the play speed to 1
+		playSpeed = 1;
+	}
 }
 
 void Engine::renderParticles(std::vector<Particle>& particles)
@@ -213,6 +220,25 @@ void Engine::renderParticles(std::vector<Particle>& particles)
     {
         for (int p = 0; p < particles.size(); p++)
         {
+            if(particles[p].radius == 0)
+			{
+				continue;
+			}
+            if(showDarkMatter == false && particles[p].darkMatter == true)
+			{
+                continue;
+			}
+            if (showDarkMatter == true && particles[p].darkMatter == true)
+            {
+                // Setzen Sie die Farbe auf blau für dunkle Materie
+                glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(glm::vec3(0,0,1)));
+            }
+            else
+			{
+				// Setzen Sie die Farbe im Shader
+				glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(particles[p].color));
+			}
+
             glm::vec3 scaledPosition = glm::vec3(
                 particles[p].position.x * globalScale,
                 particles[p].position.y * globalScale,
@@ -223,8 +249,6 @@ void Engine::renderParticles(std::vector<Particle>& particles)
             glUniform3fv(glGetUniformLocation(shaderProgram, "particlePosition"), 1, glm::value_ptr(scaledPosition));
 
             glPointSize(particles[p].radius);
-            // Setzen Sie die Farbe im Shader
-            glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(particles[p].color));
 
             // Zeichnen Sie den Punkt
             glDrawArrays(GL_POINTS, 0, 1);

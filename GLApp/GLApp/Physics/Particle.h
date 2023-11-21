@@ -15,16 +15,17 @@ public:
     double mass;
 
     // RungeKuta variables
-    glm::dvec3 YnVelocity;
-    glm::dvec3 YnPosition;
-    glm::dvec3 k1Velocity;
-    glm::dvec3 k2Velocity;
-    glm::dvec3 k3Velocity;
-    glm::dvec3 k4Velocity;
-    glm::dvec3 k1Position;
-    glm::dvec3 k2Position;
-    glm::dvec3 k3Position;
-    glm::dvec3 k4Position;
+    glm::dvec3 YnVelocity = { 0,0,0 };
+    glm::dvec3 k1Velocity = { 0,0,0 };
+    glm::dvec3 k2Velocity = { 0,0,0 };
+    glm::dvec3 k3Velocity = { 0,0,0 };
+    glm::dvec3 k4Velocity = { 0,0,0 };
+    glm::dvec3 k1Position = { 0,0,0 };
+    glm::dvec3 k2Position = { 0,0,0 };
+    glm::dvec3 k3Position = { 0,0,0 };
+    glm::dvec3 k4Position = { 0,0,0 };
+
+
 
     //dark matter or not
     bool darkMatter = false;
