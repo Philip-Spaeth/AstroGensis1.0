@@ -18,23 +18,43 @@ void Particle::eulerUpdatePosition(glm::dvec3 velocity, double deltaTime)
 }
 
 //Runge-Kutta 4th order
-void Particle::rungeKuttaUpdateVelocity(glm::dvec3 acceleration, double deltaTime)
+void Particle::rungeKuttaUpdateVelocity(glm::dvec3 acceleration, double deltaTime, int rungeKutaStep)
 {
-	//calculate the k1
-	glm::dvec3 k1 = acceleration * deltaTime;
-	//calculate the k2
-	glm::dvec3 k2 = acceleration * (deltaTime / 2);
-	//calculate the k3
-	glm::dvec3 k3 = acceleration * (deltaTime / 2);
-	//calculate the k4
-	glm::dvec3 k4 = acceleration * deltaTime;
+    YnVelocity = acceleration * deltaTime;
+    if (rungeKutaStep == 0) {
+        k1Velocity = YnVelocity;
+    }
+    else if (rungeKutaStep == 1) {
+        k2Velocity = YnVelocity;
+    }
+    else if (rungeKutaStep == 2) {
+        k3Velocity = YnVelocity;
+    }
+    else if (rungeKutaStep == 3) {
+        k4Velocity = YnVelocity;
 
-	velocity += (k1 + (double)2 * k2 + (double)2 * k3 + k4) / 6.0;
+        // alle Ergebnisse Zusammenfassen:
+        velocity += (k1Velocity + 2.0 * k2Velocity + 2.0 * k3Velocity + k4Velocity) * 0.16666666666666666666666666666667;
+    }
 }
 
-void Particle::rungeKuttaUpdatePosition(glm::dvec3 velocity, double deltaTime)
+void Particle::rungeKuttaUpdatePosition(double deltaTime, int rungeKutaStep)
 {
-	position += velocity * deltaTime;
+    if (rungeKutaStep == 0) {
+        k1Position = velocity * deltaTime;
+    }
+    else if (rungeKutaStep == 1) {
+        k2Position = (velocity + k1Velocity * 0.5) * deltaTime;
+    }
+    else if (rungeKutaStep == 2) {
+        k3Position = (velocity + k2Velocity * 0.5) * deltaTime;
+    }
+    else if (rungeKutaStep == 3) {
+        k4Position = (velocity + k3Velocity * 0.5) * deltaTime;
+
+        // alle Ergebnisse zusammenfassen:
+        position += (k1Position + 2.0 * k2Position + 2.0 * k3Position + k4Position) * 0.16666666666666666666666666666667;
+    }
 }
 
 
@@ -70,6 +90,32 @@ glm::dvec3 Particle::calculateGravitationalForce(const Particle& other, double G
     glm::dvec3 force = forceMagnitude * glm::normalize(delta);
     return force;
 }
+glm::dvec3 Particle::calculateGravitationalForce(const Particle& other, double G, double softening, double deltaTime, int k)
+{
+   
+    glm::dvec3 delta = other.position - position;
+    if (k == 1) {
+        // hier villeicht auch so: delta = other.position + other.k1Position  - position + k1Position;
+        // und bei k2, k3 auch so
+        delta = other.position  - position + k1Position;
+	}
+	else if (k == 2) {
+		delta = other.position  - position + k2Position;
+	}
+    else if (k == 3) {
+        delta = other.position  - position + k3Position;
+    }
+    double distance = glm::length(delta);
+
+    if (distance == 0)
+    {
+        return { 0, 0, 0 }; // Verhindere eine Division durch Null.
+    }
+
+    double forceMagnitude = (G * mass * other.mass) / (distance * distance + softening);
+    glm::dvec3 force = forceMagnitude * glm::normalize(delta);
+    return force;
+}
 
 glm::dvec3 Particle::calcAcceleration(glm::dvec3 force)
 {
@@ -82,7 +128,6 @@ glm::dvec3 Particle::calcAcceleration(glm::dvec3 force)
 	glm::dvec3 acceleration = force / mass;
 	return acceleration;
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
 
@@ -107,7 +152,28 @@ double Particle::calcPotentialEnergie(const Particle& other, double G, double so
 	double potentialEnergie = (double)(1/2)*( - G * mass * other.mass / (distance));
 	return potentialEnergie;
 }
+double Particle::calcPotentialEnergie(const Particle& other, double G, double softening, int k)
+{
+    glm::dvec3 delta = other.position - position;
+    if (k == 1) {
+        delta = other.position + other.k1Position - position + k1Position;
+    }
+    else if (k == 2) {
+        delta = other.position + other.k2Position - position + k2Position;
+    }
+    else if (k == 3) {
+        delta = other.position + other.k3Position - position + k3Position;
+    }
+    double distance = glm::length(delta);
 
+    if (distance == 0)
+    {
+        return 0; // Verhindere eine Division durch Null.
+    }
+
+    double potentialEnergie = (double)(1 / 2) * (-G * mass * other.mass / (distance));
+    return potentialEnergie;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
