@@ -33,7 +33,7 @@ public:
     // 0 = rungeKutta
     // 1 = Semi euler implicit
     // 2 = drift kick drift leapfrog
-
+    
     // one hour = 3600
     // one day = 86400
     // one year = 31536000
