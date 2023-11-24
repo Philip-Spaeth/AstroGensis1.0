@@ -60,19 +60,6 @@ void FileManager::loadParticles(int timestep, std::vector<Particle>& particles)
 }
 void FileManager::saveEnergieData(std::vector<std::vector<double>>& totalEnergie, std::string path) 
 {
-
-    std::string filename = path;
-    std::ofstream outputFile;
-    outputFile.open(filename, std::ios::out);
-
-    if (!outputFile.is_open()) {
-        std::cerr << "Fehler beim Öffnen der Datei!" << std::endl;
-        return;
-    }
-
-    std::locale germanLocale("de_DE.utf8");
-    outputFile.imbue(germanLocale);
-
     double startEnergy = 0;
     double endEnergy = 0;
 
@@ -92,14 +79,6 @@ void FileManager::saveEnergieData(std::vector<std::vector<double>>& totalEnergie
         if (i == totalEnergie.size() - 1)
         {
             endEnergy = energy;
-        }
-
-
-        // Set precision for output file
-        outputFile << std::fixed << std::setprecision(20) << energy;
-
-        if (i < totalEnergie.size() - 1) {
-            outputFile << "\n";
         }
     }
     double lostEnergy =startEnergy - endEnergy;
@@ -121,8 +100,6 @@ void FileManager::saveEnergieData(std::vector<std::vector<double>>& totalEnergie
         std::cout << std::setprecision(20) << "Added Energy: " << lostEnergy << std::endl;
         std::cout << std::setprecision(10) << "More energy than before: " << (lostEnergy / startEnergy) * 100 << "%" << std::endl;
     }
-
-    outputFile.close();
 }
 
 void FileManager::saveRotationCurve(std::vector<Particle>& particles, std::string path)
@@ -141,7 +118,7 @@ void FileManager::saveRotationCurve(std::vector<Particle>& particles, std::strin
 
     double galaxySize = 1e21;
 
-    int numberOfSteps = 100;
+    int numberOfSteps = 200;
     double binSize = galaxySize / numberOfSteps;
 
     std::vector<Particle> steps;
@@ -174,6 +151,23 @@ void FileManager::saveRotationCurve(std::vector<Particle>& particles, std::strin
 			}
         }
     }
+    if(true)
+    {
+        for (int k = 0; k < steps.size(); k++)
+        {
+            if (k < 20)
+            {
+                continue;
+            }
+            double myVelocity = sqrt(pow(steps[k].velocity.x, 2) + pow(steps[k].velocity.y, 2) + pow(steps[k].velocity.z, 2));
+            double otherVelocity = sqrt(pow(steps[k - 1].velocity.x, 2) + pow(steps[k - 1].velocity.y, 2) + pow(steps[k - 1].velocity.z, 2));
+            if (myVelocity > otherVelocity * 2)
+            {
+                steps[k].velocity = steps[k - 1].velocity;
+		    }
+        }
+    }
+
     //print out the velocity and the distance to the center of mass
 	for (int i = 0; i < steps.size(); i++)
 	{

@@ -25,8 +25,14 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    static const int numTimeSteps = 100;
-    static const int particlesSize = 1000;
+    static const int numTimeSteps = 20;
+    static const int particlesSize = 2000;
+
+    // calculation Method:
+    int calculationMethod = 2;
+    // 0 = rungeKutta
+    // 1 = Semi euler implicit
+    // 2 = drift kick drift leapfrog
 
     // one hour = 3600
     // one day = 86400
@@ -34,12 +40,12 @@ public:
     // galaxy = 1e16
 
     //the time per frame
-    const double deltaTime = 1e16;
+    const double deltaTime = 3e15;
 
 
     //Physikalische Konstanten
     const double G = 6.67430e-11;
-    const double softening = 1;
+    const double softening = 1e18;
 
 
     std::vector<Particle> currentParticles;

@@ -22,93 +22,102 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position,
 	int size = endIndex + 1 - startIndex; 
 
 	double diskRadius = 1e21;
+	double BulgeRadius = 3e20;
 
 	int numArms = 2;
-	double armWidth = 0;
-	double armDensity = 0.3;
-	double interArmDensity = 1;
-
-	double depth = 0;
-
 	int i = 0;
+
+	//verteillung der masse 
+	double totalMass = 1e42;
+
+	double percentBulge = 0.5;
+	double bulgeMass = percentBulge * totalMass;
+
+	double percentDisk = 0.05;
+	double diskMass = percentDisk * totalMass;
+
+	double percentDarkMatter = 0.9;
+	double darkMatterMass = percentDarkMatter * totalMass;
+	double haloRadius = 1e22;
+
+
+	//split the size of the galaxy in 3 parts
+	int bulgeSize = size * percentBulge;
+	int diskSize = size * percentDisk;
+	int darkMatterSize = size * percentDarkMatter;
+
+	int bulgeStart = startIndex;
+	int bulgeEnd = bulgeStart + bulgeSize;
+
+	int diskStart = bulgeEnd;
+	int diskEnd = diskStart + diskSize;
+
+	int darkMatterStart = diskEnd;
+	int darkMatterEnd = darkMatterStart + darkMatterSize;
 
 	// Erstellen einer Spiralgalaxie
 	for (int j = startIndex; j != endIndex; j++)
 	{
-		// Schwarzes Loch in der Mitte
-		if (j == startIndex)
+		//Dense bulge in the center
+
+		if (j >= bulgeStart && j < bulgeEnd)
 		{
-			particles[j].position = position;
-			particles[j].velocity = velocity;
-			particles[j].mass = 1e42;
-			particles[j].radius = 2;
+			// Schwarzes Loch in der Mitte
+			if (j == startIndex)
+			{
+				particles[j].position = position;
+				particles[j].velocity = velocity;
+				particles[j].mass = 1e36;
+				particles[j].radius = 1;
+				particles[j].color = glm::vec3(1, 1, 1);
+			}
+			else
+			{
+				double r = physics.random(0, physics.random(0, BulgeRadius));
+				double depth = physics.random(0, physics.random(0, physics.random(0, BulgeRadius)));
+
+				double angle = physics.random(0, 2 * 3.14);
+
+				double v = std::sqrt((physics.G * 1e36) / r);
+				particles[j].position = glm::dvec3(r * std::cos(angle), r * std::sin(angle), physics.random(-depth, depth)) + position; 
+				particles[j].velocity = glm::dvec3(-v * std::sin(angle), v * std::cos(angle), 0) + velocity;
+				particles[j].mass = 1e30;
+				particles[j].radius = 0.01;
+				particles[j].color = glm::vec3(1, 1, 1);
+			}
+		}
+		//disk 
+		else if (j >= diskStart && j < diskEnd)
+		{
+			double r = physics.random(0, physics.random(0, diskRadius));
+			double depth = physics.random(0, physics.random(0, physics.random(0, diskRadius)));
+
+			double armAngle = 2 * 3.14 * ((j - startIndex) * 1000 / particles.size()) / numArms;
+
+			double v = std::sqrt((physics.G * 1e36) / r);
+			particles[j].position = glm::dvec3(r * std::cos(armAngle), r * std::sin(armAngle), physics.random(-depth, depth)) + position;
+			particles[j].velocity = glm::dvec3(-v * std::sin(armAngle), v * std::cos(armAngle), 0) + velocity;
+			particles[j].mass = 1e30;
+			particles[j].radius = 0.01;
 			particles[j].color = glm::vec3(1, 1, 1);
 		}
 
-		// Sterne in Spiralarmen um das schwarze Loch
-		else
-		{
-			Particle particle;
-
-
-			double r = physics.random(0, physics.random(0, diskRadius));
-			depth = physics.random(0, physics.random(0, physics.random(0, diskRadius))) / 5;
-
-
-			//Fz = Fg
-			//m*v^2/r = G * M * m / r^2
-			// v^2 = G * M / r
-			//v = sqrt(G * M / r)
-
-			double armAngle = 2 * 3.14 * ((j - startIndex)*1000/particles.size()) / numArms; // Winkel für die Anzahl der Arme
-			/*
-			int randomInt = (int)physics.random(0, 3);
-			if (randomInt == 1)
-			{
-				//double r = physics.random(0, physics.random(0, physics.random(0, physics.random(0, physics.random(0, physics.random(0, diskRadius))))));
-				//depth = physics.random(0, physics.random(0, physics.random(0, physics.random(0, physics.random(0, diskRadius))))) / 5;
-				armAngle = physics.random(0, 2 * 3.14);
-			}
-			*/
-
-			particles[j].position = glm::dvec3(r * std::cos(armAngle), r * std::sin(armAngle), physics.random(-depth, depth)) + position;
-
-			double v = std::sqrt((physics.G * particles[startIndex].mass) / particles[startIndex].CalculateDistance(particles[j]));
-			particles[j].velocity = glm::dvec3(-v * std::sin(armAngle), v * std::cos(armAngle), 0) + velocity;
-
-			//M proportional to r^2
-			particles[j].mass = 1e37;
-
-			particles[j].radius = 0.01;
-			//make the stars in the center brighter
-			//double brightness = 1 - (particles[j].CalculateDistance(particles[startIndex]) / diskRadius);
-			//particles[j].color = glm::vec3(brightness, brightness, brightness);
-		}
 		//dark matter in the outer regions
-		if (j >= 500)
+		else if (j >= darkMatterStart && j < darkMatterEnd)
 		{
 			double r = physics.random(physics.random(0, diskRadius), diskRadius);
-			depth = physics.random(0, physics.random(0, physics.random(0, diskRadius))) / 5;
+			double depth = physics.random(0, physics.random(0, physics.random(0, diskRadius))) / 5;
 
 			double angle = physics.random(0, 2 * 3.14);
 
-			//Fz = Fg
-			//m*v^2/r = G * M * m / r^2
-			// v^2 = G * M / r
-			//v = sqrt(G * M / r)
-			//double v = 0;
-
-			double v = std::sqrt((physics.G * particles[startIndex].mass) / r) ;
-
-
+			double v = std::sqrt((physics.G * 1e36) / r);
 			particles[j].position = glm::dvec3(r * std::cos(angle), r * std::sin(angle), physics.random(-depth, depth)) + position;
 			particles[j].velocity = glm::dvec3(-v * std::sin(angle), v * std::cos(angle), 0) + velocity;
-			particles[j].mass = 1e37;
+			particles[j].mass = 1e34;
 			particles[j].radius = 0.01;
 			particles[j].color = glm::vec3(1, 1, 1);
 			particles[j].darkMatter = true;
 		}
-
 		i++;
 	} 
 }	

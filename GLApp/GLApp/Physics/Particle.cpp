@@ -104,14 +104,11 @@ glm::dvec3 Particle::calculateGravitationalForce(const Particle& other, double G
         delta = other.position + other.k1Position - position + k1Position;
 	}
 	else if (k == 2) {
-        delta = other.position + other.k2Position - position + k1Position;
+        delta = other.position + other.k2Position - position + k2Position;
 	}
     else if (k == 3) {
-        delta = other.position + other.k3Position - position + k1Position;
+        delta = other.position + other.k3Position - position + k3Position;
     }
-    else if (k == 4) {
-        delta = other.position + other.k4Position - position + k1Position;
-	}
 
     double distance = glm::length(delta);
 
@@ -157,7 +154,7 @@ double Particle::calcPotentialEnergie(const Particle& other, double G, double so
 		return 0; // Verhindere eine Division durch Null.
 	}
 
-	double potentialEnergie = (double)(1/2)*( - G * mass * other.mass / (distance));
+	double potentialEnergie = (0.5)*((- G * mass * other.mass) / (distance));
 	return potentialEnergie;
 }
 double Particle::calcPotentialEnergie(const Particle& other, double G, double softening, int k)
@@ -179,7 +176,7 @@ double Particle::calcPotentialEnergie(const Particle& other, double G, double so
         return 0; // Verhindere eine Division durch Null.
     }
 
-    double potentialEnergie = (double)(1 / 2) * (-G * mass * other.mass / (distance));
+    double potentialEnergie = (0.5) * ((- G * mass * other.mass) / (distance));
     return potentialEnergie;
 }
 
