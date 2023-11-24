@@ -1,6 +1,9 @@
 ﻿ #include "FileManager.h"
 #include <filesystem>
 #include "Physics.h"
+#include <iostream>
+#include <vector>
+#include "Particle.h"
 #include <cmath>
 
 FileManager::FileManager(){}
@@ -124,39 +127,63 @@ void FileManager::saveEnergieData(std::vector<std::vector<double>>& totalEnergie
 
 void FileManager::saveRotationCurve(std::vector<Particle>& particles, std::string path)
 {
-    std::vector<double> velocity;
-    std::vector<double> distance;
-    velocity.resize(particles.size());
-    distance.resize(particles.size());
+    std::string filename = "../velocty_Curve.txt";
+    std::ofstream outputFile;
+    outputFile.open(filename, std::ios::out);
+
+    if (!outputFile.is_open()) {
+        std::cerr << "Fehler beim Öffnen der Datei!" << std::endl;
+        return;
+    }
+
+    std::locale germanLocale("de_DE.utf8");
+    outputFile.imbue(germanLocale);
+
+    double galaxySize = 1e21;
+
+    int numberOfSteps = 100;
+    double binSize = galaxySize / numberOfSteps;
+
+    std::vector<Particle> steps;
+    steps.resize(numberOfSteps);
+
+    //choose the particles that the closest current step
     //print out the velocity and the distance to the center of mass
-    for (int i = 0; i < particles.size(); i++)
-	{
-        distance[i] = sqrt(pow(particles[i].position.x, 2) + pow(particles[i].position.y, 2) + pow(particles[i].position.z, 2));
-        velocity[i] = sqrt(pow(particles[i].velocity.x, 2) + pow(particles[i].velocity.y, 2) + pow(particles[i].velocity.z, 2));
-	}
-    //sort the velocity by the distance
-    for (int i = 0; i < particles.size(); i++)
+    for (int k = 0; k < steps.size(); k++)
     {
-        for (int j = 0; j < particles.size() - 1; j++)
+        for (int i = 0; i < particles.size(); i++)
         {
-            if (distance[j] > distance[j + 1])
-            {
-				double temp = distance[j];
-				distance[j] = distance[j + 1];
-				distance[j + 1] = temp;
+            //clac the current distance from the step[k] to the current step 
+            double distance = sqrt(pow(steps[k].position.x, 2) + pow(steps[k].position.y, 2) + pow(steps[k].position.z, 2));
+            double delta = abs(distance - k * binSize);
 
-				double temp2 = velocity[j];
-				velocity[j] = velocity[j + 1];
-				velocity[j + 1] = temp2;
+            //calc the distance from the particle to the current step
+            double particleDistance = sqrt(pow(particles[i].position.x, 2) + pow(particles[i].position.y, 2) + pow(particles[i].position.z, 2));
+            double particleDelta = abs(particleDistance - k * binSize);
+
+            //check if the particle is in the current step
+            if (particleDelta < delta)
+			{
+				steps[k].position.x = particles[i].position.x;
+				steps[k].position.y = particles[i].position.y;
+				steps[k].position.z = particles[i].position.z;
+
+				steps[k].velocity.x = particles[i].velocity.x;
+				steps[k].velocity.y = particles[i].velocity.y;
+				steps[k].velocity.z = particles[i].velocity.z;
 			}
-		}
+        }
+    }
+    //print out the velocity and the distance to the center of mass
+	for (int i = 0; i < steps.size(); i++)
+	{
+		double distance = sqrt(pow(steps[i].position.x, 2) + pow(steps[i].position.y, 2) + pow(steps[i].position.z, 2));
+        double velocity = sqrt(pow(steps[i].velocity.x, 2) + pow(steps[i].velocity.y, 2) + pow(steps[i].velocity.z, 2));
+        //write the data to the file use , instead of . for the decimal point
+        outputFile << std::fixed << std::setprecision(20) << distance << ";" << velocity << ";" << std::endl;
 	}
 
-    //print out the velocity and the distance to the center of mass
-    for (int i = 0; i < particles.size(); i++)
-    {
-		std::cout << distance[i] << ";" << velocity[i] << std::endl;
-	}
+    outputFile.close();
 }
 
 void FileManager::saveMassCurve(std::vector<Particle>& particles, std::string path)
