@@ -136,7 +136,12 @@ void Engine::update(int index, std::vector<Particle>& particles)
     //calculate the time
     if (isRunning) 
     {
-      calcTime(particles[4].position, index);
+        if (particles.size() >= 4) {
+            calcTime(particles[4].position, index);
+        }
+        else {
+            calcTime(index);
+        }
     }
 
     processMouseInput();
@@ -403,6 +408,10 @@ bool Engine::clean()
     // Aufr�umen und beenden
     glfwTerminate();
     return true;
+}
+
+void Engine::calcTime(int index) {
+    calcTime(glm::dvec3(0, 0, 0), index);
 }
 
 void Engine::calcTime(glm::dvec3 position, int index)
