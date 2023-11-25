@@ -32,8 +32,9 @@ private:
 
     double passedTime = 0;
 
-    //double globalScale = 1e-9;
-    double globalScale = 1e-18;
+    double globalScale = 1e-9;
+    //double globalScale = 1e-18;
+    void calculateGlobalScale(std::vector<Particle>& particles);
 
     bool BGstars = true;
     int amountOfStars = 1000;

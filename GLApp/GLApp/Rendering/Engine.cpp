@@ -142,6 +142,11 @@ void Engine::update(int index, std::vector<Particle>& particles)
     processMouseInput();
     processInput();
 
+    // set the globalScale of the system
+    if (index == 0) {
+        calculateGlobalScale(particles);
+    }
+
     renderParticles(particles);
 
     glfwSwapBuffers(window);
@@ -243,7 +248,7 @@ void Engine::renderParticles(std::vector<Particle>& particles)
                 particles[p].position.x * globalScale,
                 particles[p].position.y * globalScale,
                 particles[p].position.z * globalScale
-            );
+            ); 
 
             // Setzen Sie die Position im Shader
             glUniform3fv(glGetUniformLocation(shaderProgram, "particlePosition"), 1, glm::value_ptr(scaledPosition));
@@ -516,4 +521,30 @@ double Engine::random(double min, double max)
     double randomFloat = min + static_cast<double>(rand()) / static_cast<double>(RAND_MAX) * (max - min);
 
     return randomFloat;
+}
+
+void Engine::calculateGlobalScale(std::vector<Particle>& particles) {
+    double maxDistance = 0;
+    for (int i = 0; i < particles.size(); i++){
+	    double distance = sqrt(pow(particles[i].position.x, 2) + pow(particles[i].position.y, 2) + pow(particles[i].position.z, 2));
+        if (distance > maxDistance){
+		    maxDistance = distance;
+	    }
+	}
+
+    // Distance is the diameter of the system
+    maxDistance = maxDistance * 2;
+
+    // Exponenten finden
+    int exponent;
+
+    if (maxDistance != 0) {
+        exponent = static_cast<int>(std::floor(std::log10(std::abs(maxDistance))));
+    }
+    else {
+        exponent = 0; // Der Logarithmus von 0 ist nicht definiert.
+    }
+
+	globalScale = maxDistance / pow(10, exponent*2 - 2);
+    //globalScale = 1e-18;
 }
