@@ -10,10 +10,10 @@ void SystemInit::start(std::vector<Particle>& particles)
 	//solarSystem(particles);
 	//ourSolarSystem(particles);
 
-	//ellipticalGalaxy(0, 999, { 0,0,0 }, { 0,300,0 }, { 0,0,0 }, particles);
+	//ellipticalGalaxy(0, 9999, { 0,0,0 }, { 0,300,0 }, { 0,0,0 }, particles);
 	//ellipticalGalaxy(1000, 1999, { 2e22, 0, 0}, { 90,0,180 }, { 0,0,0 } , particles);
 	
-	spiralGalaxy(0, 1999, { 0,0,0 }, { 0, 0, 0}, { 0,0,0 }, particles);
+	spiralGalaxy(0, 9999, { 0,0,0 }, { 0, 0, 0}, { 0,0,0 }, particles);
 	//spiralGalaxy(3000, 3999, { 1.5e22, 0.5e22, 0 }, { 234,30,129 }, { 0,0,0 }, particles);
 }
 
@@ -30,13 +30,13 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position,
 	//verteillung der masse 
 	double totalMass = 1e42;
 
-	double percentBulge = 0.5;
+	double percentBulge = 0.3;
 	double bulgeMass = percentBulge * totalMass;
 
-	double percentDisk = 0.05;
+	double percentDisk = 0.5;
 	double diskMass = percentDisk * totalMass;
 
-	double percentDarkMatter = 0.9;
+	double percentDarkMatter = 0.2;
 	double darkMatterMass = percentDarkMatter * totalMass;
 	double haloRadius = 1e22;
 
@@ -154,9 +154,8 @@ void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 posit
 			double y = r * std::sin(theta) * std::sin(phi);
 			double z = r * std::cos(theta);
 
-			double v = std::sqrt((physics.G * particles[startIndex].mass) / r) * starSpeed;
-
 			particles[j].position = glm::dvec3(x, y, z) + position;
+			double v = std::sqrt((physics.G * particles[startIndex].mass) / particles[startIndex].CalculateDistance(particles[j])) * starSpeed;
 			particles[j].velocity = glm::dvec3(-v * std::sin(phi), v * std::cos(phi), 0) + velocity;
 			particles[j].mass = 1e30;
 			particles[j].radius = 0.01;
