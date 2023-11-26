@@ -12,6 +12,9 @@ Octree::~Octree() {
 
 void Octree::buildTree(std::vector<Particle> particles) 
 {
+	// acuura
+	accuracyIndex = particles.size() * accuracy;
+
 	double maxDistance = -10e10;
 	for (int i = 0; i < particles.size(); i++) 
     {
@@ -25,10 +28,53 @@ void Octree::buildTree(std::vector<Particle> particles)
 		maxDistance *= -1;
 	}
 
-	root = new Node(center, maxDistance);
+	root = new Node(center, maxDistance, accuracyIndex);
 
     for (int p = 0; p < particles.size(); p++) 
     {
+		// Es muss noch ein letzter Stoss durchgegeben werden, dass Partikel mitten drin ans Ende rutschen.
 		root->InsertToNode(particles[p]);
     }
+
+	root->bringParticleToEnd();
+}
+
+//double Octree::calculateGravitationForce()
+//{
+//	// Füge hier den Code für die Berechnung der Gravitationskraft hinzu (rekursiv durch den Baum gehen)
+//	std::vector<Particle*> collectedParticles;
+//	collectedParticles = root->collectChildren(collectedParticles);
+//
+//	glm::dvec3 totalForce(0.0, 0.0, 0.0);
+//
+//	for (int i = 0; i < collectedParticles.size(); i++)
+//	{
+//		for (int j = 0; j < collectedParticles.size(); j++)
+//		{
+//			if (i != j)
+//			{
+//				Particle* otherParticle = collectedParticles[j];
+//				//collectedParticles[i]->force += collectedParticles[i]->calculateGravitationForce(*collectedParticles[j]);
+//				glm::dvec3 force = collectedParticles[i]->calculateGravitationalForce(otherParticle, G, 0, deltaTime, k);
+//				totalForce += force;
+//			}
+//		}
+//	}
+//
+//
+//	return 0.0;
+//}
+
+std::vector<Particle> Octree::getSummerizedParticles()
+{
+	std::vector<Particle*> collectedParticles;
+	collectedParticles = root->collectChildren(collectedParticles);
+
+	std::vector<Particle> summerizedParticles;
+	for (int i = 0; i < collectedParticles.size(); i++)
+	{
+		summerizedParticles.push_back(*collectedParticles[i]);
+	}
+
+	return summerizedParticles;
 }

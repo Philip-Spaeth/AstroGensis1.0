@@ -13,8 +13,14 @@ public:
     ~Octree();
 
     void buildTree(std::vector<Particle> particles);
+
+    //double calculateGravitationForce();
+    std::vector<Particle> getSummerizedParticles();
+
+    double accuracy = 0.1;
 private:
-    
+    double accuracyIndex;
+
 	Node* root;
     glm::dvec3 center;
 
