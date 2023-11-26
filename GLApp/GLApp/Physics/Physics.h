@@ -25,14 +25,11 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    static const int numTimeSteps = 1;
-    static const int particlesSize = 4000;
+    static const int numTimeSteps = 3;
+    static const int particlesSize = 100;
 
     // calculation Method:
     int calculationMethod = 2;
-    // 0 = rungeKutta
-    // 1 = Semi euler implicit
-    // 2 = drift kick drift leapfrog
     
     // one hour = 3600
     // one day = 86400
@@ -41,7 +38,7 @@ public:
     // bigger galaxy = 3e15
 
     //the time per frame
-    const double deltaTime = 3600;
+    const double deltaTime = 8640000;
 
 
     //Physikalische Konstanten
