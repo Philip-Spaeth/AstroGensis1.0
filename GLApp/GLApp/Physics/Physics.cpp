@@ -54,7 +54,8 @@ bool Physics::Calc()
     totalEnergie.resize(numTimeSteps);
 
     currentParticles.resize(particlesSize);
-    octree->buildTree(currentParticles);
+    
+    //octree->buildTree(currentParticles);
 
     for (int t = 0; t < numTimeSteps; ++t) 
     {
@@ -71,6 +72,7 @@ bool Physics::Calc()
 
         else
         {
+            octree->buildTree(currentParticles);
             
             //Runge Kuta 
             if(calculationMethod == 0)
@@ -109,7 +111,8 @@ bool Physics::Calc()
                 // particlesSize ist die Anzahl der Partikel
                 for (int p = 0; p < particlesSize; ++p)
                 {
-                    glm::dvec3 totalForce = octree->calculateGravitationalForce(currentParticles[p], G, softening);
+                    glm::dvec3 totalForce = { 0,0,0 };
+                    //glm::dvec3 totalForce = octree->calculateGravitationalForce(currentParticles[p], G, softening);
 
                     /*
                     for (size_t j = 0; j < currentParticles.size(); j++)
@@ -165,7 +168,6 @@ bool Physics::Calc()
                 }
             }
             // Aktualisiere den Octree basierend auf den neuen Partikelpositionen
-            octree->buildTree(currentParticles);
 
 
             fileManager->saveParticles(t, currentParticles, "Data");

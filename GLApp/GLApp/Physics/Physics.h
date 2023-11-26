@@ -26,7 +26,7 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    static const int numTimeSteps = 10;
+    static const int numTimeSteps = 100;
     static const int particlesSize = 1000;
 
     // calculation Method:

@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClCompile Include="File\FileManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Physics\Node.cpp" />
     <ClCompile Include="Physics\Octree.cpp" />
     <ClCompile Include="Physics\Particle.cpp" />
     <ClCompile Include="Physics\Physics.cpp" />
@@ -165,6 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="File\FileManager.h" />
+    <ClInclude Include="Physics\Node.h" />
     <ClInclude Include="Physics\Octree.h" />
     <ClInclude Include="Physics\Particle.h" />
     <ClInclude Include="Physics\Physics.h" />

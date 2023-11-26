@@ -3,31 +3,21 @@
 
 #include <vector>
 #include <glm.hpp>
+#include "Node.h"
 #include "Particle.h"
+
 
 class Octree {
 public:
     Octree(glm::dvec3 center, double halfSize);
     ~Octree();
 
-    void buildTree(const std::vector<Particle>& particles);
-    glm::dvec3 calculateGravitationalForce(const Particle& particle, double G, double softening);
-
+    void buildTree(std::vector<Particle> particles);
 private:
-    // Definition der Struktur für einen Octree-Knoten
-    struct OctreeNode {
-        glm::dvec3 center;
-        double halfSize;
-        std::vector<Particle> particles;
-        OctreeNode* children[8];  // Array für die acht Kinder
-    };
+    
+	Node* root;
+    glm::dvec3 center;
 
-    OctreeNode* root;
-
-    // Private Funktionen für den Aufbau und die Berechnung des Octree
-    void subdivideNode(OctreeNode* node);
-    void insertParticle(OctreeNode* node, const Particle& particle);
-    void calculateForceRecursive(OctreeNode* node, const Particle& particle, glm::dvec3& totalForce, double G, double softening);
 };
 
 #endif // OCTREE_H
