@@ -9,6 +9,7 @@
 #include "Particle.h"
 #include <glm.hpp>
 #include "Engine.h"
+#include "Octree.h"
 #include "FileManager.h"
 
 #define TARGET_FPS 30
@@ -25,8 +26,8 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    static const int numTimeSteps = 3;
-    static const int particlesSize = 100;
+    static const int numTimeSteps = 10;
+    static const int particlesSize = 1000;
 
     // calculation Method:
     int calculationMethod = 2;
@@ -38,7 +39,7 @@ public:
     // bigger galaxy = 3e15
 
     //the time per frame
-    const double deltaTime = 8640000;
+    const double deltaTime = 1e15;
 
 
     //Physikalische Konstanten
@@ -51,6 +52,7 @@ public:
 
     std::vector<Particle> currentParticles;
 private:
+    Octree* octree;
     std::vector<std::vector<double>> totalEnergie;
     int calulations = 0;
     SystemInit* systemInit;

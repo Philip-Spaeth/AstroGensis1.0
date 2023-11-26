@@ -14,6 +14,7 @@
 
 Physics::Physics()
 {
+    octree =new Octree(glm::dvec3(0.0, 0.0, 0.0), 100.0);
     // Initialisieren des Zufallszahlengenerators
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
 }
@@ -53,6 +54,7 @@ bool Physics::Calc()
     totalEnergie.resize(numTimeSteps);
 
     currentParticles.resize(particlesSize);
+    octree->buildTree(currentParticles);
 
     for (int t = 0; t < numTimeSteps; ++t) 
     {
@@ -107,9 +109,9 @@ bool Physics::Calc()
                 // particlesSize ist die Anzahl der Partikel
                 for (int p = 0; p < particlesSize; ++p)
                 {
-                    glm::dvec3 totalForce(0.0, 0.0, 0.0);
+                    glm::dvec3 totalForce = octree->calculateGravitationalForce(currentParticles[p], G, softening);
 
-
+                    /*
                     for (size_t j = 0; j < currentParticles.size(); j++)
                     {
                         if (p != j)
@@ -121,6 +123,7 @@ bool Physics::Calc()
                             calulations++;
                         }
                     }
+                    */
 
                     totalEnergie[t][p] = currentParticles[p].calcKineticEnergie();
 
@@ -161,6 +164,9 @@ bool Physics::Calc()
 					}
                 }
             }
+            // Aktualisiere den Octree basierend auf den neuen Partikelpositionen
+            octree->buildTree(currentParticles);
+
 
             fileManager->saveParticles(t, currentParticles, "Data");
 
