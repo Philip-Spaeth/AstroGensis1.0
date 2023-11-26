@@ -4,6 +4,7 @@ Octree::Octree(glm::dvec3 center, double halfSize)
 {
 	// Erstelle hier den Wurzelknoten des Octrees
 	this->center = center;
+	root = new Node(center, halfSize);
 }
 
 Octree::~Octree() {
@@ -31,4 +32,12 @@ void Octree::buildTree(std::vector<Particle> particles)
     {
 		root->InsertToNode(particles[p]);
     }
+}
+
+// Inside Octree class
+bool Octree::isNodeFarAway(Particle& particle1, Particle& particle2, double theta) {
+	double distance = glm::length(particle1.position - particle2.position);
+	double size = root->halfSize;
+
+	return (size / distance) < theta;
 }

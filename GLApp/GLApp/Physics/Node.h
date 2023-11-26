@@ -22,6 +22,10 @@ public:
 
 	void InsertToNode(Particle& particle);
 
+
+	// Inside Node class
+	glm::dvec3 calculateGravitationalForceBarnesHut(Particle& particle, double G, double softening, double deltaTime, double theta);
+
 private:
 	bool childrenCreated = false;
 };

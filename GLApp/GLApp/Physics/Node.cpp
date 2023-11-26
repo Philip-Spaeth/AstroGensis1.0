@@ -93,3 +93,26 @@ void Node::InsertToNode(Particle& particle)
 		this->particles.pop_back();
 	}
 }
+
+glm::dvec3 Node::calculateGravitationalForceBarnesHut(Particle& particle, double G, double softening, double deltaTime, double theta) 
+{
+	glm::dvec3 direction = particle.position - center;
+	double distance = glm::length(direction) + softening;
+	double forceMagnitude = (G * mass * particle.mass) / (distance * distance * distance);
+
+	// If the multipole acceptance criteria are met, use the Barnes-Hut approximation
+	if ((halfSize / distance) < theta) {
+		return forceMagnitude * glm::normalize(direction);
+	}
+
+	// If not, aggregate forces from the node's children
+	glm::dvec3 totalForce(0.0, 0.0, 0.0);
+	for (int i = 0; i < 8; ++i) {
+		if (children[i]) 
+		{
+			totalForce += children[i]->calculateGravitationalForceBarnesHut(particle, G, softening, deltaTime, theta);
+		}
+	}
+
+	return totalForce;
+}

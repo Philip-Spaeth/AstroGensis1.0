@@ -112,6 +112,8 @@ bool Physics::Calc()
                 for (int p = 0; p < particlesSize; ++p)
                 {
                     glm::dvec3 totalForce = { 0,0,0 };
+                    totalForce = octree->root->calculateGravitationalForceBarnesHut(currentParticles[p], G, softening, deltaTime, octree->theta);
+
                     //glm::dvec3 totalForce = octree->calculateGravitationalForce(currentParticles[p], G, softening);
 
                     /*

@@ -12,8 +12,10 @@ public:
     Octree(glm::dvec3 center, double halfSize);
     ~Octree();
 
+    double theta = 0.5;
+
     void buildTree(std::vector<Particle> particles);
-private:
+    bool isNodeFarAway(Particle& particle1,Particle& particle2, double theta);
     
 	Node* root;
     glm::dvec3 center;
