@@ -36,6 +36,7 @@ bool Physics::Calc()
     std::cout << "0 = Runge-Kutta 4th order" << std::endl;
     std::cout << "1 = Semi-Implicit Euler" << std::endl;
     std::cout << "2 = Drift-Kick-Drift Leapfrog" << std::endl;
+    std::cout << "3 = Kick-Drift-Kick Leapfrog" << std::endl;
     std::string inputCalculationMethod;
     std::getline(std::cin, inputCalculationMethod);
     if(inputCalculationMethod != ""){
@@ -99,6 +100,7 @@ bool Physics::Calc()
             }
 
 
+
             //Other methods
             if (calculationMethod != 0)
             {
@@ -107,10 +109,6 @@ bool Physics::Calc()
                 {
                     glm::dvec3 totalForce(0.0, 0.0, 0.0);
 
-                    //Drift-Kick-Drift leapfrog
-                    if (calculationMethod == 2) {
-                        currentParticles[p].leapfrogUpdatePosition(currentParticles[p].velocity, deltaTime / 2);
-                    }
 
                     for (size_t j = 0; j < currentParticles.size(); j++)
                     {
@@ -126,6 +124,27 @@ bool Physics::Calc()
 
                     totalEnergie[t][p] = currentParticles[p].calcKineticEnergie();
 
+                    // Kick-Drift-Kick leapfrog
+                    if (calculationMethod == 3)
+                    {
+						currentParticles[p].leapfrogUpdateVelocity(currentParticles[p].calcAcceleration(totalForce), deltaTime/2);
+						currentParticles[p].leapfrogUpdatePosition(currentParticles[p].velocity, deltaTime);
+
+                        glm::dvec3 totalForce(0.0, 0.0, 0.0);
+                        for (size_t j = 0; j < currentParticles.size(); j++)
+                        {
+                            if (p != j)
+                            {
+                                Particle& otherParticle = currentParticles[j];
+                                glm::dvec3 force = currentParticles[p].calculateGravitationalForce(otherParticle, G, softening, deltaTime);
+                                totalEnergie[t][p] += currentParticles[p].calcPotentialEnergie(otherParticle, G, 0);
+                                totalForce += force;
+                                calulations++;
+                            }
+                        }
+                        currentParticles[p].leapfrogUpdateVelocity(currentParticles[p].calcAcceleration(totalForce), deltaTime / 2);
+					}
+
                     //semi implicit euler
                     if (calculationMethod == 1)
                     {
@@ -136,6 +155,7 @@ bool Physics::Calc()
                     //Drift-Kick-Drift leapfrog
                     if (calculationMethod == 2)
                     {
+                        currentParticles[p].leapfrogUpdatePosition(currentParticles[p].velocity, deltaTime / 2);
                         currentParticles[p].leapfrogUpdateVelocity(currentParticles[p].calcAcceleration(totalForce), deltaTime);
                         currentParticles[p].leapfrogUpdatePosition(currentParticles[p].velocity, deltaTime / 2);
 					}
