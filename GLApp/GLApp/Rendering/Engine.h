@@ -32,8 +32,9 @@ private:
 
     double passedTime = 0;
 
-    //double globalScale = 1e-9;
-    double globalScale = 1e-18;
+    double globalScale = 1e-9;
+    //double globalScale = 1e-18;
+    void calculateGlobalScale(std::vector<Particle>& particles);
 
     bool BGstars = true;
     int amountOfStars = 1000;
@@ -62,6 +63,7 @@ private:
     void renderParticles(std::vector<Particle>& particles);
     void checkShaderCompileStatus(GLuint shader, const char* shaderType);
     void checkShaderLinkStatus(GLuint program);
+    void calcTime(int index);
     void calcTime(glm::dvec3 position, int index);
     double faktor = -1;
     FileManager* fileManager;
