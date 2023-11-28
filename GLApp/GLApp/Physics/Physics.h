@@ -25,8 +25,8 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    static const int numTimeSteps = 1;
-    static const int particlesSize = 4000;
+    static const int numTimeSteps = 10;
+    static const int particlesSize = 10;
 
     // calculation Method:
     int calculationMethod = 2;
@@ -41,7 +41,7 @@ public:
     // bigger galaxy = 3e15
 
     //the time per frame
-    const double deltaTime = 3600;
+    const double deltaTime = 100000;
 
 
     //Physikalische Konstanten

@@ -121,7 +121,6 @@ bool Physics::Calc()
                             calulations++;
                         }
                     }
-
                     totalEnergie[t][p] = currentParticles[p].calcKineticEnergie();
 
                     // Kick-Drift-Kick leapfrog
@@ -137,7 +136,6 @@ bool Physics::Calc()
                             {
                                 Particle& otherParticle = currentParticles[j];
                                 glm::dvec3 force = currentParticles[p].calculateGravitationalForce(otherParticle, G, softening, deltaTime);
-                                totalEnergie[t][p] += currentParticles[p].calcPotentialEnergie(otherParticle, G, 0);
                                 totalForce += force;
                                 calulations++;
                             }
