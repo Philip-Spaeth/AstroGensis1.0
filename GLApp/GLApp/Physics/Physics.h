@@ -9,13 +9,14 @@
 #include "Particle.h"
 #include <glm.hpp>
 #include "Engine.h"
-#include "Octree.h"
+#include "BarnesHut/Octree.h"
 #include "FileManager.h"
 
 #define TARGET_FPS 30
 
 class SystemInit;
 class FileManager;
+class Octree;
 
 class Physics {
 public:

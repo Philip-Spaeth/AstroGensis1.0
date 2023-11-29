@@ -16,10 +16,15 @@ public:
 
 	glm::dvec3 center;
 
-	std::vector<Particle> particles;
+	std::vector<glm::dvec3> positions;
+	std::vector<double> masses;
+
+	
 	Node* children[8];
 
-	void InsertToNode(Particle& particle);
+	void InsertToNode(glm::dvec3 position, double mass);
+
+	void buildTree();
 
 
 	// zusammenfassen der Massen und Schwerpunkte
@@ -27,9 +32,11 @@ public:
 	void calculateMassAndCenter();
 	std::vector<Particle*> collectChildren(std::vector<Particle*> collectedParticles);
 
-	void bringParticleToEnd();
 
 	double accuracy = 0.1;
+
+	// check if position is inside the node
+	bool isInside(glm::dvec3 position);
 
 private:
 	bool childrenCreated = false;
@@ -38,6 +45,8 @@ private:
 	Particle* centerOfMassChild;
 
 	double accuracyIndex;
+	void createChildren();
+	void sortParticlesIntoChildren();
 };
 
 #endif // OCTREE_H
