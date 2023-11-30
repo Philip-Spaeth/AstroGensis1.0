@@ -32,7 +32,7 @@ void Octree::buildTree(std::vector<Particle> particles)
 
     for (int p = 0; p < particles.size(); p++) 
     {
-		root->InsertToNode(particles[p].position, particles[p].mass);
+		root->InsertToNode(particles[p].position, particles[p].mass, particles[p].velocity);
     }
 
 	root->buildTree();
@@ -41,7 +41,7 @@ void Octree::buildTree(std::vector<Particle> particles)
 std::vector<Particle> Octree::getSummerizedParticles()
 {
 	std::vector<Particle*> collectedParticles;
-	//collectedParticles = root->collectChildren(collectedParticles);
+	collectedParticles = root->collectChildren(collectedParticles);
 
 	std::vector<Particle> summerizedParticles;
 	for (int i = 0; i < collectedParticles.size(); i++)

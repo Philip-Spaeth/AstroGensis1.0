@@ -17,7 +17,7 @@ public:
     //double calculateGravitationForce();
     std::vector<Particle> getSummerizedParticles();
 
-    double accuracy = 0.1;
+    double accuracy = 0.01;
 private:
     double accuracyIndex;
 

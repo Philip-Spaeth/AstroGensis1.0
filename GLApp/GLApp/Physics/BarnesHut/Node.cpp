@@ -10,10 +10,11 @@ Node::Node(glm::dvec3 center, double halfsize, double accuracyIndex)
 	this->accuracyIndex = accuracyIndex;
 }
 
-void Node::InsertToNode(glm::dvec3 position, double mass)
+void Node::InsertToNode(glm::dvec3 position, double mass, glm::dvec3 velocity)
 {
 	positions.push_back(position);
 	masses.push_back(mass);
+	velocities.push_back(velocity);
 }
 
 void Node::buildTree()
@@ -29,13 +30,18 @@ void Node::buildTree()
 		// build tree for children
 		for (int i = 0; i < 8; i++)
 		{
+			if (this->children[i]->positions.size() > 0) {
+				// calculate new center
+				this->children[i]->calculateNewCenter();
+			}
+
 			this->children[i]->buildTree();
 		}
 	}
 	else
 	{
 		// calculate mass and center
-		//calculateMassAndCenter();
+		this->summerizeMassAndCenter();
 	}
 
 }
@@ -82,22 +88,22 @@ void Node::sortParticlesIntoChildren() {
 			{
 				if (this->positions[0].z < this->center.z)
 				{
-					this->children[0]->InsertToNode(this->positions[0], masses[0]);
+					this->children[0]->InsertToNode(this->positions[0], masses[0], this->velocities[0]);
 				}
 				else
 				{
-					this->children[1]->InsertToNode(this->positions[0], masses[0]);
+					this->children[1]->InsertToNode(this->positions[0], masses[0], this->velocities[0]);
 				}
 			}
 			else
 			{
 				if (this->positions[0].z < this->center.z)
 				{
-					this->children[2]->InsertToNode(this->positions[0], masses[0]);
+					this->children[2]->InsertToNode(this->positions[0], masses[0], this->velocities[0]);
 				}
 				else
 				{
-					this->children[3]->InsertToNode(this->positions[0], masses[0]);
+					this->children[3]->InsertToNode(this->positions[0], masses[0], this->velocities[0]);
 				}
 			}
 		}
@@ -107,22 +113,22 @@ void Node::sortParticlesIntoChildren() {
 			{
 				if (this->positions[0].z < this->center.z)
 				{
-					this->children[4]->InsertToNode(this->positions[0], masses[0]);
+					this->children[4]->InsertToNode(this->positions[0], masses[0], this->velocities[0]);
 				}
 				else
 				{
-					this->children[5]->InsertToNode(this->positions[0], masses[0]);
+					this->children[5]->InsertToNode(this->positions[0], masses[0], this->velocities[0]);
 				}
 			}
 			else
 			{
 				if (this->positions[0].z < this->center.z)
 				{
-					this->children[6]->InsertToNode(this->positions[0], masses[0]);
+					this->children[6]->InsertToNode(this->positions[0], masses[0], this->velocities[0]);
 				}
 				else
 				{
-					this->children[7]->InsertToNode(this->positions[0], masses[0]);
+					this->children[7]->InsertToNode(this->positions[0], masses[0], this->velocities[0]);
 				}
 			}
 		}
@@ -153,4 +159,80 @@ bool Node::isInside(glm::dvec3 position) {
 		return true;
 	}
 	return false;*/
+}
+
+void Node::calculateNewCenter() {
+	// If min distance from center to particle is bigger than halfsize/2, then we need to move the center
+
+	double minDistance = sqrt(pow(this->positions[0].x - this->center.x, 2) + pow(this->positions[0].y - this->center.y, 2) + pow(this->positions[0].z - this->center.z, 2));
+	for (int i = 1; i < this->positions.size(); i++) {
+		double distance = sqrt(pow(this->positions[i].x - this->center.x, 2) + pow(this->positions[i].y - this->center.y, 2) + pow(this->positions[i].z - this->center.z, 2));
+		if (distance < minDistance) {
+			minDistance = distance;
+		}
+	}
+
+	if (minDistance > this->halfSize / 2) {
+		// move center
+		this->center = positions[0];
+		for (int i = 1; i < this->positions.size(); i++) {
+			this->center += this->positions[i];
+		}
+		this->center /= this->positions.size();
+	}
+
+
+	// calculate new halfsize
+	double maxDistance = 0;
+	for (int i = 0; i < this->positions.size(); i++) {
+		double distance = sqrt(pow(this->positions[i].x - this->center.x, 2) + pow(this->positions[i].y - this->center.y, 2) + pow(this->positions[i].z - this->center.z, 2));
+		if (distance > maxDistance) {
+			maxDistance = distance;
+		}
+	}
+	// Falls maxDistance <0, dann umkehren, weil wir betrag brauchen
+	if (maxDistance < 0) {
+		maxDistance *= -1;
+	}
+	this->halfSize = maxDistance * 2;
+
+}
+
+void Node::summerizeMassAndCenter() {
+	// calculate mass
+	this->mass = 0;
+	for (int i = 0; i < this->masses.size(); i++) {
+		this->mass += this->masses[i];
+	}
+
+	// calculate center
+	this->globalCenter = glm::dvec3(0, 0, 0);
+	for (int i = 0; i < this->positions.size(); i++) {
+		this->globalCenter += this->positions[i];
+	}
+	this->globalCenter /= this->positions.size();
+
+	// calculate velocity
+	this->velocity = glm::dvec3(0, 0, 0);
+	for (int i = 0; i < this->velocities.size(); i++) {
+		this->velocity += this->velocities[i];
+	}
+
+	// create particle
+	this->centerOfMassChild = new Particle(this->globalCenter, this->mass, this->velocity);
+}
+
+std::vector<Particle*> Node::collectChildren(std::vector<Particle*> collectedParticles) {
+	if (this->childrenCreated) {
+		for (int i = 0; i < 8; i++) {
+			collectedParticles = this->children[i]->collectChildren(collectedParticles);
+		}
+	}
+	else {
+		// checken, ob schwerpunkt nullPointer ist
+		if (this->positions.size() > 0 && this->masses.size() > 0) {
+			collectedParticles.push_back(this->centerOfMassChild);
+		}
+	}
+	return collectedParticles;
 }
