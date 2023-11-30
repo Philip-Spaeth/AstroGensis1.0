@@ -73,7 +73,6 @@ bool Physics::Calc()
         else
         {
             octree->buildTree(currentParticles);
-            std::vector<Particle> sumerizedParticles = octree->getSummerizedParticles();
             
             //Runge Kuta 
             if(calculationMethod == 0)
@@ -110,28 +109,28 @@ bool Physics::Calc()
             if (calculationMethod != 0)
             {
                 // particlesSize ist die Anzahl der Partikel
-                for (int p = 0; p < sumerizedParticles.size(); ++p)
+                for (int p = 0; p < particlesSize; ++p)
                 {
                     glm::dvec3 totalForce = { 0,0,0 };
                     totalForce = octree->root->calculateGravitationalForceBarnesHut(currentParticles[p], G, softening, deltaTime, octree->theta);
 
                     //glm::dvec3 totalForce = octree->calculateGravitationalForce(currentParticles[p], G, softening);
 
-                    
-                    for (size_t j = 0; j < sumerizedParticles.size(); j++)
+                    /*
+                    for (size_t j = 0; j < currentParticles.size(); j++)
                     {
                         if (p != j)
                         {
-                            Particle& otherParticle = sumerizedParticles[j];
-                            glm::dvec3 force = sumerizedParticles[p].calculateGravitationalForce(otherParticle, G, softening, deltaTime);
-                            totalEnergie[t][p] += sumerizedParticles[p].calcPotentialEnergie(otherParticle, G, 0);
+                            Particle& otherParticle = currentParticles[j];
+                            glm::dvec3 force = currentParticles[p].calculateGravitationalForce(otherParticle, G, softening, deltaTime);
+                            totalEnergie[t][p] += currentParticles[p].calcPotentialEnergie(otherParticle, G, 0);
                             totalForce += force;
                             calulations++;
                         }
                     }
-                    
+                    */
 
-                    totalEnergie[t][p] = sumerizedParticles[p].calcKineticEnergie();
+                    totalEnergie[t][p] = currentParticles[p].calcKineticEnergie();
 
                     // Kick-Drift-Kick leapfrog
                     if (calculationMethod == 3)

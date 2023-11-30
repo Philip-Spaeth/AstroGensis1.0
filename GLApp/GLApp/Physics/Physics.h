@@ -9,14 +9,13 @@
 #include "Particle.h"
 #include <glm.hpp>
 #include "Engine.h"
-#include "BarnesHut/Octree.h"
+#include "Octree.h"
 #include "FileManager.h"
 
 #define TARGET_FPS 30
 
 class SystemInit;
 class FileManager;
-class Octree;
 
 class Physics {
 public:
@@ -40,7 +39,7 @@ public:
     // bigger galaxy = 3e15
 
     //the time per frame
-    const double deltaTime = 3e15;
+    const double deltaTime = 1e15;
 
 
     //Physikalische Konstanten
