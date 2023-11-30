@@ -40,7 +40,7 @@ public:
     // bigger galaxy = 3e15
 
     //the time per frame
-    const double deltaTime = 3e15;
+    const double deltaTime = 1e16;
 
 
     //Physikalische Konstanten

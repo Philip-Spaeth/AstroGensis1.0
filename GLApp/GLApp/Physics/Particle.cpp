@@ -3,6 +3,15 @@
 Particle::Particle(double x, double y, double z)  : position(x, y, z), velocity(0.0f, 0.0f, 0.0f), mass(0), radius(1.0f), color(glm::dvec3(1.0f, 1.0f, 1.0f))
 {}
 
+Particle::Particle(glm::dvec3 position) : position(position), velocity(0.0f, 0.0f, 0.0f), mass(0), radius(1.0f), color(glm::dvec3(1.0f, 1.0f, 1.0f))
+{}
+
+Particle::Particle(glm::dvec3 position, double mass) : position(position), velocity(0.0f, 0.0f, 0.0f), mass(mass), radius(1.0f), color(glm::dvec3(1.0f, 1.0f, 1.0f))
+{}
+
+Particle::Particle(glm::dvec3 position, double mass, glm::dvec3 velocity) : position(position), velocity(velocity), mass(mass), radius(1.0f), color(glm::dvec3(1.0f, 1.0f, 1.0f))
+{}
+
 
 //Numerical methods
 

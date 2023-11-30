@@ -7,6 +7,9 @@ class Particle
 public:
 
     Particle(double x = 0.0f, double y = 0.0f, double z = 0.0f);
+    Particle(glm::dvec3 position);
+    Particle(glm::dvec3 position, double mass);
+    Particle(glm::dvec3 position, double mass, glm::dvec3 velocity);
 
 
     //Physically variables
