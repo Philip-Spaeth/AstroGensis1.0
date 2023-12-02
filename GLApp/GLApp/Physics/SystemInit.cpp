@@ -7,13 +7,13 @@
 
 void SystemInit::start(std::vector<Particle>& particles)
 {
-	solarSystem(particles);
+	//solarSystem(particles);
 	//ourSolarSystem(particles);
 
 	//ellipticalGalaxy(0, 999, { 0,0,0 }, { 0,300,0 }, { 0,0,0 }, particles);
 	//ellipticalGalaxy(1000, 1999, { 2e22, 0, 0}, { 90,0,180 }, { 0,0,0 } , particles);
 	
-	//spiralGalaxy(0, 999, { 0,0,0 }, { 0, 0, 0}, { 0,0,0 }, particles);
+	spiralGalaxy(0, 999, { 0,0,0 }, { 0, 0, 0}, { 0,0,0 }, particles);
 	//spiralGalaxy(3000, 3999, { 1.5e22, 0.5e22, 0 }, { 234,30,129 }, { 0,0,0 }, particles);
 }
 
@@ -113,7 +113,7 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position,
 			double v = std::sqrt((physics.G * 1e36) / r);
 			particles[j].position = glm::dvec3(r * std::cos(angle), r * std::sin(angle), physics.random(-depth, depth)) + position;
 			particles[j].velocity = glm::dvec3(-v * std::sin(angle), v * std::cos(angle), 0) + velocity;
-			particles[j].mass = 1e34;
+			particles[j].mass = 1e32;
 			particles[j].radius = 0.01;
 			particles[j].color = glm::vec3(1, 1, 1);
 			particles[j].darkMatter = true;

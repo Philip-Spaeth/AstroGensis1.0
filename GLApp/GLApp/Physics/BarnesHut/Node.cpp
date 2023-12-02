@@ -45,7 +45,6 @@ glm::dvec3 Node::calcForce(Particle& p)
 		{
 			glm::dvec3 delta = particle.position - p.position;
 			double distance = glm::length(delta);
-
 			double forceMagnitude = (G * particle.mass * p.mass) / (distance * distance);
 			glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
 			force += Force;
@@ -57,14 +56,13 @@ glm::dvec3 Node::calcForce(Particle& p)
 		double r = glm::length(delta);
 
 		// Calculate height of the node
-		double d = GetHeight();
+		double d = radius * 2; 
 
-		// θ is assumed to be a constant (threshold angle)
-		if (d / r < theta) 
+		if (d / r < theta && r > radius && mass != p.mass)
 		{
-			glm::dvec3 delta = particle.position - p.position;
+			calcMass();
+			glm::dvec3 delta = massCenter - p.position;
 			double distance = glm::length(delta);
-
 			double forceMagnitude = (G * mass * p.mass) / (distance * distance);
 			glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
 			force += Force;
@@ -110,7 +108,7 @@ void Node::insert(Particle& p)
 			quadrant += 4;
 		}
 
-		if (child[quadrant] == nullptr)
+		if (child[quadrant] == nullptr) 
 		{
 			//create new node
 			glm::dvec3 newCenter = center;
@@ -161,8 +159,105 @@ void Node::insert(Particle& p)
 			child[quadrant] = new Node(newCenter, newRadius, theta, index+1);
 		}
 		child[quadrant]->insert(p);
-		mass += p.mass;
+
+		if(particle.position != p.position)
+		{
+			//check in wich quadrant the particle is
+			quadrant = 0;
+			if (particle.position.x > center.x)
+			{
+				quadrant += 1;
+			}
+			if (particle.position.y > center.y)
+			{
+				quadrant += 2;
+			}
+			if (particle.position.z > center.z)
+			{
+				quadrant += 4;
+			}
+
+			if (child[quadrant] == nullptr)
+			{
+				//create new node
+				glm::dvec3 newCenter = center;
+				double newRadius = radius / 2;
+				switch (quadrant)
+				{
+				case 0:
+					newCenter.x -= newRadius;
+					newCenter.y -= newRadius;
+					newCenter.z -= newRadius;
+					break;
+				case 1:
+					newCenter.x += newRadius;
+					newCenter.y -= newRadius;
+					newCenter.z -= newRadius;
+					break;
+				case 2:
+					newCenter.x -= newRadius;
+					newCenter.y += newRadius;
+					newCenter.z -= newRadius;
+					break;
+				case 3:
+					newCenter.x += newRadius;
+					newCenter.y += newRadius;
+					newCenter.z -= newRadius;
+					break;
+				case 4:
+					newCenter.x -= newRadius;
+					newCenter.y -= newRadius;
+					newCenter.z += newRadius;
+					break;
+				case 5:
+					newCenter.x += newRadius;
+					newCenter.y -= newRadius;
+					newCenter.z += newRadius;
+					break;
+				case 6:
+					newCenter.x -= newRadius;
+					newCenter.y += newRadius;
+					newCenter.z += newRadius;
+					break;
+				case 7:
+					newCenter.x += newRadius;
+					newCenter.y += newRadius;
+					newCenter.z += newRadius;
+					break;
+				}
+				child[quadrant] = new Node(newCenter, newRadius, theta, index + 1);
+			}
+			child[quadrant]->insert(particle);
+
+			mass += p.mass;
+		}
+
+		
 	}
 	//std::cout << "inserted particle " << "in node " << index <<"  mass: " << mass << "radius: "<< radius << std::endl;
+}
+
+void Node::calcMass() 
+{
+	if (isLeaf)
+	{
+		massCenter = particle.position;
+	}
+	else
+	{
+		glm::dvec3 massCenterSum = { 0,0,0 };
+		double massSum = 0;
+		for (Node* child : child)
+		{
+			if (child != nullptr)
+			{
+				child->calcMass();
+				massCenterSum += child->massCenter * child->mass;
+				massSum += child->mass;
+			}
+		}
+		massCenter = massCenterSum / massSum;
+		mass = massSum;
+	}
 }
 

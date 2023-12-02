@@ -1,4 +1,5 @@
 #include "Octree.h"
+#include <iostream>
 
 Octree::Octree(glm::dvec3 center, double radius, double theta) 
 {
@@ -20,6 +21,9 @@ void Octree::buildTree(std::vector<Particle>& particles)
 {
 	for (int i = 0; i < particles.size(); i++) 
 	{
-		root->insert(particles[i]);
+		if (particles[i].mass != 0)
+		{
+			root->insert(particles[i]);
+		}
 	}
 }

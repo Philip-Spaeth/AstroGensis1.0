@@ -55,6 +55,8 @@ bool Physics::Calc()
 
     currentParticles.resize(particlesSize);
 
+    double maxDistance = 0;
+
     for (int t = 0; t < numTimeSteps; ++t) 
     {
         totalEnergie[t].resize(particlesSize);
@@ -66,20 +68,21 @@ bool Physics::Calc()
             systemInit->start(currentParticles);
             fileManager = new FileManager();
             fileManager->saveParticles(t, currentParticles, "Data");
+
+			for (int i = 0; i < currentParticles.size(); i++) {
+				double distance = sqrt(pow(currentParticles[i].position.x, 2) + pow(currentParticles[i].position.y, 2) + pow(currentParticles[i].position.z, 2));
+				if (distance > maxDistance) {
+					maxDistance = distance;
+				}
+			}
         }
+
 
         else
         {
-            double maxDistance = 0;
-            for (int i = 0; i < currentParticles.size(); i++) {
-                double distance = sqrt(pow(currentParticles[i].position.x, 2) + pow(currentParticles[i].position.y, 2) + pow(currentParticles[i].position.z, 2));
-                if (distance > maxDistance) {
-                    maxDistance = distance;
-                }
-            }
 
             //build a new tree
-            octree = new Octree(glm::dvec3(0, 0, 0), maxDistance, theta);
+            octree = new Octree(glm::dvec3(0, 0, 0), maxDistance*2, theta);
             octree->buildTree(currentParticles);
 
 
