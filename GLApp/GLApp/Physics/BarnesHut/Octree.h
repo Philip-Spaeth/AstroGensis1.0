@@ -9,21 +9,17 @@
 
 class Octree {
 public:
-    Octree(glm::dvec3 center, double halfSize);
+    Octree(glm::dvec3 center, double radius, double theta);
     ~Octree();
 
-    void buildTree(std::vector<Particle> particles);
-
-    //double calculateGravitationForce();
-    std::vector<Particle> getSummerizedParticles();
-
-    double accuracy = 0.01;
+    void buildTree(std::vector<Particle>& particles);
+    glm::dvec3 calculateForces(Particle& particle);
 private:
-    double accuracyIndex;
 
 	Node* root;
     glm::dvec3 center;
-
+    double radius;
+    double theta;
 };
 
 #endif // OCTREE_H

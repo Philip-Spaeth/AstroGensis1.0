@@ -5,51 +5,28 @@
 #include <glm.hpp>
 #include "Particle.h"
 
+class Particle;
 
 class Node 
 {
 public:
-	Node(glm::dvec3 center, double halfsize, double accuracyIndex);
+	Node(glm::dvec3 center, double radius, double theta, int index);
 	~Node();
 
-	double halfSize;
+	void insert(Particle& p);
+	glm::dvec3 calcForce(Particle& p);
+	int GetHeight() const;
 
+	Node* child[8] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+
+	int index = 0;
+	bool isLeaf = false;
 	glm::dvec3 center;
+	double mass = 0;
+	double radius = 0;
+	double theta = 0;
 
-	std::vector<glm::dvec3> positions;
-	std::vector<double> masses;
-	std::vector<glm::dvec3> velocities;
-	
-	Node* children[8];
-
-	void InsertToNode(glm::dvec3 position, double mass, glm::dvec3 velocity);
-
-	void buildTree();
-
-
-	// zusammenfassen der Massen und Schwerpunkte
-	Particle* centerOfMass;
-	void summerizeMassAndCenter();
-	std::vector<Particle*> collectChildren(std::vector<Particle*> collectedParticles);
-
-
-	double accuracy = 0.001;
-
-	// check if position is inside the node
-	bool isInside(glm::dvec3 position);
-
-	void calculateNewCenter();
-
-private:
-	bool childrenCreated = false;
-	glm::dvec3 globalCenter;
-	double mass;
-	glm::dvec3 velocity;
-	Particle* centerOfMassChild;
-
-	double accuracyIndex;
-	void createChildren();
-	void sortParticlesIntoChildren();
+	Particle particle;
 };
 
-#endif // OCTREE_H
+#endif

@@ -15,6 +15,7 @@ public:
     //Physically variables
     glm::dvec3 position = { 0,0,0 };
     glm::dvec3 velocity = { 0,0,0 };
+    glm::dvec3 force = { 0,0,0 };
     double mass;
 
     // RungeKuta variables

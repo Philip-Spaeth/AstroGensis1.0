@@ -14,7 +14,7 @@
 
 Physics::Physics()
 {
-    octree =new Octree(glm::dvec3(0.0, 0.0, 0.0), 100.0);
+
     // Initialisieren des Zufallszahlengenerators
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
 }
@@ -54,8 +54,6 @@ bool Physics::Calc()
     totalEnergie.resize(numTimeSteps);
 
     currentParticles.resize(particlesSize);
-    
-    //octree->buildTree(currentParticles);
 
     for (int t = 0; t < numTimeSteps; ++t) 
     {
@@ -72,9 +70,19 @@ bool Physics::Calc()
 
         else
         {
+            double maxDistance = 0;
+            for (int i = 0; i < currentParticles.size(); i++) {
+                double distance = sqrt(pow(currentParticles[i].position.x, 2) + pow(currentParticles[i].position.y, 2) + pow(currentParticles[i].position.z, 2));
+                if (distance > maxDistance) {
+                    maxDistance = distance;
+                }
+            }
+
+            //build a new tree
+            octree = new Octree(glm::dvec3(0, 0, 0), maxDistance, theta);
             octree->buildTree(currentParticles);
-            std::vector<Particle> sumerizedParticles = octree->getSummerizedParticles();
-            
+
+
             //Runge Kuta 
             if(calculationMethod == 0)
             {
@@ -110,28 +118,29 @@ bool Physics::Calc()
             if (calculationMethod != 0)
             {
                 // particlesSize ist die Anzahl der Partikel
-                for (int p = 0; p < sumerizedParticles.size(); ++p)
+                for (int p = 0; p <currentParticles.size(); ++p)
                 {
+                    // Berechne die Gesamtkraft auf das Partikel
                     glm::dvec3 totalForce = { 0,0,0 };
-                    totalForce = octree->root->calculateGravitationalForceBarnesHut(currentParticles[p], G, softening, deltaTime, octree->theta);
+                    totalForce = octree->calculateForces(currentParticles[p]);
 
                     //glm::dvec3 totalForce = octree->calculateGravitationalForce(currentParticles[p], G, softening);
 
-                    
-                    for (size_t j = 0; j < sumerizedParticles.size(); j++)
+                    /*
+                    for (size_t j = 0; j <currentParticles.size(); j++)
                     {
                         if (p != j)
                         {
-                            Particle& otherParticle = sumerizedParticles[j];
-                            glm::dvec3 force = sumerizedParticles[p].calculateGravitationalForce(otherParticle, G, softening, deltaTime);
-                            totalEnergie[t][p] += sumerizedParticles[p].calcPotentialEnergie(otherParticle, G, 0);
+                            Particle& otherParticle =currentParticles[j];
+                            glm::dvec3 force = currentParticles[p].calculateGravitationalForce(otherParticle, G, softening, deltaTime);
+                            totalEnergie[t][p] +=currentParticles[p].calcPotentialEnergie(otherParticle, G, 0);
                             totalForce += force;
                             calulations++;
                         }
                     }
-                    
+                    */
 
-                    totalEnergie[t][p] = sumerizedParticles[p].calcKineticEnergie();
+                    totalEnergie[t][p] += currentParticles[p].calcKineticEnergie();
 
                     // Kick-Drift-Kick leapfrog
                     if (calculationMethod == 3)
@@ -168,6 +177,8 @@ bool Physics::Calc()
                         currentParticles[p].leapfrogUpdateVelocity(currentParticles[p].calcAcceleration(totalForce), deltaTime);
                         currentParticles[p].leapfrogUpdatePosition(currentParticles[p].velocity, deltaTime / 2);
 					}
+                    //set the force to 0
+                    currentParticles[p].force = { 0,0,0 };
                 }
             }
             // Aktualisiere den Octree basierend auf den neuen Partikelpositionen
