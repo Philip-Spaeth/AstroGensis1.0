@@ -58,7 +58,7 @@ glm::dvec3 Node::calcForce(Particle& p)
 		// Calculate height of the node
 		double d = radius * 2; 
 
-		if (d / r < theta && r > radius && mass != p.mass)
+		if (d / r < theta)
 		{
 			calcMass();
 			glm::dvec3 delta = massCenter - p.position;
@@ -160,76 +160,10 @@ void Node::insert(Particle& p)
 		}
 		child[quadrant]->insert(p);
 
-		if(particle.position != p.position)
-		{
-			//check in wich quadrant the particle is
-			quadrant = 0;
-			if (particle.position.x > center.x)
-			{
-				quadrant += 1;
-			}
-			if (particle.position.y > center.y)
-			{
-				quadrant += 2;
-			}
-			if (particle.position.z > center.z)
-			{
-				quadrant += 4;
-			}
+		if(particlePushed == false){
+			particlePushed = true;
 
-			if (child[quadrant] == nullptr)
-			{
-				//create new node
-				glm::dvec3 newCenter = center;
-				double newRadius = radius / 2;
-				switch (quadrant)
-				{
-				case 0:
-					newCenter.x -= newRadius;
-					newCenter.y -= newRadius;
-					newCenter.z -= newRadius;
-					break;
-				case 1:
-					newCenter.x += newRadius;
-					newCenter.y -= newRadius;
-					newCenter.z -= newRadius;
-					break;
-				case 2:
-					newCenter.x -= newRadius;
-					newCenter.y += newRadius;
-					newCenter.z -= newRadius;
-					break;
-				case 3:
-					newCenter.x += newRadius;
-					newCenter.y += newRadius;
-					newCenter.z -= newRadius;
-					break;
-				case 4:
-					newCenter.x -= newRadius;
-					newCenter.y -= newRadius;
-					newCenter.z += newRadius;
-					break;
-				case 5:
-					newCenter.x += newRadius;
-					newCenter.y -= newRadius;
-					newCenter.z += newRadius;
-					break;
-				case 6:
-					newCenter.x -= newRadius;
-					newCenter.y += newRadius;
-					newCenter.z += newRadius;
-					break;
-				case 7:
-					newCenter.x += newRadius;
-					newCenter.y += newRadius;
-					newCenter.z += newRadius;
-					break;
-				}
-				child[quadrant] = new Node(newCenter, newRadius, theta, index + 1);
-			}
-			child[quadrant]->insert(particle);
-
-			mass += p.mass;
+			this->insert(particle);
 		}
 
 		

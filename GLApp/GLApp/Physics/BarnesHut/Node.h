@@ -29,6 +29,7 @@ public:
 	double theta = 0;
 
 	Particle particle;
+	bool particlePushed = false;
 };
 
 #endif
