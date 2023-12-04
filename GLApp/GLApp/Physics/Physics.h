@@ -42,21 +42,21 @@ public:
     //the time per frame
     const double deltaTime = 3e15;
 
-    const double theta = 0.7;
+    const double theta = 1;
 
     //Physikalische Konstanten
     const double G = 6.67430e-11;
     // softening factor
     //  galaxy = 1e18
     // sun system = 0.2
-    const double softening = 0;
+    const double softening = 1e10;
 
 
     std::vector<Particle> currentParticles;
 private:
     Octree* octree;
     std::vector<std::vector<double>> totalEnergie;
-    int calulations = 0;
+    double calulations = 0;
     SystemInit* systemInit;
     FileManager* fileManager;
     void calcTime(int index, std::chrono::steady_clock::time_point current_time);

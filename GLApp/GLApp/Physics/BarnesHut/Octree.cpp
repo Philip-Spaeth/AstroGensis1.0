@@ -12,9 +12,10 @@ Octree::Octree(glm::dvec3 center, double radius, double theta)
 Octree::~Octree() {
 }
 
-glm::dvec3 Octree::calculateForces(Particle& particle)
+glm::dvec3 Octree::calculateForces(Particle& particle, double softening, double& potentialEngergy, double& calculations)
 {
-	return root->calcForce(particle);
+	//root->calcMass();
+	return root->calcForce(particle, softening, potentialEngergy, calculations);
 }
 
 void Octree::buildTree(std::vector<Particle>& particles) 

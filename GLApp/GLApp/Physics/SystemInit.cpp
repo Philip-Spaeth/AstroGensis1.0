@@ -68,8 +68,8 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position,
 				particles[j].position = position;
 				particles[j].velocity = velocity;
 				particles[j].mass = 1e36;
-				particles[j].radius = 1;
-				particles[j].color = glm::vec3(1, 1, 1);
+				particles[j].radius = 10;
+				particles[j].color = glm::vec3(0, 1, 1);
 			}
 			else
 			{

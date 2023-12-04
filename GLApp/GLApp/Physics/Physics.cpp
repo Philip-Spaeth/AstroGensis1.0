@@ -125,7 +125,9 @@ bool Physics::Calc()
                 {
                     // Berechne die Gesamtkraft auf das Partikel
                     glm::dvec3 totalForce = { 0,0,0 };
-                    totalForce = octree->calculateForces(currentParticles[p]);
+                    double potentialEngergy = 0;
+                    totalForce = octree->calculateForces(currentParticles[p], softening, potentialEngergy, calulations);
+                    totalEnergie[t][p] += potentialEngergy;
 
                     //glm::dvec3 totalForce = octree->calculateGravitationalForce(currentParticles[p], G, softening);
 
