@@ -30,6 +30,8 @@ public:
 
 	Particle particle;
 	bool particlePushed = false;
+
+	void clear();
 };
 
 #endif

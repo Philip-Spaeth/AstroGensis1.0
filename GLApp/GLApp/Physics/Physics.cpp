@@ -75,13 +75,15 @@ bool Physics::Calc()
 					maxDistance = distance;
 				}
 			}
+            octree = new Octree(glm::dvec3(0, 0, 0), maxDistance * 2, theta, maxDepth);
         }
 
 
         else
         {
+            // delte tree to clear memory
+            octree->clearTree();
             //build a new tree
-            octree = new Octree(glm::dvec3(0, 0, 0), maxDistance*2, theta, maxDepth);
             octree->buildTree(currentParticles);
 
 

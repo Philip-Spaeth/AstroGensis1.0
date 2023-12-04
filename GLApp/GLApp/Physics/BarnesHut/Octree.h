@@ -14,6 +14,7 @@ public:
 
     void buildTree(std::vector<Particle>& particles);
     glm::dvec3 calculateForces(Particle& particle, double softening, double& potentialEngergy, double& calculations);
+    void clearTree();
 private:
 
 	Node* root;

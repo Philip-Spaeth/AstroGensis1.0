@@ -32,3 +32,8 @@ void Octree::buildTree(std::vector<Particle>& particles)
 		}
 	}
 }
+
+void Octree::clearTree() 
+{
+	root->clear();
+}
