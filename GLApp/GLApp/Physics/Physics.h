@@ -50,7 +50,7 @@ public:
     // softening factor
     //  galaxy = 1e18
     // sun system = 0.2
-    const double softening = 1e19;
+    const double softening = 1e18;
 
 
     std::vector<Particle> currentParticles;
@@ -61,6 +61,7 @@ private:
     SystemInit* systemInit;
     FileManager* fileManager;
     void calcTime(int index, std::chrono::steady_clock::time_point current_time);
+    void calculateGravitation(int timeStap);
 };
 
 #endif // PHYSICS_H
