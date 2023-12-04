@@ -28,7 +28,7 @@ public:
     double random(double min, double max);
 
     static const int numTimeSteps = 100;
-    static const int particlesSize = 1000;
+    static const int particlesSize = 10000;
 
     // calculation Method:
     int calculationMethod = 2;
@@ -42,14 +42,15 @@ public:
     //the time per frame
     const double deltaTime = 3e15;
 
-    const double theta = 1;
+    const double theta = 4;
+    const double maxDepth = 200;
 
     //Physikalische Konstanten
     const double G = 6.67430e-11;
     // softening factor
     //  galaxy = 1e18
     // sun system = 0.2
-    const double softening = 1e10;
+    const double softening = 1e17;
 
 
     std::vector<Particle> currentParticles;

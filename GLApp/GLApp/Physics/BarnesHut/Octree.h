@@ -9,7 +9,7 @@
 
 class Octree {
 public:
-    Octree(glm::dvec3 center, double radius, double theta);
+    Octree(glm::dvec3 center, double radius, double theta, int maxDepth);
     ~Octree();
 
     void buildTree(std::vector<Particle>& particles);

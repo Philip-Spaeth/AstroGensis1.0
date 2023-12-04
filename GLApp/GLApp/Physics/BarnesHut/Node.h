@@ -10,7 +10,7 @@ class Particle;
 class Node 
 {
 public:
-	Node(glm::dvec3 center, double radius, double theta, int index);
+	Node(glm::dvec3 center, double radius, double theta, int index, int maxdepth);
 	~Node();
 
 	void insert(Particle& p);
@@ -20,6 +20,7 @@ public:
 	Node* child[8] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 
 	int index = 0;
+	int maxDepth;
 	bool isLeaf = false;
 	glm::dvec3 center;
 	glm::dvec3 massCenter;

@@ -1,12 +1,13 @@
 #include "Octree.h"
 #include <iostream>
+#include "Physics.h"
 
-Octree::Octree(glm::dvec3 center, double radius, double theta) 
+Octree::Octree(glm::dvec3 center, double radius, double theta, int maxDepth) 
 {
 	this->center = center;
 	this->radius = radius;
 	this->theta = theta;
-	root = new Node(center, radius, theta, 0);
+	root = new Node(center, radius, theta, 0, maxDepth);
 }
 
 Octree::~Octree() {
@@ -14,7 +15,10 @@ Octree::~Octree() {
 
 glm::dvec3 Octree::calculateForces(Particle& particle, double softening, double& potentialEngergy, double& calculations)
 {
-	//root->calcMass();
+	if (particle.mass == 1e36)
+	{
+		return { 0,0,0 };
+	}
 	return root->calcForce(particle, softening, potentialEngergy, calculations);
 }
 

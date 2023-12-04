@@ -13,7 +13,7 @@ void SystemInit::start(std::vector<Particle>& particles)
 	//ellipticalGalaxy(0, 999, { 0,0,0 }, { 0,300,0 }, { 0,0,0 }, particles);
 	//ellipticalGalaxy(1000, 1999, { 2e22, 0, 0}, { 90,0,180 }, { 0,0,0 } , particles);
 	
-	spiralGalaxy(0, 999, { 0,0,0 }, { 0, 0, 0}, { 0,0,0 }, particles);
+	spiralGalaxy(0, 9999, { 0,0,0 }, { 0, 0, 0}, { 0,0,0 }, particles);
 	//spiralGalaxy(3000, 3999, { 1.5e22, 0.5e22, 0 }, { 234,30,129 }, { 0,0,0 }, particles);
 }
 
@@ -33,10 +33,10 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position,
 	double percentBulge = 0.5;
 	double bulgeMass = percentBulge * totalMass;
 
-	double percentDisk = 0.05;
+	double percentDisk = 0.3;
 	double diskMass = percentDisk * totalMass;
 
-	double percentDarkMatter = 0.9;
+	double percentDarkMatter = 0.2;
 	double darkMatterMass = percentDarkMatter * totalMass;
 	double haloRadius = 1e22;
 
