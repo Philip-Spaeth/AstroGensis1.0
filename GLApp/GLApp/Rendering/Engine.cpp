@@ -123,7 +123,8 @@ void Engine::start()
             double x = random(-1e14, 1e14);
 			double y = random(-1e14, 1e14);
 			double z = random(-1e14, 1e14);
-			stars.push_back(glm::vec3(x, y, z));
+            double size = random(0.1, 2);
+			stars.push_back(glm::vec4(x, y, z, size));
 		}   
     }
 
@@ -181,6 +182,14 @@ void Engine::update(int index, std::vector<Particle>& particles)
 		//set the play speed to 1
 		playSpeed = 1;
 	}
+
+    //disable / enable dark matter with Z
+    if (GetAsyncKeyState(90) & 0x8000)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+		showDarkMatter = !showDarkMatter;
+	}
+
 }
 
 void Engine::renderParticles(std::vector<Particle>& particles)
@@ -213,10 +222,11 @@ void Engine::renderParticles(std::vector<Particle>& particles)
         //render the background stars
         for (int i = 0; i < amountOfStars; i++)
         {
-            glPointSize(0.5);
+            glPointSize(stars[i].w);
 
             // Setzen Sie die Position im Shader
-            glUniform3fv(glGetUniformLocation(shaderProgram, "particlePosition"), 1, glm::value_ptr(stars[i]));
+            glm::vec3 pos = glm::vec3(stars[i].x, stars[i].y, stars[i].z);
+            glUniform3fv(glGetUniformLocation(shaderProgram, "particlePosition"), 1, glm::value_ptr(pos));
 
             // Setzen Sie die Farbe im Shader
             glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);

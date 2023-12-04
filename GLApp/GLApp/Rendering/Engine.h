@@ -36,9 +36,9 @@ private:
     //double globalScale = 1e-18;
     void calculateGlobalScale(std::vector<Particle>& particles);
 
-    bool BGstars = false;
+    bool BGstars = true;
     int amountOfStars = 1000;
-    std::vector<glm::vec3> stars;
+    std::vector<glm::vec4> stars;
 
     bool tracks = false;
 

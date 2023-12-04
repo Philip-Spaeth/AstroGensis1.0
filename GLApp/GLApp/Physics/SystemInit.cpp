@@ -29,6 +29,7 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position,
 
 	//verteillung der masse 
 	double totalMass = 1e42;
+	double blackHoleMass = 1e36;
 
 	double percentBulge = 0.5;
 	double bulgeMass = percentBulge * totalMass;
@@ -67,9 +68,9 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position,
 			{
 				particles[j].position = position;
 				particles[j].velocity = velocity;
-				particles[j].mass = 1e36;
-				particles[j].radius = 10;
-				particles[j].color = glm::vec3(0, 1, 1);
+				particles[j].mass = blackHoleMass;
+				particles[j].radius = 2;
+				particles[j].color = glm::vec3(1, 1, 1);
 			}
 			else
 			{
@@ -78,11 +79,12 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position,
 
 				double angle = physics.random(0, 2 * 3.14);
 
-				double v = std::sqrt((physics.G * 1e36) / r);
 				particles[j].position = glm::dvec3(r * std::cos(angle), r * std::sin(angle), physics.random(-depth, depth)) + position; 
+				double distanceToCenter = glm::length(particles[j].position - position);
+				double v = std::sqrt((physics.G * blackHoleMass) / distanceToCenter);
 				particles[j].velocity = glm::dvec3(-v * std::sin(angle), v * std::cos(angle), 0) + velocity;
 				particles[j].mass = 1e30;
-				particles[j].radius = 0.01;
+				particles[j].radius = physics.random(0.1,2);
 				particles[j].color = glm::vec3(1, 1, 1);
 			}
 		}
@@ -94,11 +96,12 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position,
 
 			double armAngle = 2 * 3.14 * ((j - startIndex) * 1000 / particles.size()) / numArms;
 
-			double v = std::sqrt((physics.G * 1e36) / r);
 			particles[j].position = glm::dvec3(r * std::cos(armAngle), r * std::sin(armAngle), physics.random(-depth, depth)) + position;
+			double distanceToCenter = glm::length(particles[j].position - position);
+			double v = std::sqrt((physics.G * blackHoleMass) / distanceToCenter);
 			particles[j].velocity = glm::dvec3(-v * std::sin(armAngle), v * std::cos(armAngle), 0) + velocity;
 			particles[j].mass = 1e30;
-			particles[j].radius = 0.01;
+			particles[j].radius = physics.random(0.1, 2);
 			particles[j].color = glm::vec3(1, 1, 1);
 		}
 
@@ -110,11 +113,12 @@ void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position,
 
 			double angle = physics.random(0, 2 * 3.14);
 
-			double v = std::sqrt((physics.G * 1e36) / r);
 			particles[j].position = glm::dvec3(r * std::cos(angle), r * std::sin(angle), physics.random(-depth, depth)) + position;
+			double distanceToCenter = glm::length(particles[j].position - position);
+			double v = std::sqrt((physics.G * blackHoleMass) / distanceToCenter);
 			particles[j].velocity = glm::dvec3(-v * std::sin(angle), v * std::cos(angle), 0) + velocity;
-			particles[j].mass = 1e32;
-			particles[j].radius = 0.01;
+			particles[j].mass = 1e30;
+			particles[j].radius = physics.random(0.1, 2);
 			particles[j].color = glm::vec3(1, 1, 1);
 			particles[j].darkMatter = true;
 		}

@@ -42,7 +42,7 @@ public:
     //the time per frame
     const double deltaTime = 3e15;
 
-    const double theta = 4;
+    const double theta = 3;
     const double maxDepth = 200;
 
     //Physikalische Konstanten
@@ -50,7 +50,7 @@ public:
     // softening factor
     //  galaxy = 1e18
     // sun system = 0.2
-    const double softening = 1e17;
+    const double softening = 1e19;
 
 
     std::vector<Particle> currentParticles;
