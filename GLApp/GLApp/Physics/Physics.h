@@ -27,7 +27,7 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    static const int numTimeSteps = 5000;
+    static const int numTimeSteps = 100;
     static const int particlesSize = 10000;
 
     // calculation Method:
@@ -62,6 +62,7 @@ private:
     FileManager* fileManager;
     void calcTime(int index, std::chrono::steady_clock::time_point current_time);
     void calculateGravitation(int timeStap);
+    void calculateGravitation(int timeStap, int start, int stop);
 };
 
 #endif // PHYSICS_H

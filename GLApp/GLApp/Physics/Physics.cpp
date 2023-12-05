@@ -227,8 +227,28 @@ void Physics::calcTime(int index, std::chrono::steady_clock::time_point current_
 }
 
 void Physics::calculateGravitation(int t) {
+    int num_threads = std::thread::hardware_concurrency();
+    std::vector<std::thread> threads;
+
+    int n = currentParticles.size(); // Gesamtanzahl der Iterationen
+    int step = n / num_threads;
+
+    for(int i = 0; i < num_threads; ++i) {
+		threads.emplace_back([this, i, step, t]() {
+			this->calculateGravitation(t, i * step, (i + 1) * step);
+			});
+	}
+
+    // thrads abfangen
+    for (auto& thread : threads)
+    {
+        thread.join();
+    }
+}
+
+void Physics::calculateGravitation(int t, int start, int stop) {
     // particlesSize ist die Anzahl der Partikel
-    for (int p = 0; p < currentParticles.size(); ++p)
+    for (int p = start; p < stop; ++p)
     {
         // Berechne die Gesamtkraft auf das Partikel
         glm::dvec3 totalForce = { 0,0,0 };

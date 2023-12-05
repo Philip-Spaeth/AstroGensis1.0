@@ -21,6 +21,8 @@ private:
     glm::dvec3 center;
     double radius;
     double theta;
+
+    void insert(std::vector<Particle>& particles, int start, int end);
 };
 
 #endif // OCTREE_H
