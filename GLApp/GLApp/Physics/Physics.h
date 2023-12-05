@@ -40,7 +40,9 @@ public:
     // bigger galaxy = 3e15
 
     //the time per frame
+
     const double deltaTime = 3e15;
+
 
     const double theta = 3;
     const double maxDepth = 200;

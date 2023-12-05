@@ -274,41 +274,6 @@ void Engine::renderParticles(std::vector<Particle>& particles)
             glDrawArrays(GL_POINTS, 0, 1);
         }
     }
-    /*
-    else
-    {
-        //draw old and current particles position
-        for (int t = 0; t < index; t++)
-        {
-            for (int p = 0; p < particles[t].size(); p++)
-            {
-                glm::vec3 scaledPosition = glm::vec3(
-                    particles[t][p].position.x * globalScale,
-                    particles[t][p].position.y * globalScale,
-                    particles[t][p].position.z * globalScale
-                );
-                // Setzen Sie die Position im Shader
-                glUniform3fv(glGetUniformLocation(shaderProgram, "particlePosition"), 1, glm::value_ptr(scaledPosition));
-
-                if (t == index - 1)
-                {
-                    glPointSize(10);
-                    // Setzen Sie die Farbe im Shader
-                    glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(particles[t][p].color));
-                }
-                else
-                {
-                    glPointSize(1);
-                    // Setzen Sie die Farbe im Shader
-                    glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(glm::vec3(1, 1, 1)));
-                }
-
-                // Zeichnen Sie den Punkt
-                glDrawArrays(GL_POINTS, 0, 1);
-            }
-        }
-    }
-    */
 
     // VAO l�sen
     glBindVertexArray(0);

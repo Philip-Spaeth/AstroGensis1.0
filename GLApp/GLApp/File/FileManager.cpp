@@ -63,11 +63,12 @@ void FileManager::saveEnergieData(std::vector<std::vector<double>>& totalEnergie
     double startEnergy = 0;
     double endEnergy = 0;
 
-    for (size_t i = 1; i < totalEnergie.size(); ++i) 
+    for (size_t i = 0; i < totalEnergie.size(); ++i) 
     {
         double energy = 0;
 
-        for (int j = 0; j < totalEnergie[i].size(); j++) {
+        for (int j = 0; j < totalEnergie[i].size(); j++) 
+        {
             energy += totalEnergie[i][j];
         }
 
