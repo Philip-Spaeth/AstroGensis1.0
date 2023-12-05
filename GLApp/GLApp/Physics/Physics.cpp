@@ -88,27 +88,13 @@ bool Physics::Calc()
 
 
             //Other methods
-            if (calculationMethod != 0)
+            if (calculationMethod != 0 && calculationMethod != 3)
             {
                 calculateGravitation(t);
 
                 // particlesSize ist die Anzahl der Partikel
                 for (int p = 0; p < currentParticles.size(); ++p)
                 {
-                    // Kick-Drift-Kick leapfrog
-                    if (calculationMethod == 3)
-                    {
-                        std::cout << p << std::endl;
-                        currentParticles[p].leapfrogUpdateVelocity(currentParticles[p].calcAcceleration(currentParticles[p].force), deltaTime / 2);
-                        currentParticles[p].leapfrogUpdatePosition(currentParticles[p].velocity, deltaTime);
-
-                        std::cout << "Kick" << std::endl;
-                        octree->clearTree();
-                        octree->buildTree(currentParticles);
-                        calculateGravitation(t);
-                        currentParticles[p].leapfrogUpdateVelocity(currentParticles[p].calcAcceleration(currentParticles[p].force), deltaTime / 2);
-                        std::cout << "Drift" << std::endl;
-                    }
 
                     //semi implicit euler
                     if (calculationMethod == 1)
@@ -127,6 +113,24 @@ bool Physics::Calc()
                     //set the force to 0
                     currentParticles[p].force = { 0,0,0 };
                 }
+            }
+
+            // Kick-Drift-Kick leapfrog
+            if (calculationMethod == 3)
+            {
+                calculateGravitation(t);
+                for (int p = 0; p < currentParticles.size(); p++) {
+                    currentParticles[p].leapfrogUpdateVelocity(currentParticles[p].calcAcceleration(currentParticles[p].force), deltaTime / 2);
+                    currentParticles[p].leapfrogUpdatePosition(currentParticles[p].velocity, deltaTime);
+                }
+
+                octree->clearTree();
+                octree->buildTree(currentParticles);
+                calculateGravitation(t);
+                for(int p = 0; p < currentParticles.size(); p++)
+				{
+                    currentParticles[p].leapfrogUpdateVelocity(currentParticles[p].calcAcceleration(currentParticles[p].force), deltaTime / 2);
+				}
             }
 
             // Aktualisiere den Octree basierend auf den neuen Partikelpositionen
