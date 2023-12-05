@@ -7,11 +7,15 @@ class Particle
 public:
 
     Particle(double x = 0.0f, double y = 0.0f, double z = 0.0f);
+    Particle(glm::dvec3 position);
+    Particle(glm::dvec3 position, double mass);
+    Particle(glm::dvec3 position, double mass, glm::dvec3 velocity);
 
 
     //Physically variables
     glm::dvec3 position = { 0,0,0 };
     glm::dvec3 velocity = { 0,0,0 };
+    glm::dvec3 force = { 0,0,0 };
     double mass;
 
     // RungeKuta variables

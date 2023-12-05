@@ -9,12 +9,14 @@
 #include "Particle.h"
 #include <glm.hpp>
 #include "Engine.h"
+#include "BarnesHut/Octree.h"
 #include "FileManager.h"
 
 #define TARGET_FPS 30
 
 class SystemInit;
 class FileManager;
+class Octree;
 
 class Physics {
 public:
@@ -25,14 +27,11 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    static const int numTimeSteps = 10;
-    static const int particlesSize = 10;
+    static const int numTimeSteps = 100;
+    static const int particlesSize = 10000;
 
     // calculation Method:
     int calculationMethod = 2;
-    // 0 = rungeKutta
-    // 1 = Semi euler implicit
-    // 2 = drift kick drift leapfrog
     
     // one hour = 3600
     // one day = 86400
@@ -41,24 +40,31 @@ public:
     // bigger galaxy = 3e15
 
     //the time per frame
-    const double deltaTime = 100000;
 
+    const double deltaTime = 3e15;
+
+
+    const double theta = 3;
+    const double maxDepth = 200;
 
     //Physikalische Konstanten
     const double G = 6.67430e-11;
     // softening factor
     //  galaxy = 1e18
     // sun system = 0.2
-    const double softening = 0;
+    const double softening = 1e18;
 
 
     std::vector<Particle> currentParticles;
 private:
+    Octree* octree;
     std::vector<std::vector<double>> totalEnergie;
-    int calulations = 0;
+    double calulations = 0;
     SystemInit* systemInit;
     FileManager* fileManager;
     void calcTime(int index, std::chrono::steady_clock::time_point current_time);
+    void calculateGravitation(int timeStap);
+    void calculateGravitation(int timeStap, int start, int stop);
 };
 
 #endif // PHYSICS_H

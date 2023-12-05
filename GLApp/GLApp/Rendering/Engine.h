@@ -38,7 +38,7 @@ private:
 
     bool BGstars = true;
     int amountOfStars = 1000;
-    std::vector<glm::vec3> stars;
+    std::vector<glm::vec4> stars;
 
     bool tracks = false;
 
