@@ -17,16 +17,16 @@ public:
 
     bool init(double physicsFaktor);
     void start();
-    void update(int index, std::vector<Particle>& particles);
+    void update(int index);
     bool clean();
 
     GLFWwindow* window;
+    Physics* physics;
 
     bool isRunning = false;
 
     double playSpeed = 1;
     double changeSpeed = 1;
-private:
 
     bool showDarkMatter = true;
 
@@ -34,11 +34,17 @@ private:
 
     double globalScale = 1e-9;
     //double globalScale = 1e-18;
-    void calculateGlobalScale(std::vector<Particle>& particles);
+    void calculateGlobalScale();
+
+    //render Tree
+    const double theta = 0;
+    std::vector<glm::vec4> positions;
+    std::vector<glm::vec4> colors;
+private:
 
     bool BGstars = true;
     int amountOfStars = 1000;
-    std::vector<glm::vec4> stars;
+    std::vector<glm::vec4> bgStars;
 
     bool tracks = false;
 
@@ -60,7 +66,7 @@ private:
     bool shouldClose = false;
     GLuint VAO;
     GLuint instanceVBO;
-    void renderParticles(std::vector<Particle>& particles);
+    void renderParticles();
     void checkShaderCompileStatus(GLuint shader, const char* shaderType);
     void checkShaderLinkStatus(GLuint program);
     void calcTime(int index);

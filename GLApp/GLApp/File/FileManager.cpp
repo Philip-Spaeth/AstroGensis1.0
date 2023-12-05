@@ -5,59 +5,83 @@
 #include <vector>
 #include "Particle.h"
 #include <cmath>
+#include <future>
+#include <thread>
+#include <algorithm>
 
 FileManager::FileManager(){}
 
 FileManager::~FileManager(){}
 
-void FileManager::saveParticles(int timestep, std::vector<Particle> &particles, std::string path)
+void FileManager::saveParticles(int timestep, const std::vector<Particle>& particles, const std::string& path)
 {
     std::string dataFolder = "Data";
     std::filesystem::create_directory(dataFolder);
 
     // Save data to a file for this time step
     std::string fileName = "Data/Time_" + std::to_string(timestep) + ".dat";
-    std::ofstream outfile(fileName, std::ios::binary);
-    if (outfile.is_open()) 
+    std::ofstream file(fileName, std::ios::binary);
+
+    //put the particle positions and radius in a the array
+    std::vector<glm::vec4> array;
+    array.resize(particles.size());
+    for (int i = 0; i < particles.size(); i++)
     {
-        for (int p = 0; p < particles.size(); ++p)
+		array[i] = glm::vec4(particles[i].position, particles[i].radius);
+	}
+    //put the particle color and dark matter bool in a the array
+    std::vector<glm::vec4> color;
+    color.resize(particles.size());
+    for (int i = 0; i < particles.size(); i++)
+    {
+        int darkMatter = 0;
+        if (particles[i].darkMatter)
         {
-            outfile.write(reinterpret_cast<const char*>(&particles[p]), sizeof(Particle));
-        }
-        outfile.close();
+			darkMatter = 1;
+		}
+        color[i] = glm::vec4(particles[i].color, darkMatter);
+    }
+
+    if (file.is_open()) {
+        size_t size = array.size();
+        file.write(reinterpret_cast<char*>(&size), sizeof(size));
+
+        file.write(reinterpret_cast<const char*>(array.data()), size * sizeof(glm::vec4));
+        file.write(reinterpret_cast<const char*>(color.data()), size * sizeof(glm::vec4));
+
+        file.close();
     }
     else {
-        std::cerr << "Error opening file for writing: " << fileName << std::endl;
+        std::cerr << "Fehler beim Öffnen der Datei zum Speichern." << std::endl;
     }
 }
 
-void FileManager::loadParticles(int timestep, std::vector<Particle>& particles)
+void FileManager::loadParticles(int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec4>& color)
 {
-    // Laden der Daten für die Darstellung
-    //std::cout << "loading data ..." << std::endl;
-
-    Physics physics;
+    array.clear();
 
     std::string fileName = "Data/Time_" + std::to_string(timestep) + ".dat";
-    std::ifstream infile(fileName, std::ios::binary);
-    if (infile.is_open()) 
-    {
-        particles.resize(physics.particlesSize);
-        for (int p = 0; p < physics.particlesSize; ++p) 
-        {
-            Particle particle; // Erstellen eines tempor�ren Particle-Objekts
-            infile.read(reinterpret_cast<char*>(&particle), sizeof(Particle));
+    std::ifstream file(fileName, std::ios::binary);
 
-            // Den Partikel zum Partikelvektor hinzuf�gen
-            particles[p] = particle;
-        }
-        infile.close();
+    if (file.is_open()) {
+        size_t size;
+        file.read(reinterpret_cast<char*>(&size), sizeof(size));
+
+        array.resize(Physics::particlesSize);
+        color.resize(Physics::particlesSize);
+
+        //load the positions and radius from the file
+        file.read(reinterpret_cast<char*>(array.data()), size * sizeof(glm::vec4));
+        //load the color and dark matter bool from file
+        file.read(reinterpret_cast<char*>(color.data()), size * sizeof(glm::vec4));
+
+        file.close();
     }
-    else 
-    {
-        std::cerr << "Error opening: " << fileName << std::endl;
+    else {
+        std::cerr << "Fehler beim Öffnen der Datei zum Laden." << std::endl;
     }
 }
+
 void FileManager::saveEnergieData(std::vector<std::vector<double>>& totalEnergie, std::string path) 
 {
     double startEnergy = 0;

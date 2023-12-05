@@ -7,6 +7,9 @@
 #include "Particle.h"
 #include "Physics.h"
 #include <glm.hpp>
+#include "Galaxies/BarredGalaxy.h"
+#include "Galaxies/SpiralGalaxy.h"
+#include "Galaxies/EllipticalGalaxy.h"
 
 class SystemInit 
 {
@@ -16,8 +19,12 @@ public:
 private:
 	Physics physics;
 
-	void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity,std::vector<Particle>& particles);
-	void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, std::vector<Particle>& particles);
+	BarredGalaxy barredGalaxy;
+	SpiralGalaxy spiralGalaxy;
+	EllipticalGalaxy ellipticalGalaxy;
+
+
+	//solar system
 	void solarSystem(std::vector<Particle>& particles);
 	void ourSolarSystem(std::vector<Particle>& particles);
 };
