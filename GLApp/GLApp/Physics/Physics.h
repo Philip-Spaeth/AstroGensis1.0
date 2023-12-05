@@ -40,10 +40,12 @@ public:
     // bigger galaxy = 3e15
 
     //the time per frame
+
     const double deltaTime = 3e15;
 
-    const double theta = 4;
-    const double maxDepth = 100;
+
+    const double theta = 3;
+    const double maxDepth = 200;
 
     //Physikalische Konstanten
     const double G = 6.67430e-11;
@@ -61,6 +63,8 @@ private:
     SystemInit* systemInit;
     FileManager* fileManager;
     void calcTime(int index, std::chrono::steady_clock::time_point current_time);
+    void calculateGravitation(int timeStap);
+    void calculateGravitation(int timeStap, int start, int stop);
 };
 
 #endif // PHYSICS_H

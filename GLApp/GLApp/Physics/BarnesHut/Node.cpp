@@ -208,3 +208,15 @@ void Node::calcMass()
 	}
 }
 
+void Node::clear() {
+	for(int i = 0; i < 8; i++)
+	{
+		if (child[i] != nullptr)
+		{
+			child[i]->clear();
+			delete child[i];
+			child[i] = nullptr;
+		}
+	}
+}
+

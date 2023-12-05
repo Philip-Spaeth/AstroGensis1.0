@@ -73,55 +73,26 @@ bool Physics::Calc()
 					maxDistance = distance;
 				}
 			}
+            octree = new Octree(glm::dvec3(0, 0, 0), maxDistance * 2, theta, maxDepth);
         }
 
 
         else
         {
+            // delte tree to clear memory
+            octree->clearTree();
             //build a new tree
-            octree = new Octree(glm::dvec3(0, 0, 0), maxDistance*2, theta, maxDepth);
             octree->buildTree(currentParticles);
 
 
             //Other methods
-            if (calculationMethod != 0)
+            if (calculationMethod != 0 && calculationMethod != 3)
             {
-                // particlesSize ist die Anzahl der Partikel
-                for (int p = 0; p <currentParticles.size(); ++p)
-                {
-                    // Berechne die Gesamtkraft auf das Partikel
-                    glm::dvec3 totalForce = { 0,0,0 };
-                    double potentialEngergy = 0;
-                    totalForce = octree->calculateForces(currentParticles[p], softening, potentialEngergy, calulations);
-                    totalEnergie[t][p] += potentialEngergy;
-                    currentParticles[p].force = totalForce;
-
-                    totalEnergie[t][p] += currentParticles[p].calcKineticEnergie();
-                }
+                calculateGravitation(t);
 
                 // particlesSize ist die Anzahl der Partikel
                 for (int p = 0; p < currentParticles.size(); ++p)
                 {
-                    // Kick-Drift-Kick leapfrog
-                    if (calculationMethod == 3)
-                    {
-                        currentParticles[p].leapfrogUpdateVelocity(currentParticles[p].calcAcceleration(currentParticles[p].force), deltaTime / 2);
-                        currentParticles[p].leapfrogUpdatePosition(currentParticles[p].velocity, deltaTime);
-
-                        glm::dvec3 totalForce(0.0, 0.0, 0.0);
-                        for (size_t j = 0; j < currentParticles.size(); j++)
-                        {
-                            if (p != j)
-                            {
-                                Particle& otherParticle = currentParticles[j];
-                                glm::dvec3 force = currentParticles[p].calculateGravitationalForce(otherParticle, G, softening, deltaTime);
-                                totalEnergie[t][p] += currentParticles[p].calcPotentialEnergie(otherParticle, G, 0);
-                                totalForce += force;
-                                calulations++;
-                            }
-                        }
-                        currentParticles[p].leapfrogUpdateVelocity(currentParticles[p].calcAcceleration(totalForce), deltaTime / 2);
-                    }
 
                     //semi implicit euler
                     if (calculationMethod == 1)
@@ -141,6 +112,25 @@ bool Physics::Calc()
                     currentParticles[p].force = { 0,0,0 };
                 }
             }
+
+            // Kick-Drift-Kick leapfrog
+            if (calculationMethod == 3)
+            {
+                calculateGravitation(t);
+                for (int p = 0; p < currentParticles.size(); p++) {
+                    currentParticles[p].leapfrogUpdateVelocity(currentParticles[p].calcAcceleration(currentParticles[p].force), deltaTime / 2);
+                    currentParticles[p].leapfrogUpdatePosition(currentParticles[p].velocity, deltaTime);
+                }
+
+                octree->clearTree();
+                octree->buildTree(currentParticles);
+                calculateGravitation(t);
+                for(int p = 0; p < currentParticles.size(); p++)
+				{
+                    currentParticles[p].leapfrogUpdateVelocity(currentParticles[p].calcAcceleration(currentParticles[p].force), deltaTime / 2);
+				}
+            }
+
             // Aktualisiere den Octree basierend auf den neuen Partikelpositionen
             //Runge Kuta 
             if (calculationMethod == 0)
@@ -232,4 +222,41 @@ void Physics::calcTime(int index, std::chrono::steady_clock::time_point current_
 
     //printing out the progress
     std::cout << "Progress: " << (index * 100) / numTimeSteps << "%  " << (int)newtime << timeUnit << " left" << std::endl;
+}
+
+void Physics::calculateGravitation(int t) {
+    int num_threads = std::thread::hardware_concurrency();
+    std::vector<std::thread> threads;
+
+    int n = currentParticles.size(); // Gesamtanzahl der Iterationen
+    int step = n / num_threads;
+
+    for(int i = 0; i < num_threads; ++i) {
+		threads.emplace_back([this, i, step, t]() {
+			this->calculateGravitation(t, i * step, (i + 1) * step);
+			});
+	}
+
+    // thrads abfangen
+    for (auto& thread : threads)
+    {
+        thread.join();
+    }
+}
+
+void Physics::calculateGravitation(int t, int start, int stop) {
+    // particlesSize ist die Anzahl der Partikel
+    for (int p = start; p < stop; ++p)
+    {
+        // Berechne die Gesamtkraft auf das Partikel
+        glm::dvec3 totalForce = { 0,0,0 };
+        double potentialEngergy = 0;
+        totalForce = octree->calculateForces(currentParticles[p], softening, potentialEngergy, calulations);
+        totalEnergie[t][p] += potentialEngergy;
+        currentParticles[p].force = totalForce;
+
+        totalEnergie[t][p] += currentParticles[p].calcKineticEnergie();
+
+        calulations++;
+    }
 }

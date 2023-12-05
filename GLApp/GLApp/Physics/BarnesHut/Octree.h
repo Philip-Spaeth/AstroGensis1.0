@@ -14,12 +14,15 @@ public:
 
     void buildTree(std::vector<Particle>& particles);
     glm::dvec3 calculateForces(Particle& particle, double softening, double& potentialEngergy, double& calculations);
+    void clearTree();
 private:
 
 	Node* root;
     glm::dvec3 center;
     double radius;
     double theta;
+
+    void insert(std::vector<Particle>& particles, int start, int end);
 };
 
 #endif // OCTREE_H
