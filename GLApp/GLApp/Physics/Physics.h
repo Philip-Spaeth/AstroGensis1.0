@@ -52,7 +52,7 @@ public:
     // softening factor
     //  galaxy = 1e18
     // sun system = 0.2
-    const double softening = 1e10;
+    const double softening = 1e11;
     double maxDistance = 0;
 
     std::vector<Particle> currentParticles;
