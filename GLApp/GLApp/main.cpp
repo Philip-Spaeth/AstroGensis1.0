@@ -29,6 +29,7 @@ int main()
     std::getline(std::cin, input);
 
     Engine engine;
+    FileManager* fileManager = new FileManager();
 
     if (!engine.init(physics.deltaTime)) {
         std::cerr << "Engine initialization failed." << std::endl;
@@ -67,12 +68,10 @@ int main()
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>((1.0 / TARGET_FPS - frameTime) * 1000)));
         }
-
-        FileManager fileManager;
-        fileManager.loadParticles(counter, currentParticles);
+        fileManager->loadParticles(counter, engine.positions, engine.colors);
 
         // update particles
-        engine.update(counter, currentParticles);
+        engine.update(counter);
         // add time when engine is running
         if (engine.isRunning)
         {
@@ -86,7 +85,7 @@ int main()
 			counter = physics.numTimeSteps - 1;
             if (engine.playSpeed != 0)
             {
-                fileManager.saveRotationCurve(currentParticles, "");
+                fileManager->saveRotationCurve(currentParticles, "");
             }
             engine.playSpeed = 0;
 		}

@@ -10,178 +10,21 @@ void SystemInit::start(std::vector<Particle>& particles)
 	//solarSystem(particles);
 	//ourSolarSystem(particles);
 
-	//ellipticalGalaxy(0, 19999, { 0,0,0 }, { 0,300,0 }, { 0,0,0 }, particles);
-	//ellipticalGalaxy(1000, 1999, { 2e22, 0, 0}, { 90,0,180 }, { 0,0,0 } , particles);
+	//ellipticalGalaxy.E0(0, 9999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
+	//ellipticalGalaxy.E0(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
 	
-	spiralGalaxy(0, 9999, { 0,0,0 }, { 0, 0, 0}, { 0,0,0 }, particles);
+	spiralGalaxy.Sb(0, 9999, { 0,0,0 }, { 0, 0, 0}, { 0,0,0 }, 1, particles);
+	//spiralGalaxy.Sb(10000, 19999, { 1e22,0,0 }, { 0, 0, 0 }, { 0,0,0 }, 1, particles);
 
-	//spiralGalaxy(3000, 3999, { 1.5e22, 0.5e22, 0 }, { 234,30,129 }, { 0,0,0 }, particles);
+	//barredGalaxy.SBc(0, 9999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
 }
 
-void SystemInit::spiralGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, std::vector<Particle>& particles)
-{
-	int size = endIndex + 1 - startIndex; 
-
-	double diskRadius = 1e21;
-	double BulgeRadius = 3e20;
-
-	int numArms = 2;
-	int i = 0;
-
-	//verteillung der masse 
-	double totalMass = 1e42;
-	double blackHoleMass = 1e36;
-
-	double percentBulge = 0.3;
-	double bulgeMass = percentBulge * totalMass;
-
-	double percentDisk = 0.3;
-
-	double diskMass = percentDisk * totalMass;
-
-	double percentDarkMatter = 0.2;
-	double darkMatterMass = percentDarkMatter * totalMass;
-	double haloRadius = 1e22;
 
 
-	//split the size of the galaxy in 3 parts
-	int bulgeSize = size * percentBulge;
-	int diskSize = size * percentDisk;
-	int darkMatterSize = size * percentDarkMatter;
 
-	int bulgeStart = startIndex;
-	int bulgeEnd = bulgeStart + bulgeSize;
 
-	int diskStart = bulgeEnd;
-	int diskEnd = diskStart + diskSize;
 
-	int darkMatterStart = diskEnd;
-	int darkMatterEnd = darkMatterStart + darkMatterSize;
-
-	// Erstellen einer Spiralgalaxie
-	for (int j = startIndex; j != endIndex; j++)
-	{
-		//Dense bulge in the center
-
-		if (j >= bulgeStart && j < bulgeEnd)
-		{
-			// Schwarzes Loch in der Mitte
-			if (j == startIndex)
-			{
-				particles[j].position = position;
-				particles[j].velocity = velocity;
-
-				particles[j].mass = blackHoleMass;
-				particles[j].radius = 2;
-
-				particles[j].color = glm::vec3(1, 1, 1);
-			}
-			else
-			{
-				double r = physics.random(0, physics.random(0, BulgeRadius));
-				double depth = physics.random(0, physics.random(0, physics.random(0, BulgeRadius)));
-
-				double angle = physics.random(0, 2 * 3.14);
-
-				particles[j].position = glm::dvec3(r * std::cos(angle), r * std::sin(angle), physics.random(-depth, depth)) + position; 
-				double distanceToCenter = glm::length(particles[j].position - position);
-				double v = std::sqrt((physics.G * blackHoleMass) / distanceToCenter);
-				particles[j].velocity = glm::dvec3(-v * std::sin(angle), v * std::cos(angle), 0) + velocity;
-				particles[j].mass = 1e30;
-
-				particles[j].radius = physics.random(0.1,2);
-
-				particles[j].color = glm::vec3(1, 1, 1);
-			}
-		}
-		//disk 
-		else if (j >= diskStart && j < diskEnd)
-		{
-			double r = physics.random(0, physics.random(0, diskRadius));
-			double depth = physics.random(0, physics.random(0, physics.random(0, diskRadius)));
-
-			double armAngle = 2 * 3.14 * ((j - startIndex) * 1000 / particles.size()) / numArms;
-
-			particles[j].position = glm::dvec3(r * std::cos(armAngle), r * std::sin(armAngle), physics.random(-depth, depth)) + position;
-			double distanceToCenter = glm::length(particles[j].position - position);
-			double v = std::sqrt((physics.G * blackHoleMass) / distanceToCenter);
-			particles[j].velocity = glm::dvec3(-v * std::sin(armAngle), v * std::cos(armAngle), 0) + velocity;
-			particles[j].mass = 1e30;
-
-			particles[j].radius = physics.random(0.1, 2);
-
-			particles[j].color = glm::vec3(1, 1, 1);
-		}
-
-		//dark matter in the outer regions
-		else if (j >= darkMatterStart && j < darkMatterEnd)
-		{
-			double r = physics.random(physics.random(0, diskRadius), diskRadius);
-			double depth = physics.random(0, physics.random(0, physics.random(0, diskRadius))) / 5;
-
-			double angle = physics.random(0, 2 * 3.14);
-
-			particles[j].position = glm::dvec3(r * std::cos(angle), r * std::sin(angle), physics.random(-depth, depth)) + position;
-			double distanceToCenter = glm::length(particles[j].position - position);
-			double v = std::sqrt((physics.G * blackHoleMass) / distanceToCenter);
-			particles[j].velocity = glm::dvec3(-v * std::sin(angle), v * std::cos(angle), 0) + velocity;
-
-			particles[j].mass = 1e30;
-			particles[j].radius = physics.random(0.1, 2);
-
-			particles[j].color = glm::vec3(1, 1, 1);
-			particles[j].darkMatter = true;
-		}
-		i++;
-	} 
-}	
-
-void SystemInit::ellipticalGalaxy(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, std::vector<Particle>& particles)
-{
-	int size = endIndex + 1;
-
-	double galaxyRadius = 1e21; // Radius der kugelförmigen Galaxie
-
-	double starSpeed = 1;
-
-	int i = 0;
-
-	// Erstellen einer kugelförmigen Galaxie
-	for (int j = startIndex; j < size; j++)
-	{
-		// Mass Sagittarius A
-		if (j == startIndex)
-		{
-			particles[j].position = position;
-			particles[j].velocity = velocity;
-			particles[j].mass = 1e36;
-			particles[j].radius = 0.5;
-			particles[j].color = glm::vec3(1, 1, 1);
-		}
-		else
-		{
-			double theta = physics.random(0, glm::pi<double>());
-			double phi = physics.random(0, 2 * glm::pi<double>());
-			double r = physics.random(0, physics.random(0, galaxyRadius));
-
-			double x = r * std::sin(theta) * std::cos(phi);
-			double y = r * std::sin(theta) * std::sin(phi);
-			double z = r * std::cos(theta);
-
-			particles[j].position = glm::dvec3(x, y, z) + position;
-			double v = std::sqrt((physics.G * particles[startIndex].mass) / particles[startIndex].CalculateDistance(particles[j])) * starSpeed;
-			particles[j].velocity = glm::dvec3(-v * std::sin(phi), v * std::cos(phi), 0) + velocity;
-			particles[j].mass = 1e30;
-			particles[j].radius = physics.random(0.001,2);
-			//make the stars in the center brighter
-			double brightness = 1 - (particles[j].CalculateDistance(particles[startIndex]) / galaxyRadius);
-			particles[j].color = glm::vec3(brightness - 0.1, brightness - 0.1, brightness);
-		}
-
-		i++;
-	}
-}
-
+// solar system stuff 
 
 void SystemInit::solarSystem(std::vector<Particle>& particles)
 {

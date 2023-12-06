@@ -55,8 +55,6 @@ bool Physics::Calc()
 
     currentParticles.resize(particlesSize);
 
-    double maxDistance = 0;
-
     for (int t = 0; t < numTimeSteps; ++t) 
     {
         totalEnergie[t].resize(particlesSize);

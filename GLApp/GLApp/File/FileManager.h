@@ -15,8 +15,8 @@ class FileManager
 	FileManager();
 	~FileManager();
 	
-	void saveParticles(int timestep, std::vector<Particle> &particles, std::string path);
-	void loadParticles(int timestep, std::vector<Particle>& particles);
+	void saveParticles(int timestep, const std::vector<Particle>& particles, const std::string& path);
+	void loadParticles(int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec4>& color);
 
 	void saveEnergieData(std::vector<std::vector<double>>& totalEnergie, std::string path);
 

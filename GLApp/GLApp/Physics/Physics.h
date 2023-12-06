@@ -27,7 +27,7 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    static const int numTimeSteps = 100;
+    static const int numTimeSteps = 10;
     static const int particlesSize = 10000;
 
     // calculation Method:
@@ -52,8 +52,8 @@ public:
     // softening factor
     //  galaxy = 1e18
     // sun system = 0.2
-    const double softening = 1e18;
-
+    const double softening = 1e11;
+    double maxDistance = 0;
 
     std::vector<Particle> currentParticles;
 private:

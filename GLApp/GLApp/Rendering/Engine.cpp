@@ -97,15 +97,14 @@ void Engine::start()
 {
     // Erstellen des FileManagers
     fileManager = new FileManager();
-    // Laden der Daten für die Darstellung
-    std::vector<Particle> particles;
-    fileManager->loadParticles(0,particles);
+
+    fileManager->loadParticles(0, positions, colors);
 
     // Hier VBO und VAO erstellen und konfigurieren
     GLuint VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * particles.size(), &particles[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * Physics::particlesSize, &positions[0], GL_STATIC_DRAW);
 
     // Erstellen des Vertex Array Objects (VAO)
     glGenVertexArrays(1, &VAO);
@@ -124,7 +123,7 @@ void Engine::start()
 			double y = random(-1e14, 1e14);
 			double z = random(-1e14, 1e14);
             double size = random(0.1, 2);
-			stars.push_back(glm::vec4(x, y, z, size));
+			bgStars.push_back(glm::vec4(x, y, z, size));
 		}   
     }
 
@@ -132,28 +131,24 @@ void Engine::start()
     std::cout << "Data loaded" << std::endl;
 }
 
-void Engine::update(int index, std::vector<Particle>& particles)
+void Engine::update(int index)
 {
     //calculate the time
     if (isRunning) 
     {
-        if (particles.size() >= 4) {
-            calcTime(particles[4].position, index);
-        }
-        else {
-            calcTime(index);
-        }
+        calcTime(index);
     }
 
     processMouseInput();
     processInput();
 
     // set the globalScale of the system
-    if (index == 0) {
-        calculateGlobalScale(particles);
+    if (index == 0) 
+    {
+        calculateGlobalScale();
     }
 
-    renderParticles(particles);
+    renderParticles();
 
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -192,7 +187,7 @@ void Engine::update(int index, std::vector<Particle>& particles)
 
 }
 
-void Engine::renderParticles(std::vector<Particle>& particles)
+void Engine::renderParticles()
 {
     // L�schen des Bildschirms
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -219,13 +214,13 @@ void Engine::renderParticles(std::vector<Particle>& particles)
 
     if (BGstars)
     {
-        //render the background stars
+        //render the background bgStars
         for (int i = 0; i < amountOfStars; i++)
         {
-            glPointSize(stars[i].w);
+            glPointSize(bgStars[i].w);
 
             // Setzen Sie die Position im Shader
-            glm::vec3 pos = glm::vec3(stars[i].x, stars[i].y, stars[i].z);
+            glm::vec3 pos = glm::vec3(bgStars[i].x, bgStars[i].y, bgStars[i].z);
             glUniform3fv(glGetUniformLocation(shaderProgram, "particlePosition"), 1, glm::value_ptr(pos));
 
             // Setzen Sie die Farbe im Shader
@@ -238,17 +233,13 @@ void Engine::renderParticles(std::vector<Particle>& particles)
     }
     if (tracks == false)
     {
-        for (int p = 0; p < particles.size(); p++)
+        for (int p = 0; p < positions.size(); p++)
         {
-            if(particles[p].radius == 0)
-			{
-				continue;
-			}
-            if(showDarkMatter == false && particles[p].darkMatter == true)
+            if(showDarkMatter == false && colors[p].w == 1)
 			{
                 continue;
 			}
-            if (showDarkMatter == true && particles[p].darkMatter == true)
+            if (showDarkMatter == true && colors[p].w == 1)
             {
                 // Setzen Sie die Farbe auf blau für dunkle Materie
                 glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(glm::vec3(0,0,1)));
@@ -256,19 +247,20 @@ void Engine::renderParticles(std::vector<Particle>& particles)
             else
 			{
 				// Setzen Sie die Farbe im Shader
-				glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(particles[p].color));
+                glm::vec3 color = glm::vec3(colors[p].x, colors[p].y, colors[p].z);
+				glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(color));
 			}
 
             glm::vec3 scaledPosition = glm::vec3(
-                particles[p].position.x * globalScale,
-                particles[p].position.y * globalScale,
-                particles[p].position.z * globalScale
+                positions[p].x * globalScale,
+                positions[p].y * globalScale,
+                positions[p].z * globalScale
             ); 
 
             // Setzen Sie die Position im Shader
             glUniform3fv(glGetUniformLocation(shaderProgram, "particlePosition"), 1, glm::value_ptr(scaledPosition));
 
-            glPointSize(particles[p].radius);
+            glPointSize(positions[p].w);
 
             // Zeichnen Sie den Punkt
             glDrawArrays(GL_POINTS, 0, 1);
@@ -278,6 +270,7 @@ void Engine::renderParticles(std::vector<Particle>& particles)
     // VAO l�sen
     glBindVertexArray(0);
 }
+
 void Engine::processInput()
 {
     if (GetAsyncKeyState(VK_CONTROL) < 0)
@@ -385,7 +378,8 @@ bool Engine::clean()
     return true;
 }
 
-void Engine::calcTime(int index) {
+void Engine::calcTime(int index) 
+{
     calcTime(glm::dvec3(0, 0, 0), index);
 }
 
@@ -507,10 +501,11 @@ double Engine::random(double min, double max)
     return randomFloat;
 }
 
-void Engine::calculateGlobalScale(std::vector<Particle>& particles) {
+void Engine::calculateGlobalScale() 
+{
     double maxDistance = 0;
-    for (int i = 0; i < particles.size(); i++){
-	    double distance = sqrt(pow(particles[i].position.x, 2) + pow(particles[i].position.y, 2) + pow(particles[i].position.z, 2));
+    for (int i = 0; i < positions.size(); i++){
+	    double distance = sqrt(pow(positions[i].x, 2) + pow(positions[i].y, 2) + pow(positions[i].z, 2));
         if (distance > maxDistance){
 		    maxDistance = distance;
 	    }
