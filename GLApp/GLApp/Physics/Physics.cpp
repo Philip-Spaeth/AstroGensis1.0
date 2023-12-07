@@ -74,6 +74,9 @@ bool Physics::Calc()
 				}
 			}
             octree = new Octree(glm::dvec3(0, 0, 0), maxDistance * 2, theta, maxDepth);
+
+            fileManager->saveRotationCurve(currentParticles, "");
+            fileManager->saveMassCurve(currentParticles, "");
         }
 
 

@@ -18,7 +18,7 @@ Octree::~Octree() {
 
 glm::dvec3 Octree::calculateForces(Particle& particle, double softening, double& potentialEngergy, double& calculations)
 {
-	if (particle.mass == 1e36)
+	if (particle.mass == 1e41)
 	{
 		return { 0,0,0 };
 	}

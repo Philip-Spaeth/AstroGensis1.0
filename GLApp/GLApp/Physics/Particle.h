@@ -39,6 +39,10 @@ public:
     double radius;
     glm::vec3 color;
 
+
+    //SystemInit
+    double angle = 0;
+
     //Help functions
     double CalculateDistance(const Particle& other) const;
 

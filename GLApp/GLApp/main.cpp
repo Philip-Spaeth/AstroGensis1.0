@@ -68,6 +68,7 @@ int main()
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>((1.0 / TARGET_FPS - frameTime) * 1000)));
         }
+
         fileManager->loadParticles(counter, engine.positions, engine.colors);
 
         // update particles
@@ -83,10 +84,6 @@ int main()
         if (counter >= physics.numTimeSteps - 1)
         {
 			counter = physics.numTimeSteps - 1;
-            if (engine.playSpeed != 0)
-            {
-                fileManager->saveRotationCurve(currentParticles, "");
-            }
             engine.playSpeed = 0;
 		}
         if (counter < 0)

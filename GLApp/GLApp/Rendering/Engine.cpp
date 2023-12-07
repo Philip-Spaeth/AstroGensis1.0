@@ -136,7 +136,7 @@ void Engine::update(int index)
     //calculate the time
     if (isRunning) 
     {
-        calcTime(index);
+        //calcTime(index);
     }
 
     processMouseInput();

@@ -1,28 +1,34 @@
 #include "SpiralGalaxy.h"
+#include <omp.h>
 
 void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double size, std::vector<Particle>& particles)
 {
+	std::cout << std::endl;
+	std::cout << "Calculating Spiral Galaxy start Positions and Velocity ..." << std::endl;
+
 	int particleSize = endIndex + 1 - startIndex;
 
-	double diskRadius = 1e21;
-	double BulgeRadius = 3e20;
+	double BulgeRadius = 1.419e19;
+	double diskRadius = 5.02e20;
+	double haloRadius = 1.89e21;
 
 	int numArms = 2;
 	int i = 0;
 
 	//verteillung der masse 
-	double totalMass = 1e42;
-	double blackHoleMass = 1e36;
+	double totalMass = 2.5641e42;
 
-	double percentBulge = 0.5;
+	double percentBulge = 0.15;
 	double bulgeMass = percentBulge * totalMass;
+	double bulgeMassPerParticle = bulgeMass / (particleSize * percentBulge);
 
-	double percentDisk = 0.3;
+	double percentDisk = 0.05;
 	double diskMass = percentDisk * totalMass;
+	double diskMassPerParticle = diskMass / (particleSize * percentDisk);
 
-	double percentDarkMatter = 0.2;
+	double percentDarkMatter = 0.80;
 	double darkMatterMass = percentDarkMatter * totalMass;
-	double haloRadius = 1e22;
+	double darkMatterMassPerParticle = darkMatterMass / (particleSize * percentDarkMatter);
 
 
 	//split the size of the galaxy in 3 parts
@@ -43,7 +49,6 @@ void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 	for (int j = startIndex; j != endIndex; j++)
 	{
 		//Dense bulge in the center
-
 		if (j >= bulgeStart && j < bulgeEnd)
 		{
 			// Schwarzes Loch in der Mitte
@@ -51,22 +56,23 @@ void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 			{
 				particles[j].position = position;
 				particles[j].velocity = velocity;
-				particles[j].mass = blackHoleMass;
-				particles[j].radius = 2;
+				particles[j].mass = bulgeMassPerParticle;
+				particles[j].radius = 1;
 				particles[j].color = glm::vec3(1, 1, 1);
 			}
 			else
 			{
-				double r = physics.random(0, physics.random(0, BulgeRadius));
-				double depth = physics.random(0, physics.random(0, physics.random(0, BulgeRadius)));
-
-				double angle = physics.random(0, 2 * 3.14);
-
-				particles[j].position = glm::dvec3(r * std::cos(angle), r * std::sin(angle), physics.random(-depth, depth)) + position;
-				double distanceToCenter = glm::length(particles[j].position - position);
-				double v = std::sqrt((physics.G * blackHoleMass) / distanceToCenter);
-				particles[j].velocity = glm::dvec3(-v * std::sin(angle), v * std::cos(angle), 0) + velocity;
-				particles[j].mass = 1e30;
+				//random radius and depth
+				//double r = physics.random(0, physics.random(0, BulgeRadius));
+				//double depth = physics.random(0, physics.random(0, physics.random(0, BulgeRadius)));
+				//particles[j].angle = physics.random(0, 2 * 3.14);
+				//not random radius and depth
+				double r = physics.random(0, BulgeRadius);
+				double depth = physics.random(0, physics.random(0, physics.random(0, BulgeRadius))) * (BulgeRadius / r);
+				particles[j].angle = j * (-2 * 3.14) / bulgeSize;
+				particles[j].angle = physics.random(0, 2 * 3.14);
+				particles[j].position = glm::dvec3(r * std::cos(particles[j].angle), r * std::sin(particles[j].angle), physics.random(-depth, depth)) + position;
+				particles[j].mass = bulgeMassPerParticle;
 				particles[j].radius = physics.random(0.1, 2);
 				particles[j].color = glm::vec3(1, 1, 1);
 			}
@@ -74,16 +80,11 @@ void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 		//disk 
 		else if (j >= diskStart && j < diskEnd)
 		{
-			double r = physics.random(0, physics.random(0, diskRadius));
+			double r = physics.random(BulgeRadius, physics.random(BulgeRadius, diskRadius));
 			double depth = physics.random(0, physics.random(0, physics.random(0, diskRadius)));
-
-			double armAngle = 2 * 3.14 * ((j - startIndex) * 1000 / particles.size()) / numArms;
-
-			particles[j].position = glm::dvec3(r * std::cos(armAngle), r * std::sin(armAngle), physics.random(-depth, depth)) + position;
-			double distanceToCenter = glm::length(particles[j].position - position);
-			double v = std::sqrt((physics.G * blackHoleMass) / distanceToCenter);
-			particles[j].velocity = glm::dvec3(-v * std::sin(armAngle), v * std::cos(armAngle), 0) + velocity;
-			particles[j].mass = 1e30;
+			particles[j].angle = 2 * 3.14 * ((j - startIndex)) / numArms;
+			particles[j].position = glm::dvec3(r * std::cos(particles[j].angle), r * std::sin(particles[j].angle), physics.random(-depth,depth)) + position;
+			particles[j].mass = diskMassPerParticle;
 			particles[j].radius = physics.random(0.1, 2);
 			particles[j].color = glm::vec3(1, 1, 1);
 		}
@@ -94,17 +95,77 @@ void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 			double r = physics.random(physics.random(0, diskRadius), diskRadius);
 			double depth = physics.random(0, physics.random(0, physics.random(0, diskRadius))) / 5;
 
-			double angle = physics.random(0, 2 * 3.14);
-
-			particles[j].position = glm::dvec3(r * std::cos(angle), r * std::sin(angle), physics.random(-depth, depth)) + position;
-			double distanceToCenter = glm::length(particles[j].position - position);
-			double v = std::sqrt((physics.G * blackHoleMass) / distanceToCenter);
-			particles[j].velocity = glm::dvec3(-v * std::sin(angle), v * std::cos(angle), 0) + velocity;
-			particles[j].mass = 1e30;
+			particles[j].angle = physics.random(0, 2 * 3.14);
+			particles[j].position = glm::dvec3(r * std::cos(particles[j].angle), r * std::sin(particles[j].angle), physics.random(-depth, depth)) + position;
+			particles[j].mass = darkMatterMassPerParticle;
 			particles[j].radius = physics.random(0.1, 2);
 			particles[j].color = glm::vec3(1, 1, 1);
 			particles[j].darkMatter = true;
 		}
 		i++;
 	}
+
+	//calc the center of mass of the galaxy
+	glm::dvec3 centerOfMass = glm::dvec3(0, 0, 0);
+	double totalMassGalaxy = 0;
+	for (int j = startIndex; j != endIndex; j++)
+	{
+		centerOfMass += particles[j].position * particles[j].mass;
+		totalMassGalaxy += particles[j].mass;
+	}
+	centerOfMass /= totalMassGalaxy;
+
+
+	// Precompute constants outside the loop
+	const double pi = 3.14;
+	const double constantFactor = (static_cast<double>(3) / 4) * pi;
+
+	// Precompute mass in radius for each particle once and store it
+	std::vector<double> massInRadiusArray(endIndex - startIndex);
+	for (int i = startIndex; i < endIndex; i++)
+	{
+		double distanceToCenter = glm::length(particles[i].position - centerOfMass);
+		massInRadiusArray[i - startIndex] = calcMassInRadius(startIndex, endIndex, centerOfMass, rotation, particles, distanceToCenter);
+	}
+
+	// Calculate velocity
+	for (int j = startIndex; j < endIndex; j++)
+	{
+		double distanceToCenter = glm::length(particles[j].position - centerOfMass);
+		if (distanceToCenter != 0)
+		{
+			double radiusSquared = distanceToCenter * distanceToCenter;
+			double v = std::sqrt(physics.G * constantFactor * radiusSquared * massInRadiusArray[j - startIndex]);
+
+			// No need for critical section here
+			particles[j].velocity = glm::dvec3(-v * std::sin(particles[j].angle), v * std::cos(particles[j].angle), 0) + velocity;
+		}
+	}
+}
+
+double SpiralGalaxy::calcMassInRadius(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, std::vector<Particle>& particles, double r)
+{
+	//calc mass
+	double mass = 0;
+
+	for (int i = startIndex; i < endIndex; i++)
+	{
+		double distanceToCenter = glm::length(particles[i].position - position);
+
+		// Check if the particle is within the specified radius
+		if (distanceToCenter <= r)
+		{
+			mass += particles[i].mass;
+		}
+	}
+
+
+	//calc p for v = sqrt(G*(4/3*pi*r^2*p))
+	//p = m / V
+	double V = (static_cast<double>(3) / 4) * 3.14 * (r * r * r);
+	double p = mass / V;
+
+	//print out p
+	//std::cout << p << std::endl;
+	return p;
 }

@@ -129,6 +129,8 @@ void FileManager::saveEnergieData(std::vector<std::vector<double>>& totalEnergie
 
 void FileManager::saveRotationCurve(std::vector<Particle>& particles, std::string path)
 {
+    std::cout << std::endl;
+    std::cout << "saving velocity curve ..." << std::endl;
     std::string filename = "../velocty_Curve.txt";
     std::ofstream outputFile;
     outputFile.open(filename, std::ios::out);
@@ -143,7 +145,7 @@ void FileManager::saveRotationCurve(std::vector<Particle>& particles, std::strin
 
     double galaxySize = 1e21;
 
-    int numberOfSteps = 200;
+    int numberOfSteps = 1000;
     double binSize = galaxySize / numberOfSteps;
 
     std::vector<Particle> steps;
@@ -188,7 +190,7 @@ void FileManager::saveRotationCurve(std::vector<Particle>& particles, std::strin
             double otherVelocity = sqrt(pow(steps[k - 1].velocity.x, 2) + pow(steps[k - 1].velocity.y, 2) + pow(steps[k - 1].velocity.z, 2));
             if (myVelocity > otherVelocity * 2)
             {
-                steps[k].velocity = steps[k - 1].velocity;
+                //steps[k].velocity = steps[k - 1].velocity;
 		    }
         }
     }
@@ -207,10 +209,56 @@ void FileManager::saveRotationCurve(std::vector<Particle>& particles, std::strin
 
 void FileManager::saveMassCurve(std::vector<Particle>& particles, std::string path)
 {
-	//print out the velocity and the distance to the center of mass
-	for (int i = 0; i < particles.size(); i++)
-	{
-		double distance = sqrt(pow(particles[i].position.x, 2) + pow(particles[i].position.y, 2) + pow(particles[i].position.z, 2));
-		std::cout << time << ";" << particles[i].mass << ";" << distance << std::endl;
-	}
+    std::cout << "saving mass curve ..." << std::endl;
+    std::string filename = "../mass_Curve.txt";
+    std::ofstream outputFile;
+    outputFile.open(filename, std::ios::out);
+
+    if (!outputFile.is_open()) {
+        std::cerr << "Fehler beim Öffnen der Datei!" << std::endl;
+        return;
+    }
+
+    std::locale germanLocale("de_DE.utf8");
+    outputFile.imbue(germanLocale);
+
+    // Assuming you have a vector of radii
+    std::vector<double> radii;
+
+    // Extract radii from particles
+    for (const auto& particle : particles) 
+    {
+        double distanceToCenter = glm::length(particle.position);
+        radii.push_back(distanceToCenter);
+    }
+
+    // Sort the radii
+    std::sort(radii.begin(), radii.end());
+
+    // Remove duplicate radii
+    radii.erase(std::unique(radii.begin(), radii.end()), radii.end());
+
+    // Write header
+    outputFile << "Radius\tTotalMass" << std::endl;
+
+    // Calculate and write total mass for each radius
+    for (const auto& radius : radii) 
+    {
+        double totalMass = 0.0;
+
+        for (const auto& particle : particles) 
+        {
+            double distanceToCenter = glm::length(particle.position);
+
+            if (distanceToCenter <= radius) {
+                totalMass += particle.mass;
+            }
+        }
+
+        // Write data to the file
+        double p = totalMass / ((static_cast<double>(3) / 4) * 3.14 * (radius * radius * radius));
+        //print out the mass and the radius
+        outputFile << std::fixed << std::setprecision(2) << radius << "\t" << totalMass << std::endl;
+    }
+    outputFile.close();
 }
