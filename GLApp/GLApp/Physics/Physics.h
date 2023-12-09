@@ -27,8 +27,8 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    static const int numTimeSteps = 10000;
-    static const int particlesSize = 10;
+    static const int numTimeSteps = 1;
+    static const int particlesSize = 100000;
 
     // calculation Method:
     int calculationMethod = 3;
@@ -41,10 +41,10 @@ public:
 
     //the time per frame
 
-    const double deltaTime = 100;
+    const double deltaTime = 1e15;
 
 
-    const double theta = 0;
+    const double theta = 1;
     const double maxDepth = 200;
 
     //Physikalische Konstanten
