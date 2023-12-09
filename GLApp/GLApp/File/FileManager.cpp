@@ -245,20 +245,26 @@ void FileManager::saveMassCurve(std::vector<Particle>& particles, std::string pa
     for (const auto& radius : radii) 
     {
         double totalMass = 0.0;
+        double darkMatterMass = 0.0;
 
         for (const auto& particle : particles) 
         {
             double distanceToCenter = glm::length(particle.position);
 
-            if (distanceToCenter <= radius) {
+            if (distanceToCenter <= radius && particle.darkMatter != true) 
+            {
                 totalMass += particle.mass;
+            }
+            if (distanceToCenter <= radius && particle.darkMatter == true)
+            {
+                darkMatterMass += particle.mass;
             }
         }
 
         // Write data to the file
-        double p = totalMass / ((static_cast<double>(3) / 4) * 3.14 * (radius * radius * radius));
+        //double p = totalMass / ((static_cast<double>(3) / 4) * 3.14 * (radius * radius * radius));
         //print out the mass and the radius
-        outputFile << std::fixed << std::setprecision(2) << radius << "\t" << totalMass << std::endl;
+        outputFile << std::fixed << std::setprecision(2) << radius << ";" << totalMass << ";" << darkMatterMass << std::endl;
     }
     outputFile.close();
 }

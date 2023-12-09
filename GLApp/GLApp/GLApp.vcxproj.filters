@@ -74,10 +74,10 @@
     <ClInclude Include="Physics\Galaxies\EllipticalGalaxy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Physics\Galaxies\SpiralGalaxy.h">
+    <ClInclude Include="Physics\Galaxies\BarredGalaxy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Physics\Galaxies\BarredGalaxy.h">
+    <ClInclude Include="Physics\Galaxies\SpiralGalaxy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

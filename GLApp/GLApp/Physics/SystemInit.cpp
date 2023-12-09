@@ -8,12 +8,12 @@
 void SystemInit::start(std::vector<Particle>& particles)
 {
 	//solarSystem(particles);
-	//ourSolarSystem(particles);
+	ourSolarSystem(particles);
 
 	//ellipticalGalaxy.E0(0, 9999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
 	//ellipticalGalaxy.E0(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
 	
-	spiralGalaxy.Sb(0, 9999, { 0,0,0 }, { 0, 0, 0}, { 0,0,0 }, 1, particles);
+	//spiralGalaxy.Sb(0, 9999, { 0,0,0 }, { 0, 0, 0}, { 0,0,0 }, 1, particles);
 	//spiralGalaxy.Sb(10000, 19999, { 1e22,0,0 }, { 0, 0, 0 }, { 0,0,0 }, 1, particles);
 
 	//barredGalaxy.SBc(0, 9999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);

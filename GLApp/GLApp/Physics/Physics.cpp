@@ -75,8 +75,8 @@ bool Physics::Calc()
 			}
             octree = new Octree(glm::dvec3(0, 0, 0), maxDistance * 2, theta, maxDepth);
 
-            fileManager->saveRotationCurve(currentParticles, "");
-            fileManager->saveMassCurve(currentParticles, "");
+            //fileManager->saveRotationCurve(currentParticles, "");
+            //fileManager->saveMassCurve(currentParticles, "");
         }
 
 
@@ -155,7 +155,7 @@ bool Physics::Calc()
                                 calulations++;
                             }
                         }
-                        totalEnergie[t][p] = currentParticles[p].calcKineticEnergie();
+                        totalEnergie[t][p] += currentParticles[p].calcKineticEnergie();
 
                         //Runge-Kutta Schritte berechnen
                         currentParticles[p].rungeKuttaUpdateVelocity(currentParticles[p].calcAcceleration(totalForce), deltaTime, k);

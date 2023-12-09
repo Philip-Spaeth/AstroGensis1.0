@@ -173,11 +173,11 @@
     <ClInclude Include="Physics\BarnesHut\Node.h" />
     <ClInclude Include="Physics\BarnesHut\Octree.h" />
     <ClInclude Include="Physics\Galaxies\EllipticalGalaxy.h" />
+    <ClInclude Include="Physics\Galaxies\SpiralGalaxy.h" />
     <ClInclude Include="Physics\Particle.h" />
     <ClInclude Include="Physics\Physics.h" />
     <ClInclude Include="Physics\SystemInit.h" />
     <ClInclude Include="Rendering\Engine.h" />
-    <ClInclude Include="Physics\Galaxies\SpiralGalaxy.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
