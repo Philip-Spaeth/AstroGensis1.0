@@ -8,7 +8,6 @@
 #include <thread>
 #include "Particle.h"
 #include <glm.hpp>
-#include "Engine.h"
 #include "BarnesHut/Octree.h"
 #include "FileManager.h"
 
@@ -62,7 +61,8 @@ private:
     double calulations = 0;
     SystemInit* systemInit;
     FileManager* fileManager;
-    void calcTime(int index, std::chrono::steady_clock::time_point current_time);
+    void calcTime(int index, std::chrono::system_clock::time_point current_time);
+    std::chrono::system_clock::time_point time;
     void calculateGravitation(int timeStap);
     void calculateGravitation(int timeStap, int start, int stop);
 };

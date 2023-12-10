@@ -7,15 +7,21 @@
 #include <thread>
 #include <cmath>
 #include "Particle.h"
+
+//  Nur unter Windows
+#ifdef WIN32
 #include "Engine.h"
-#include "Physics.h"
 #include <Windows.h>
 #include <debugapi.h>
+#endif
+
+#include "Physics.h"
 #include <iostream>
 #include <string>
 #include "FileManager.h"
 
 
+#ifdef WIN32
 int main()
 {
     Physics physics;
@@ -63,7 +69,7 @@ int main()
         frameTime = currentFrameTime - lastFrameTime;
         lastFrameTime = currentFrameTime;
 
-        // Rufen Sie die update-Funktion auf und übergeben Sie die Zeitdauer eines Frames
+        // Rufen Sie die update-Funktion auf und ï¿½bergeben Sie die Zeitdauer eines Frames
         if (frameTime < 1.0 / TARGET_FPS)
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>((1.0 / TARGET_FPS - frameTime) * 1000)));
@@ -124,3 +130,17 @@ int main()
     glfwTerminate();
     return 0;
 }
+
+#else
+
+int main()
+{
+    Physics physics;
+
+    physics.Calc();
+
+    std::cout << std::endl;
+    std::cout << "Press enter to start" << std::endl;
+}
+
+#endif

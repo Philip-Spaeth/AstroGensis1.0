@@ -3,11 +3,17 @@
 #include <fstream>
 #include <vector>
 #include <gtc/matrix_transform.hpp>
+
+#ifdef WIN32
 #include <Windows.h>
+#endif
+
 #include <gtc/type_ptr.hpp>
 #include <chrono>
 #include <thread>
 #include <string>
+
+#ifdef WIN32
 
  Engine::Engine() : window(nullptr), shaderProgram(0), VAO(0)
 {
@@ -527,3 +533,5 @@ void Engine::calculateGlobalScale()
 	globalScale = maxDistance / pow(10, exponent*2 - 2);
     //globalScale = 1e-18;
 }
+
+#endif

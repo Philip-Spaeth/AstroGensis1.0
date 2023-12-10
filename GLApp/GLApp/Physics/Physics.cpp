@@ -44,7 +44,7 @@ bool Physics::Calc()
         calculationMethod = std::stoi(inputCalculationMethod);
     }
 
-    auto current_time = std::chrono::high_resolution_clock::now();
+    auto current_time = std::chrono::system_clock::now();
 
     std::cout << "Starting the calculations..." << std::endl;
 
@@ -192,14 +192,26 @@ double Physics::random(double min, double max)
     return randomFloat;
 }
 
-void Physics::calcTime(int index, std::chrono::steady_clock::time_point current_time)
+void Physics::calcTime(int index, std::chrono::system_clock::time_point current_time)
 {
-    std::chrono::duration<double> elapsed_time = current_time - std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed_time = current_time - std::chrono::system_clock::now();
 
-    double time = elapsed_time.count() * -1;
-    std::string timeUnit;
+    double time = elapsed_time.count(); // Zeit in Sekunden
+    std::string timeUnit = "Sekunden"; // oder eine andere Einheit Ihrer Wahl
+
+    if (time < 0) {
+        time *= -1; // Bei negativer Zeit den Betrag verwenden
+    }
 
     //calculation of what to multiply with the time to get the remaining time so the it is 100
+    // Berechnung der Zeitdifferenz in Sekunden
+    /* std::chrono::duration<double> time_diff = time;
+
+    // Sekunden in einen double-Wert umrechnen
+    double time_seconds = time_diff.count();
+
+    // Dann können Sie time_seconds mit index multiplizieren
+    double newtime = time_seconds * (numTimeSteps - index) / index; */
     double newtime = time * (numTimeSteps - index) / index;
 
 
