@@ -20,9 +20,9 @@ set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "../External_Libraries/GLM/glm"
-  "../External_Libraries/GLFW/include"
-  "../External_Libraries/GLEW/include"
+  "../External_Libraries_Linux/GLM/glm"
+  "../External_Libraries_Linux/GLFW/include"
+  "../External_Libraries_Linux/GLEW/include"
   "../GLApp/GLApp/Physics"
   "../GLApp/GLApp/File"
   "../GLApp/GLApp/Physics/BarnesHut"
