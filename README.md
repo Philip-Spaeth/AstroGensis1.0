@@ -9,6 +9,8 @@ openGL bibs installieren:
 	sudo apt-get install libglm-dev
 	sudo apt-get install libglu1-mesa-dev
 
+sudo apt-get install libncurses5-dev
+
 CmakeLists.txt    in main Order:
 	cmake_minimum_required(VERSION 3.10)
 	project(MeinProjekt)
