@@ -11,7 +11,7 @@
 *.user
 *.userosscache
 *.sln.docstates
-build/
+build/*
 
 #delete the Data 
 *.txt
