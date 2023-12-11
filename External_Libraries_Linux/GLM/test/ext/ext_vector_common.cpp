@@ -303,6 +303,8 @@ static int test_mirrorRepeat()
 	return Error;
 }
 
+<<<<<<< HEAD
+=======
 static int test_iround()
 {
 	int Error = 0;
@@ -333,6 +335,7 @@ static int test_uround()
 	return Error;
 }
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 int main()
 {
 	int Error = 0;
@@ -358,8 +361,11 @@ int main()
 	Error += test_mirrorClamp();
 	Error += test_mirrorRepeat();
 
+<<<<<<< HEAD
+=======
 	Error += test_iround();
 	Error += test_uround();
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 	return Error;
 }

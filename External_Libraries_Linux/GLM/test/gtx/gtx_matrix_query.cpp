@@ -45,6 +45,10 @@ int test_isOrthogonal()
 {
 	int Error(0);
 
+<<<<<<< HEAD
+	bool TestA = glm::isOrthogonal(glm::mat4(1), 0.00001f);
+	Error += TestA ? 0 : 1;
+=======
 	{
 		bool TestA = glm::isOrthogonal(glm::mat4(1), 0.00001f);
 		Error += TestA ? 0 : 1;
@@ -53,6 +57,7 @@ int test_isOrthogonal()
 		bool TestA = glm::isOrthogonal(glm::mat4(0), 0.00001f);
 		Error += TestA ? 1 : 0;
 	}
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 	return Error;
 }

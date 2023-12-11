@@ -18,9 +18,9 @@ namespace detail
 		{
 			mat<4, 4, float, Q> Result;
 			glm_mat4_matrixCompMult(
-			        &x[0].data,
-			        &y[0].data,
-			        &Result[0].data);
+				*static_cast<glm_vec4 const (*)[4]>(&x[0].data),
+				*static_cast<glm_vec4 const (*)[4]>(&y[0].data),
+				*static_cast<glm_vec4(*)[4]>(&Result[0].data));
 			return Result;
 		}
 	};
@@ -121,10 +121,8 @@ namespace glm {
 	}
 #endif // CXX11
 
-namespace detail
-{
 	template<qualifier Q>
-	struct compute_inverse<4, 4, float, Q, true>
+	struct detail::compute_inverse<4, 4, float, Q, true>
 	{
 		GLM_FUNC_QUALIFIER static mat<4, 4, float, Q> call(mat<4, 4, float, Q> const& m)
 		{
@@ -247,6 +245,5 @@ namespace detail
 			return r;
 		}
 	};
-}//namespace detail
 }//namespace glm
 #endif

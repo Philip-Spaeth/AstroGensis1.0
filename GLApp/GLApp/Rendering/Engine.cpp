@@ -13,7 +13,6 @@
 #include <thread>
 #include <string>
 
-#ifdef WIN32
 
  Engine::Engine() : window(nullptr), shaderProgram(0), VAO(0)
 {
@@ -160,32 +159,56 @@ void Engine::update(int index)
     glfwPollEvents();
 
     //pause if space is pressed
+    #ifdef WIN32
     if (GetAsyncKeyState(32) & 0x8000)
+    #else
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+    #endif
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
         isRunning = !isRunning;
     }
 
     //speed up if right arrow is pressed
+    #ifdef WIN32
     if (GetAsyncKeyState(39) & 0x8000)
+    #else
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+    #endif
     {
 		playSpeed = playSpeed + changeSpeed;
 	}
     //slow down if left arrow is pressed
+    #ifdef WIN32
     if (GetAsyncKeyState(37) & 0x8000)
+    #else
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+    #endif
     {
         playSpeed = playSpeed - changeSpeed;
     }
 
     //if 1 is pressed
+    #ifdef WIN32
     if (GetAsyncKeyState(49) & 0x8000)
+    #else
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+    #endif
+    {
+        //set the play speed to 1
+        playSpeed = 1;
+    }
     {
 		//set the play speed to 1
 		playSpeed = 1;
 	}
 
     //disable / enable dark matter with Z
+    #ifdef WIN32
     if (GetAsyncKeyState(90) & 0x8000)
+    #else
+    if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
+    #endif
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
 		showDarkMatter = !showDarkMatter;
@@ -279,7 +302,11 @@ void Engine::renderParticles()
 
 void Engine::processInput()
 {
+    #ifdef WIN32
     if (GetAsyncKeyState(VK_CONTROL) < 0)
+    #else
+    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+    #endif
     {
         // Kamerabewegung
         float index = 0.1f; // �ndern Sie diesen Wert je nach Bedarf
@@ -533,5 +560,3 @@ void Engine::calculateGlobalScale()
 	globalScale = maxDistance / pow(10, exponent*2 - 2);
     //globalScale = 1e-18;
 }
-
-#endif

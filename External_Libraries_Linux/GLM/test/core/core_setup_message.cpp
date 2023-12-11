@@ -175,9 +175,15 @@ int test_instruction_set()
 		std::printf("ARM ");
 	if(GLM_ARCH & GLM_ARCH_NEON_BIT)
 		std::printf("NEON ");
+<<<<<<< HEAD
+	if(GLM_ARCH & GLM_ARCH_AVX2)
+		std::printf("AVX2 ");
+	if(GLM_ARCH & GLM_ARCH_AVX)
+=======
 	if(GLM_ARCH & GLM_ARCH_AVX2_BIT)
 		std::printf("AVX2 ");
 	if(GLM_ARCH & GLM_ARCH_AVX_BIT)
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 		std::printf("AVX ");
 	if(GLM_ARCH & GLM_ARCH_SSE42_BIT)
 		std::printf("SSE4.2 ");

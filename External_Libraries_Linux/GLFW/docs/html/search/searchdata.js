@@ -1,5 +1,16 @@
 var indexSectionsWithContent =
 {
+<<<<<<< HEAD
+  0: "abcdeghijkmnpqrsvw",
+  1: "g",
+  2: "bcgimnqvw",
+  3: "g",
+  4: "abghprsw",
+  5: "g",
+  6: "g",
+  7: "cegijkmnsvw",
+  8: "bcdgimnrsvw"
+=======
   0: "bceghijkmnpqrsvw",
   1: "g",
   2: "bcgimnqvw",
@@ -9,6 +20,7 @@ var indexSectionsWithContent =
   6: "g",
   7: "ceijkmnsvw",
   8: "bcgimnsvw"
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 };
 
 var indexSectionNames =

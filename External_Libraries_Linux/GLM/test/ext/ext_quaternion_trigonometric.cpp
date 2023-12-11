@@ -21,12 +21,15 @@ static int test_angle()
 		Error += glm::equal(A, 90.0f, Epsilon) ? 0 : 1;
 	}
 
+<<<<<<< HEAD
+=======
 	{
 		glm::quat const Q = glm::angleAxis(glm::two_pi<float>() - 1.0f, glm::vec3(1, 0, 0));
 		float const A = glm::angle(Q);
 		Error += glm::equal(A, 1.0f, Epsilon) ? 1 : 0;
 	}
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 	return Error;
 }
 

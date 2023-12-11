@@ -72,7 +72,6 @@
 #define GLM_COMPILER_GCC49			0x02000100
 #define GLM_COMPILER_GCC5			0x02000200
 #define GLM_COMPILER_GCC6			0x02000300
-#define GLM_COMPILER_GCC61			0x02000800
 #define GLM_COMPILER_GCC7			0x02000400
 #define GLM_COMPILER_GCC8			0x02000500
 
@@ -81,7 +80,6 @@
 #define GLM_COMPILER_CUDA75			0x10000001
 #define GLM_COMPILER_CUDA80			0x10000002
 #define GLM_COMPILER_CUDA90			0x10000004
-#define GLM_COMPILER_CUDA_RTC			0x10000100
 
 // SYCL
 #define GLM_COMPILER_SYCL			0x00300000
@@ -97,9 +95,6 @@
 #define GLM_COMPILER_CLANG40		0x200000B0
 #define GLM_COMPILER_CLANG41		0x200000C0
 #define GLM_COMPILER_CLANG42		0x200000D0
-
-// HIP
-#define GLM_COMPILER_HIP			0x40000000
 
 // Build model
 #define GLM_MODEL_32				0x00000010
@@ -127,9 +122,7 @@
 #	if !defined(CUDA_VERSION) && !defined(GLM_FORCE_CUDA)
 #		include <cuda.h>  // make sure version is defined since nvcc does not define it itself!
 #	endif
-#	if defined(__CUDACC_RTC__)
-#		define GLM_COMPILER GLM_COMPILER_CUDA_RTC
-#	elif CUDA_VERSION >= 8000
+#	if CUDA_VERSION >= 8000
 #		define GLM_COMPILER GLM_COMPILER_CUDA80
 #	elif CUDA_VERSION >= 7500
 #		define GLM_COMPILER GLM_COMPILER_CUDA75
@@ -138,10 +131,6 @@
 #	elif CUDA_VERSION < 7000
 #		error "GLM requires CUDA 7.0 or higher"
 #	endif
-
-// HIP
-#elif defined(__HIP__)
-#	define GLM_COMPILER GLM_COMPILER_HIP
 
 // SYCL
 #elif defined(__SYCL_DEVICE_ONLY__)

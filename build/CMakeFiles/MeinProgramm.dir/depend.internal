@@ -101,8 +101,6 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/File/FileManager.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/matrix_transform.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.inl
- ../External_Libraries_Linux/GLM/glm/ext/scalar_int_sized.hpp
- ../External_Libraries_Linux/GLM/glm/ext/scalar_uint_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool3.hpp
@@ -122,17 +120,11 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/File/FileManager.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/fwd.hpp
  ../External_Libraries_Linux/GLM/glm/geometric.hpp
  ../External_Libraries_Linux/GLM/glm/glm.hpp
@@ -168,8 +160,8 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/File/FileManager.cpp.o
  ../GLApp/GLApp/Physics/BarnesHut/Octree.h
  ../GLApp/GLApp/Physics/Particle.h
  ../GLApp/GLApp/Physics/Physics.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/File/FileManager.cpp
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/File/FileManager.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/File/FileManager.cpp
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/File/FileManager.h
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Node.cpp.o
  ../External_Libraries_Linux/GLM/glm/common.hpp
  ../External_Libraries_Linux/GLM/glm/detail/_fixes.hpp
@@ -270,8 +262,6 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Node.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/matrix_transform.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.inl
- ../External_Libraries_Linux/GLM/glm/ext/scalar_int_sized.hpp
- ../External_Libraries_Linux/GLM/glm/ext/scalar_uint_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool3.hpp
@@ -291,17 +281,11 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Node.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/fwd.hpp
  ../External_Libraries_Linux/GLM/glm/geometric.hpp
  ../External_Libraries_Linux/GLM/glm/glm.hpp
@@ -334,8 +318,8 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Node.cpp.o
  ../External_Libraries_Linux/GLM/glm/vec4.hpp
  ../External_Libraries_Linux/GLM/glm/vector_relational.hpp
  ../GLApp/GLApp/Physics/Particle.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/BarnesHut/Node.cpp
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/BarnesHut/Node.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Node.cpp
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Node.h
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Octree.cpp.o
  ../External_Libraries_Linux/GLM/glm/common.hpp
  ../External_Libraries_Linux/GLM/glm/detail/_fixes.hpp
@@ -436,8 +420,6 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Octree.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/matrix_transform.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.inl
- ../External_Libraries_Linux/GLM/glm/ext/scalar_int_sized.hpp
- ../External_Libraries_Linux/GLM/glm/ext/scalar_uint_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool3.hpp
@@ -457,17 +439,11 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Octree.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/fwd.hpp
  ../External_Libraries_Linux/GLM/glm/geometric.hpp
  ../External_Libraries_Linux/GLM/glm/glm.hpp
@@ -503,11 +479,16 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Octree.cpp.o
  ../GLApp/GLApp/Physics/BarnesHut/Octree.h
  ../GLApp/GLApp/Physics/Particle.h
  ../GLApp/GLApp/Physics/Physics.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/BarnesHut/Node.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/BarnesHut/Octree.cpp
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/BarnesHut/Octree.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Node.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Octree.cpp
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Octree.h
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp.o
+ ../External_Libraries_Linux/GLEW/include/GL/gl.h
+ ../External_Libraries_Linux/GLEW/include/GL/glcorearb.h
  ../External_Libraries_Linux/GLEW/include/GL/glew.h
+ ../External_Libraries_Linux/GLEW/include/GL/glext.h
+ ../External_Libraries_Linux/GLEW/include/GL/glu.h
+ ../External_Libraries_Linux/GLEW/include/GL/glu_mangle.h
  ../External_Libraries_Linux/GLFW/include/GLFW/glfw3.h
  ../External_Libraries_Linux/GLM/glm/common.hpp
  ../External_Libraries_Linux/GLM/glm/detail/_fixes.hpp
@@ -608,8 +589,6 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/matrix_transform.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.inl
- ../External_Libraries_Linux/GLM/glm/ext/scalar_int_sized.hpp
- ../External_Libraries_Linux/GLM/glm/ext/scalar_uint_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool3.hpp
@@ -629,17 +608,11 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/fwd.hpp
  ../External_Libraries_Linux/GLM/glm/geometric.hpp
  ../External_Libraries_Linux/GLM/glm/glm.hpp
@@ -676,10 +649,15 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp.o
  ../GLApp/GLApp/Physics/BarnesHut/Octree.h
  ../GLApp/GLApp/Physics/Particle.h
  ../GLApp/GLApp/Physics/Physics.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.h
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp.o
+ ../External_Libraries_Linux/GLEW/include/GL/gl.h
+ ../External_Libraries_Linux/GLEW/include/GL/glcorearb.h
  ../External_Libraries_Linux/GLEW/include/GL/glew.h
+ ../External_Libraries_Linux/GLEW/include/GL/glext.h
+ ../External_Libraries_Linux/GLEW/include/GL/glu.h
+ ../External_Libraries_Linux/GLEW/include/GL/glu_mangle.h
  ../External_Libraries_Linux/GLFW/include/GLFW/glfw3.h
  ../External_Libraries_Linux/GLM/glm/common.hpp
  ../External_Libraries_Linux/GLM/glm/detail/_fixes.hpp
@@ -780,8 +758,6 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/matrix_transform.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.inl
- ../External_Libraries_Linux/GLM/glm/ext/scalar_int_sized.hpp
- ../External_Libraries_Linux/GLM/glm/ext/scalar_uint_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool3.hpp
@@ -801,17 +777,11 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/fwd.hpp
  ../External_Libraries_Linux/GLM/glm/geometric.hpp
  ../External_Libraries_Linux/GLM/glm/glm.hpp
@@ -848,10 +818,15 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp.o
  ../GLApp/GLApp/Physics/BarnesHut/Octree.h
  ../GLApp/GLApp/Physics/Particle.h
  ../GLApp/GLApp/Physics/Physics.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.h
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp.o
+ ../External_Libraries_Linux/GLEW/include/GL/gl.h
+ ../External_Libraries_Linux/GLEW/include/GL/glcorearb.h
  ../External_Libraries_Linux/GLEW/include/GL/glew.h
+ ../External_Libraries_Linux/GLEW/include/GL/glext.h
+ ../External_Libraries_Linux/GLEW/include/GL/glu.h
+ ../External_Libraries_Linux/GLEW/include/GL/glu_mangle.h
  ../External_Libraries_Linux/GLFW/include/GLFW/glfw3.h
  ../External_Libraries_Linux/GLM/glm/common.hpp
  ../External_Libraries_Linux/GLM/glm/detail/_fixes.hpp
@@ -952,8 +927,6 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/matrix_transform.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.inl
- ../External_Libraries_Linux/GLM/glm/ext/scalar_int_sized.hpp
- ../External_Libraries_Linux/GLM/glm/ext/scalar_uint_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool3.hpp
@@ -973,17 +946,11 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/fwd.hpp
  ../External_Libraries_Linux/GLM/glm/geometric.hpp
  ../External_Libraries_Linux/GLM/glm/glm.hpp
@@ -1020,8 +987,8 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp.o
  ../GLApp/GLApp/Physics/BarnesHut/Octree.h
  ../GLApp/GLApp/Physics/Particle.h
  ../GLApp/GLApp/Physics/Physics.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.h
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Particle.cpp.o
  ../External_Libraries_Linux/GLM/glm/common.hpp
  ../External_Libraries_Linux/GLM/glm/detail/_fixes.hpp
@@ -1122,8 +1089,6 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Particle.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/matrix_transform.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.inl
- ../External_Libraries_Linux/GLM/glm/ext/scalar_int_sized.hpp
- ../External_Libraries_Linux/GLM/glm/ext/scalar_uint_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool3.hpp
@@ -1143,17 +1108,11 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Particle.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/fwd.hpp
  ../External_Libraries_Linux/GLM/glm/geometric.hpp
  ../External_Libraries_Linux/GLM/glm/glm.hpp
@@ -1185,10 +1144,15 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Particle.cpp.o
  ../External_Libraries_Linux/GLM/glm/vec3.hpp
  ../External_Libraries_Linux/GLM/glm/vec4.hpp
  ../External_Libraries_Linux/GLM/glm/vector_relational.hpp
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/Particle.cpp
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/Particle.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Particle.cpp
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Particle.h
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Physics.cpp.o
+ ../External_Libraries_Linux/GLEW/include/GL/gl.h
+ ../External_Libraries_Linux/GLEW/include/GL/glcorearb.h
  ../External_Libraries_Linux/GLEW/include/GL/glew.h
+ ../External_Libraries_Linux/GLEW/include/GL/glext.h
+ ../External_Libraries_Linux/GLEW/include/GL/glu.h
+ ../External_Libraries_Linux/GLEW/include/GL/glu_mangle.h
  ../External_Libraries_Linux/GLFW/include/GLFW/glfw3.h
  ../External_Libraries_Linux/GLM/glm/common.hpp
  ../External_Libraries_Linux/GLM/glm/detail/_fixes.hpp
@@ -1289,8 +1253,6 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Physics.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/matrix_transform.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.inl
- ../External_Libraries_Linux/GLM/glm/ext/scalar_int_sized.hpp
- ../External_Libraries_Linux/GLM/glm/ext/scalar_uint_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool3.hpp
@@ -1310,17 +1272,11 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Physics.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/fwd.hpp
  ../External_Libraries_Linux/GLM/glm/geometric.hpp
  ../External_Libraries_Linux/GLM/glm/glm.hpp
@@ -1353,17 +1309,22 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Physics.cpp.o
  ../External_Libraries_Linux/GLM/glm/vec4.hpp
  ../External_Libraries_Linux/GLM/glm/vector_relational.hpp
  ../GLApp/GLApp/File/FileManager.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/BarnesHut/Node.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/BarnesHut/Octree.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/Particle.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/Physics.cpp
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/Physics.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/SystemInit.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Node.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Octree.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Particle.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Physics.cpp
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Physics.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/SystemInit.h
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/SystemInit.cpp.o
+ ../External_Libraries_Linux/GLEW/include/GL/gl.h
+ ../External_Libraries_Linux/GLEW/include/GL/glcorearb.h
  ../External_Libraries_Linux/GLEW/include/GL/glew.h
+ ../External_Libraries_Linux/GLEW/include/GL/glext.h
+ ../External_Libraries_Linux/GLEW/include/GL/glu.h
+ ../External_Libraries_Linux/GLEW/include/GL/glu_mangle.h
  ../External_Libraries_Linux/GLFW/include/GLFW/glfw3.h
  ../External_Libraries_Linux/GLM/glm/common.hpp
  ../External_Libraries_Linux/GLM/glm/detail/_fixes.hpp
@@ -1485,8 +1446,6 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/SystemInit.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/quaternion_trigonometric.inl
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.inl
- ../External_Libraries_Linux/GLM/glm/ext/scalar_int_sized.hpp
- ../External_Libraries_Linux/GLM/glm/ext/scalar_uint_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool3.hpp
@@ -1506,19 +1465,13 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/SystemInit.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_relational.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_relational.inl
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/fwd.hpp
  ../External_Libraries_Linux/GLM/glm/geometric.hpp
  ../External_Libraries_Linux/GLM/glm/glm.hpp
@@ -1561,17 +1514,22 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/SystemInit.cpp.o
  ../External_Libraries_Linux/GLM/glm/vec4.hpp
  ../External_Libraries_Linux/GLM/glm/vector_relational.hpp
  ../GLApp/GLApp/File/FileManager.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/BarnesHut/Node.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/BarnesHut/Octree.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/Particle.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/Physics.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/SystemInit.cpp
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Physics/SystemInit.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Node.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Octree.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Particle.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Physics.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/SystemInit.cpp
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/SystemInit.h
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Rendering/Engine.cpp.o
+ ../External_Libraries_Linux/GLEW/include/GL/gl.h
+ ../External_Libraries_Linux/GLEW/include/GL/glcorearb.h
  ../External_Libraries_Linux/GLEW/include/GL/glew.h
+ ../External_Libraries_Linux/GLEW/include/GL/glext.h
+ ../External_Libraries_Linux/GLEW/include/GL/glu.h
+ ../External_Libraries_Linux/GLEW/include/GL/glu_mangle.h
  ../External_Libraries_Linux/GLFW/include/GLFW/glfw3.h
  ../External_Libraries_Linux/GLM/glm/common.hpp
  ../External_Libraries_Linux/GLM/glm/detail/_fixes.hpp
@@ -1691,8 +1649,6 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Rendering/Engine.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/quaternion_trigonometric.inl
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.inl
- ../External_Libraries_Linux/GLM/glm/ext/scalar_int_sized.hpp
- ../External_Libraries_Linux/GLM/glm/ext/scalar_uint_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool1.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool1_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2.hpp
@@ -1718,23 +1674,15 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Rendering/Engine.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int1.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int1_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_relational.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_relational.inl
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint1.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint1_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/fwd.hpp
  ../External_Libraries_Linux/GLM/glm/geometric.hpp
  ../External_Libraries_Linux/GLM/glm/glm.hpp
@@ -1779,10 +1727,15 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Rendering/Engine.cpp.o
  ../GLApp/GLApp/Physics/BarnesHut/Octree.h
  ../GLApp/GLApp/Physics/Particle.h
  ../GLApp/GLApp/Physics/Physics.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Rendering/Engine.cpp
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/Rendering/Engine.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Rendering/Engine.cpp
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Rendering/Engine.h
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/main.cpp.o
+ ../External_Libraries_Linux/GLEW/include/GL/gl.h
+ ../External_Libraries_Linux/GLEW/include/GL/glcorearb.h
  ../External_Libraries_Linux/GLEW/include/GL/glew.h
+ ../External_Libraries_Linux/GLEW/include/GL/glext.h
+ ../External_Libraries_Linux/GLEW/include/GL/glu.h
+ ../External_Libraries_Linux/GLEW/include/GL/glu_mangle.h
  ../External_Libraries_Linux/GLFW/include/GLFW/glfw3.h
  ../External_Libraries_Linux/GLM/glm/common.hpp
  ../External_Libraries_Linux/GLM/glm/detail/_fixes.hpp
@@ -1883,8 +1836,6 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/main.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/matrix_transform.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.hpp
  ../External_Libraries_Linux/GLM/glm/ext/scalar_constants.inl
- ../External_Libraries_Linux/GLM/glm/ext/scalar_int_sized.hpp
- ../External_Libraries_Linux/GLM/glm/ext/scalar_uint_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool2_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_bool3.hpp
@@ -1904,17 +1855,11 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/main.cpp.o
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_float4_precision.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_int4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_int4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint2.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint2_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint3.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint3_sized.hpp
  ../External_Libraries_Linux/GLM/glm/ext/vector_uint4.hpp
- ../External_Libraries_Linux/GLM/glm/ext/vector_uint4_sized.hpp
  ../External_Libraries_Linux/GLM/glm/fwd.hpp
  ../External_Libraries_Linux/GLM/glm/geometric.hpp
  ../External_Libraries_Linux/GLM/glm/glm.hpp
@@ -1951,4 +1896,5 @@ CMakeFiles/MeinProgramm.dir/GLApp/GLApp/main.cpp.o
  ../GLApp/GLApp/Physics/BarnesHut/Octree.h
  ../GLApp/GLApp/Physics/Particle.h
  ../GLApp/GLApp/Physics/Physics.h
- /home/kvfg/Schreibtisch/GitRepos/simulation/GLApp/GLApp/main.cpp
+ ../GLApp/GLApp/Rendering/Engine.h
+ /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/main.cpp

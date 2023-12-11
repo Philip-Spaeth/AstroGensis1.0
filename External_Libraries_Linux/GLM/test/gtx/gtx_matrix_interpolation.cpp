@@ -1,5 +1,10 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtc/quaternion.hpp>
+<<<<<<< HEAD
+#include <glm/gtx/matrix_interpolation.hpp>
+
+#include <iostream>
+=======
 #include <glm/gtx/component_wise.hpp>
 #include <glm/gtx/matrix_interpolation.hpp>
 
@@ -7,6 +12,7 @@
 #include <limits>
 #include <math.h>
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 static int test_axisAngle()
 {
@@ -38,6 +44,8 @@ static int test_axisAngle()
 	return Error;
 }
 
+<<<<<<< HEAD
+=======
 template <class T>
 int testForAxisAngle(glm::vec<3, T, glm::defaultp> const axisTrue, T const angleTrue)
 {
@@ -96,6 +104,7 @@ static int test_axisAngle2()
 	return Error;
 }
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 static int test_rotate()
 {
 	glm::mat4 m2(1.0);
@@ -113,7 +122,10 @@ int main()
 	int Error = 0;
 
 	Error += test_axisAngle();
+<<<<<<< HEAD
+=======
 	Error += test_axisAngle2();
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 	Error += test_rotate();
 
 	return Error;

@@ -8,7 +8,10 @@
 <div style="page-break-after: always;"> </div>
 
 ## Table of Contents
+<<<<<<< HEAD
+=======
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 + [0. Licenses](#section0)
 + [1. Getting started](#section1)
 + [1.1. Using global headers](#section1_1)
@@ -171,7 +174,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 <div style="page-break-after: always;"> </div>
 
 ## <a name="section1"></a> 1. Getting started
+<<<<<<< HEAD
+=======
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 ### <a name="section1_1"></a> 1.1. Using global headers
 
 GLM is a header-only library, and thus does not need to be compiled. We can use GLM's implementation of GLSL's mathematics functionality by including the `<glm/glm.hpp>` header:
@@ -181,8 +187,12 @@ GLM is a header-only library, and thus does not need to be compiled. We can use 
 ```
 
 To extend the feature set supported by GLM and keeping the library as close to GLSL as possible, new features are implemented as extensions that can be included thought a separated header:
+<<<<<<< HEAD
+```cpp 
+=======
 
 ```cpp
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 // Include all GLM core / GLSL features
 #include <glm/glm.hpp> // vec2, vec3, mat4, radians
 
@@ -205,7 +215,10 @@ glm::mat4 transform(glm::vec2 const& Orientation, glm::vec3 const& Translate, gl
 ### <a name="section1_2"></a> 1.2. Using separated headers
 
 GLM relies on C++ templates heavily, and may significantly increase compilation times for projects that use it. Hence, user projects could only include the features they actually use. Following is the list of all the core features, based on GLSL specification, headers:
+<<<<<<< HEAD
+=======
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 ```cpp
 #include <glm/vec2.hpp>               // vec2, bvec2, dvec2, ivec2 and uvec2
 #include <glm/vec3.hpp>               // vec3, bvec3, dvec3, ivec3 and uvec3
@@ -221,7 +234,11 @@ GLM relies on C++ templates heavily, and may significantly increase compilation 
 #include <glm/mat4x4.hpp>             // mat4, dmat4
 #include <glm/common.hpp>             // all the GLSL common functions: abs, min, mix, isnan, fma, etc.
 #include <glm/exponential.hpp>        // all the GLSL exponential functions: pow, log, exp2, sqrt, etc.
+<<<<<<< HEAD
+#include <glm/geometry.hpp>           // all the GLSL geometry functions: dot, cross, reflect, etc.
+=======
 #include <glm/geometric.hpp>          // all the GLSL geometry functions: dot, cross, reflect, etc.
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 #include <glm/integer.hpp>            // all the GLSL integer functions: findMSB, bitfieldExtract, etc.
 #include <glm/matrix.hpp>             // all the GLSL matrix functions: transpose, inverse, etc.
 #include <glm/packing.hpp>            // all the GLSL packing functions: packUnorm4x8, unpackHalf2x16, etc.
@@ -230,7 +247,10 @@ GLM relies on C++ templates heavily, and may significantly increase compilation 
 ```
 
 The following is a code sample using separated core headers and an extension:
+<<<<<<< HEAD
+=======
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 ```cpp
 // Include GLM core features
 #include <glm/vec2.hpp>           // vec2
@@ -239,8 +259,12 @@ The following is a code sample using separated core headers and an extension:
 #include <glm/trigonometric.hpp>  //radians
 
 // Include GLM extension
+<<<<<<< HEAD
+#include <glm/ext/matrix_transform.hpp> // perspective, translate, rotate
+=======
 #include <glm/ext/matrix_transform.hpp>     // translate, rotate
 #include <glm/ext/matrix_clip_space.hpp>    // perspective
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 glm::mat4 transform(glm::vec2 const& Orientation, glm::vec3 const& Translate, glm::vec3 const& Up)
 {
@@ -256,7 +280,10 @@ glm::mat4 transform(glm::vec2 const& Orientation, glm::vec3 const& Translate, gl
 ### <a name="section1_3"></a> 1.3. Using extension headers
 
 Using GLM through split headers to minimize the project build time:
+<<<<<<< HEAD
+=======
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 ```cpp
 // Include GLM vector extensions:
 #include <glm/ext/vector_float2.hpp>                // vec2
@@ -265,8 +292,12 @@ Using GLM through split headers to minimize the project build time:
 
 // Include GLM matrix extensions:
 #include <glm/ext/matrix_float4x4.hpp>              // mat4
+<<<<<<< HEAD
+#include <glm/ext/matrix_transform.hpp>             // perspective, translate, rotate
+=======
 #include <glm/ext/matrix_transform.hpp>             // translate, rotate
 #include <glm/ext/matrix_clip_space.hpp>            // perspective
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 glm::mat4 transform(glm::vec2 const& Orientation, glm::vec3 const& Translate, glm::vec3 const& Up)
 {
@@ -285,6 +316,9 @@ GLM does not depend on external libraries or headers such as `<GL/gl.h>`, [`<GL/
 
 ### <a name="section1_5"></a> 1.5. Finding GLM with CMake
 
+<<<<<<< HEAD
+GLM packages a `glmConfig.cmake` and `glmConfig-version.cmake` in the root of the repository and the release archives. To find GLM with CMake you can pass `-Dglm_DIR=<path to glm root>/cmake/glm/` when running CMake. You can then either add `${GLM_INCLUDE_DIRS}` to your target's include directories, or link against the imported `glm::glm` target.
+=======
 When installed, GLM provides the CMake package configuration files `glmConfig.cmake` and `glmConfigVersion.cmake`.
 
 To use these configurations files, you may need to set the `glm_DIR` variable to the directory containing the configuration files `<installation prefix>/lib/cmake/glm/`.
@@ -305,6 +339,7 @@ target_link_libraries(<your executable> glm::glm)
 # or
 target_include_directories(<your executable> glm)
 ```
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 ---
 <div style="page-break-after: always;"> </div>
@@ -327,8 +362,12 @@ Using `GLM_FORCE_MESSAGES`, GLM will report the configuration as part of the bui
 ```
 
 Example of configuration log generated by `GLM_FORCE_MESSAGES`:
+<<<<<<< HEAD
+```cpp
+=======
 
 ```plaintext
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 GLM: version 0.9.9.1
 GLM: C++ 17 with extensions
 GLM: Clang compiler detected
@@ -370,7 +409,10 @@ any inclusion of `<glm/glm.hpp>` to restrict the language feature set C++98:
 ```
 
 For C++11, C++14, and C++17 equivalent defines are available:
+<<<<<<< HEAD
+=======
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 * `GLM_FORCE_CXX11`
 * `GLM_FORCE_CXX14`
 * `GLM_FORCE_CXX17`
@@ -435,7 +477,11 @@ Every object type has the property called alignment requirement, which is an int
 
 Each object type imposes its alignment requirement on every object of that type; stricter alignment (with larger alignment requirement) can be requested using C++11 `alignas`.
 
+<<<<<<< HEAD
+In order to satisfy alignment requirements of all non-static members of a class, padding may be inserted after some of its members. 
+=======
 In order to satisfy alignment requirements of all non-static members of a class, padding may be inserted after some of its members.
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 GLM supports both packed and aligned types. Packed types allow filling data structure without inserting extra padding. Aligned GLM types align addresses based on the size of the value type of a GLM type.
 
@@ -585,7 +631,11 @@ GLM supports some of this functionality. Swizzling can be enabled by defining `G
 
 GLM has two levels of swizzling support described in the following subsections.
 
+<<<<<<< HEAD
+#### 2.14.1. Swizzle functions for standard C++ 98 
+=======
 #### 2.14.1. Swizzle functions for standard C++ 98
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 When compiling GLM as C++98, R-value swizzle expressions are simulated through member functions of each vector type.
 
@@ -751,9 +801,16 @@ int average(int const A, int const B)
 When using /W4 on Visual C++ or -Wpedantic on GCC, for example, the compilers will generate warnings for using C++ language extensions (/Za with Visual C++) such as anonymous struct.
 GLM relies on anonymous structs for swizzle operators and aligned vector types. To silent those warnings define `GLM_FORCE_SILENT_WARNINGS` before including GLM headers.
 
+<<<<<<< HEAD
+
+### <a name="section2_21"></a> 2.21. GLM\_FORCE\_QUAT\_DATA\_WXYZ: Force GLM to store quat data as w,x,y,z instead of x,y,z,w
+
+By default GLM store quaternion components with the x, y, z, w order. `GLM_FORCE_QUAT_DATA_WXYZ` allows switching the quaternion data storage to the w, x, y, z order.
+=======
 ### <a name="section2_21"></a> 2.21. GLM\_FORCE\_QUAT\_DATA\_XYZW: Force GLM to store quat data as x,y,z,w instead of w,x,y,z
 
 By default GLM stores quaternion components with the w, x, y, z order. `GLM_FORCE_QUAT_DATA_XYZW` allows switching the quaternion data storage to the x, y, z, w order.
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 ---
 <div style="page-break-after: always;"> </div>
@@ -1033,7 +1090,11 @@ This extension exposes double-precision floating point vector with 4 components 
 
 Include `<glm/ext/vector_double4_precision.hpp>` to use these features.
 
+<<<<<<< HEAD
+### <a name="section3_4"></a> 3.5. Vector functions
+=======
 ### <a name="section3_5"></a> 3.5. Vector functions
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 #### 3.5.1. GLM_EXT_vector_common
 
@@ -1528,6 +1589,43 @@ projective matrix functions (`perspective`, `ortho`, etc) are designed to expect
 
 Define 2D, 3D and 4D procedural noise functions.
 
+<<<<<<< HEAD
+<`glm/gtc/noise.hpp>` need to be included to use these features.
+
+![](/doc/manual/noise-simplex1.jpg)
+
+Figure 4.10.1: glm::simplex(glm::vec2(x / 16.f, y / 16.f));
+
+![](/doc/manual/noise-simplex2.jpg)
+
+Figure 4.10.2: glm::simplex(glm::vec3(x / 16.f, y / 16.f, 0.5f));
+
+![](/doc/manual/noise-simplex3.jpg)
+
+Figure 4.10.3: glm::simplex(glm::vec4(x / 16.f, y / 16.f, 0.5f, 0.5f));
+
+![](/doc/manual/noise-perlin1.jpg)
+
+Figure 4.10.4: glm::perlin(glm::vec2(x / 16.f, y / 16.f));
+
+![](/doc/manual/noise-perlin2.jpg)
+
+Figure 4.10.5: glm::perlin(glm::vec3(x / 16.f, y / 16.f, 0.5f));
+
+![](/doc/manual/noise-perlin3.jpg)
+
+Figure 4.10.6: glm::perlin(glm::vec4(x / 16.f, y / 16.f, 0.5f, 0.5f)));
+
+![](/doc/manual/noise-perlin4.png)
+
+Figure 4.10.7: glm::perlin(glm::vec2(x / 16.f, y / 16.f), glm::vec2(2.0f));
+
+![](/doc/manual/noise-perlin5.png)
+
+Figure 4.10.8: glm::perlin(glm::vec3(x / 16.f, y / 16.f, 0.5f), glm::vec3(2.0f));
+
+![](/doc/manual/noise-perlin6.png)
+=======
 `<glm/gtc/noise.hpp>` need to be included to use these features.
 
 ![](./doc/manual/noise-simplex1.jpg)
@@ -1563,6 +1661,7 @@ Figure 4.10.7: glm::perlin(glm::vec2(x / 16.f, y / 16.f), glm::vec2(2.0f));
 Figure 4.10.8: glm::perlin(glm::vec3(x / 16.f, y / 16.f, 0.5f), glm::vec3(2.0f));
 
 ![](./doc/manual/noise-perlin6.png)
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 Figure 4.10.9: glm::perlin(glm::vec4(x / 16.f, y / 16.f, glm::vec2(0.5f)), glm::vec4(2.0f));
 
@@ -1584,6 +1683,29 @@ Probability distributions in up to four dimensions.
 
 `<glm/gtc/random.hpp>` need to be included to use these features.
 
+<<<<<<< HEAD
+![](/doc/manual/random-linearrand.png)
+
+Figure 4.13.1: glm::vec4(glm::linearRand(glm::vec2(-1), glm::vec2(1)), 0, 1);
+
+![](/doc/manual/random-circularrand.png)
+
+Figure 4.13.2: glm::vec4(glm::circularRand(1.0f), 0, 1);
+
+![](/doc/manual/random-sphericalrand.png)
+
+Figure 4.13.3: glm::vec4(glm::sphericalRand(1.0f), 1);
+
+![](/doc/manual/random-diskrand.png)
+
+Figure 4.13.4: glm::vec4(glm::diskRand(1.0f), 0, 1);
+
+![](/doc/manual/random-ballrand.png)
+
+Figure 4.13.5: glm::vec4(glm::ballRand(1.0f), 1);
+
+![](/doc/manual/random-gaussrand.png)
+=======
 ![](./doc/manual/random-linearrand.png)
 
 Figure 4.13.1: glm::vec4(glm::linearRand(glm::vec2(-1), glm::vec2(1)), 0, 1);
@@ -1605,6 +1727,7 @@ Figure 4.13.4: glm::vec4(glm::diskRand(1.0f), 0, 1);
 Figure 4.13.5: glm::vec4(glm::ballRand(1.0f), 1);
 
 ![](./doc/manual/random-gaussrand.png)
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 Figure 4.13.6: glm::vec4(glm::gaussRand(glm::vec3(0), glm::vec3(1)), 1);
 
@@ -1666,7 +1789,11 @@ void foo()
 ```
 
 *Note: It would be possible to implement [`glVertex3fv`](http://www.opengl.org/sdk/docs/man2/xhtml/glVertex.xml)(glm::vec3(0)) in C++ with the appropriate cast operator that would result as an
+<<<<<<< HEAD
+implicit cast in this example. However cast operators may produce programs running with unexpected behaviours without build error or any form of notification. *
+=======
 implicit cast in this example. However cast operators may produce programs running with unexpected behaviours without build error or any form of notification.*
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 `<glm/gtc/type_ptr.hpp>` need to be included to use these features.
 
@@ -1942,7 +2069,11 @@ To workaround the incompatibility with these macros, GLM will systematically und
 
 ### <a name="section7_13"></a> 7.13. Constant expressions support
 
+<<<<<<< HEAD
+GLM has some C++ <a href="http://en.cppreference.com/w/cpp/language/constexpr">constant expressions</a> support. However, GLM automatically detects the use of SIMD instruction sets through compiler arguments to populate its implementation with SIMD intrinsics.
+=======
 GLM has some C++ [constant expressions](http://en.cppreference.com/w/cpp/language/constexpr) support. However, GLM automatically detects the use of SIMD instruction sets through compiler arguments to populate its implementation with SIMD intrinsics.
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 Unfortunately, GCC and Clang doesn't support SIMD instrinsics as constant expressions. To allow constant expressions on all vectors and matrices types, define `GLM_FORCE_PURE` before including GLM headers.
 
 ---
@@ -2100,8 +2231,12 @@ Additional, bugs can be configuration specific. We can report the configuration 
 ```
 
 An example of build messages generated by GLM:
+<<<<<<< HEAD
+```
+=======
 
 ```plaintext
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 GLM: 0.9.9.1
 GLM: C++ 17 with extensions
 GLM: GCC compiler detected"
@@ -2127,7 +2262,11 @@ The tutorial assumes you have some basic understanding of git concepts - reposit
 We will make our changes in our own copy of the GLM sitory. On the GLM GitHub repo and we press the Fork button.
 We need to download a copy of our fork to our local machine. In the terminal, type:
 
+<<<<<<< HEAD
+```
+=======
 ```plaintext
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 >>> git clone <our-repository-fork-git-url>
 ```
 
@@ -2139,25 +2278,41 @@ We can find our repository git url on the Github reposotory page. The url looks 
 
 We can use the following command to add `upstream` (original project repository) as a remote repository so that we can fetch the latest GLM commits into our branch and keep our forked copy is synchronized.
 
+<<<<<<< HEAD
+```
+=======
 ```plaintext
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 >>> git remote add upstream https://github.com/processing/processing.git
 ```
 
 To synchronize our fork to the latest commit in the GLM repository, we can use the following command:
 
+<<<<<<< HEAD
+```
+=======
 ```plaintext
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 >>> git fetch upstream
 ```
 
 Then, we can merge the remote master branch to our current branch:
 
+<<<<<<< HEAD
+```
+=======
 ```plaintext
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 >>> git merge upstream/master
 ```
 
 Now our local copy of our fork has been synchronized. However, the fork's copy is not updated on GitHub's servers yet. To do that, use:
 
+<<<<<<< HEAD
+```
+=======
 ```plaintext
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 >>> git push origin master
 ```
 
@@ -2170,33 +2325,52 @@ It's a good practice to make changes in our fork in a separate branch than the m
 Before creating a new branch, it's best to synchronize our fork and then create a new branch from the latest master branch.
 
 If we are not on the master branch, we should switch to it using:
+<<<<<<< HEAD
+```
+=======
 
 ```plaintext
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 >>> git checkout master
 ```
 
 To create a new branch called `bugifx`, we use:
+<<<<<<< HEAD
+```
+=======
 
 ```plaintext
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 git branch bugfix
 ```
 
 Once the code changes for the fix is done, we need to commit the changes:
+<<<<<<< HEAD
+```
+=======
 
 ```plaintext
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 >>> git commit -m "Resolve the issue that caused problem with a specific fix #432"
 ```
 
 The commit message should be as specific as possible and finished by the bug number in the [GLM GitHub issue page](https://github.com/g-truc/glm/issues)
 
 Finally, we need to push our changes in our branch to our GitHub fork using:
+<<<<<<< HEAD
+```
+=======
 
 ```plaintext
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 >>> git push origin bugfix
 ```
 
 Some things to keep in mind for a pull request:
+<<<<<<< HEAD
+=======
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 * Keep it minimal: Try to make the minimum required changes to fix the issue. If we have added any debugging code, we should remove it.
 * A fix at a time: The pull request should deal with one issue at a time only, unless two issue are so interlinked they must be fixed together.
 * Write a test: GLM is largely unit tests. Unit tests are in `glm/test` directory. We should also add tests for the fixes we provide to ensure future regression doesn't happen.
@@ -2240,7 +2414,10 @@ else
 ```
 
 Single line if blocks:
+<<<<<<< HEAD
+=======
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 ```cpp
 if(blah)
     // yes like this
@@ -2249,7 +2426,10 @@ else
 ```
 
 No spaces inside parens:
+<<<<<<< HEAD
+=======
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 ```cpp
 if (blah)    // No
 if( blah )   // No
@@ -2258,14 +2438,20 @@ if(blah)     // Yes
 ```
 
 Use spaces before/after commas:
+<<<<<<< HEAD
+=======
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 ```cpp
 someFunction(apple,bear,cat);     // No
 someFunction(apple, bear, cat);   // Yes
 ```
 
 Use spaces before/after use of `+, -, *, /, %, >>, <<, |, &, ^, ||, &&` operators:
+<<<<<<< HEAD
+=======
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 ```cpp
 vec4 v = a + b;
 ```
@@ -2280,7 +2466,11 @@ Always one space after the // in single line comments
 
 One space before // at the end of a line (that has code as well)
 
+<<<<<<< HEAD
+Try to use // comments inside functions, to make it easier to remove a whole block via /* */
+=======
 Try to use // comments inside functions, to make it easier to remove a whole block via /\* \*/
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 #### Cases
 
@@ -2337,9 +2527,15 @@ Beautifully hand-crafted levels bring the story of Leo to life in this epic adve
 
 “Whatever lies ahead, I must recover my fortune.” -Leopold
 
+<<<<<<< HEAD
+![](/doc/manual/references-leosfortune.jpeg)
+
+![](/doc/manual/references-leosfortune2.jpg)
+=======
 ![](./doc/manual/references-leosfortune.jpeg)
 
 ![](./doc/manual/references-leosfortune2.jpg)
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 [***OpenGL 4.0 Shading Language Cookbook***](http://www.packtpub.com/opengl-4-0-shading-language-cookbook/book?tag=rk/opengl4-abr1/0811)
 
@@ -2351,12 +2547,25 @@ A set of recipes that demonstrates a wide of techniques for producing high-quali
 
 Simple, easy-to-follow examples with GLSL source code are provided, as well as a basic description of the theory behind each technique.
 
+<<<<<<< HEAD
+![](/doc/manual/references-glsl4book.jpg)
+=======
 ![](./doc/manual/references-glsl4book.jpg)
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 [***Outerra***](http://outerra.com/)
 
 A 3D planetary engine for seamless planet rendering from space down to the surface. Can use arbitrary resolution of elevation data, refining it to centimetre resolution using fractal algorithms.
 
+<<<<<<< HEAD
+![](/doc/manual/references-outerra1.jpg)
+
+![](/doc/manual/references-outerra2.jpg)
+
+![](/doc/manual/references-outerra3.jpg)
+
+![](/doc/manual/references-outerra4.jpg)
+=======
 ![](./doc/manual/references-outerra1.jpg)
 
 ![](./doc/manual/references-outerra2.jpg)
@@ -2364,6 +2573,7 @@ A 3D planetary engine for seamless planet rendering from space down to the surfa
 ![](./doc/manual/references-outerra3.jpg)
 
 ![](./doc/manual/references-outerra4.jpg)
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 [***Falcor***](https://github.com/NVIDIA/Falcor)
 
@@ -2377,17 +2587,29 @@ Cinder is a C++ library for programming with aesthetic intent - the sort of dev
 
 Cinder is production-proven, powerful enough to be the primary tool for professionals, but still suitable for learning and experimentation. Cinder is released under the [2-Clause BSD License](http://opensource.org/licenses/BSD-2-Clause).
 
+<<<<<<< HEAD
+![](/doc/manual/references-cinder.png)
+
+[***opencloth***](http://code.google.com/p/opencloth/)
+=======
 ![](./doc/manual/references-cinder.png)
 
 [***opencloth***](https://github.com/mmmovania/opencloth/)
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 A collection of source codes implementing cloth simulation algorithms in OpenGL.
 
 Simple, easy-to-follow examples with GLSL source code, as well as a basic description of the theory behind each technique.
 
+<<<<<<< HEAD
+![](/doc/manual/references-opencloth1.png)
+
+![](/doc/manual/references-opencloth3.png)
+=======
 ![](./doc/manual/references-opencloth1.png)
 
 ![](./doc/manual/references-opencloth3.png)
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 [***LibreOffice***](https://www.libreoffice.org/)
 
@@ -2438,7 +2660,10 @@ LibreOffice includes several applications that make it the most powerful Free an
 GLM is developed and maintained by [*Christophe Riccio*](http://www.g-truc.net) but many contributors have made this project what it is.
 
 Special thanks to:
+<<<<<<< HEAD
+=======
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 * Ashima Arts and Stefan Gustavson for their work on [*webgl-noise*](https://github.com/ashima/webgl-noise) which has been used for GLM noises implementation.
 * [*Arthur Winters*](http://athile.net/library/wiki/index.php?title=Athile_Technologies) for the C++11 and Visual C++ swizzle operators implementation and tests.
 * Joshua Smith and Christoph Schied for the discussions and the experiments around the swizzle operators implementation issues.

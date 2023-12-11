@@ -23,9 +23,6 @@
 #endif
 
 namespace glm {
-	/// @addtogroup gtx_vec_swizzle
-	/// @{
-
 	// xx
 	template<typename T, qualifier Q>
 	GLM_INLINE glm::vec<2, T, Q> xx(const glm::vec<1, T, Q> &v) {
@@ -2782,5 +2779,4 @@ namespace glm {
 		return glm::vec<4, T, Q>(v.w, v.w, v.w, v.w);
 	}
 
-	/// @}
-}//namespace glm
+}

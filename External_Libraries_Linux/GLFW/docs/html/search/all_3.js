@@ -1,5 +1,8 @@
 var searchData=
 [
+<<<<<<< HEAD
+  ['deprecated_20list_0',['Deprecated List',['../deprecated.html',1,'']]]
+=======
   ['glfw3_2eh',['glfw3.h',['../glfw3_8h.html',1,'']]],
   ['glfw3native_2eh',['glfw3native.h',['../glfw3native_8h.html',1,'']]],
   ['glfw_5faccum_5falpha_5fbits',['GLFW_ACCUM_ALPHA_BITS',['../glfw3_8h.html#ae829b55591c18169a40ab4067a041b1f',1,'glfw3.h']]],
@@ -385,4 +388,5 @@ var searchData=
   ['green',['green',['../structGLFWgammaramp.html#affccc6f5df47820b6562d709da3a5a3a',1,'GLFWgammaramp']]],
   ['greenbits',['greenBits',['../structGLFWvidmode.html#a292fdd281f3485fb3ff102a5bda43faa',1,'GLFWvidmode']]],
   ['getting_20started',['Getting started',['../quick_guide.html',1,'']]]
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 ];

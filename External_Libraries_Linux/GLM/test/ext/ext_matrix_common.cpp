@@ -3,7 +3,10 @@
 #include <glm/ext/matrix_float4x4.hpp>
 #include <glm/ext/matrix_relational.hpp>
 #include <glm/ext/vector_bool4.hpp>
+<<<<<<< HEAD
+=======
 #include <glm/ext/matrix_float4x3.hpp>
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 static int test_mix()
 {
@@ -44,6 +47,8 @@ static int test_mix()
 	return Error;
 }
 
+<<<<<<< HEAD
+=======
 static int test_abs()
 {
 	int Error = 0;
@@ -225,12 +230,16 @@ static int test_abs()
 	return Error;
 }
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 int main()
 {
 	int Error = 0;
 
 	Error += test_mix();
+<<<<<<< HEAD
+=======
 	Error += test_abs();
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 	return Error;
 }

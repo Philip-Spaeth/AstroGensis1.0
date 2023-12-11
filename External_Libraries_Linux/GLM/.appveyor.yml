@@ -49,10 +49,13 @@ matrix:
     - image: Visual Studio 2019
       platform: x64
 
+<<<<<<< HEAD
+=======
 branches:
   only:
     - master
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 before_build:
   - ps: |
       mkdir build
@@ -74,6 +77,15 @@ before_build:
           $env:generator="$env:generator Win64"
       }
       echo generator="$env:generator"
+<<<<<<< HEAD
+      cmake .. -G "$env:generator" -DGLM_QUIET=ON -DGLM_TEST_ENABLE=ON "$env:GLM_ARGUMENTS"
+
+build_script:
+  - cmake --build . --config %CONFIGURATION% -- /m /v:minimal
+
+test_script:
+  - ctest -j4 -C %CONFIGURATION%
+=======
       cmake .. -G "$env:generator" -DCMAKE_INSTALL_PREFIX="$env:APPVEYOR_BUILD_FOLDER/install" -DGLM_QUIET=ON -DGLM_TEST_ENABLE=ON "$env:GLM_ARGUMENTS"
 
 build_script:
@@ -82,11 +94,17 @@ build_script:
 
 test_script:
   - ctest --parallel 4 --verbose -C %CONFIGURATION%
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
   - cd ..
   - ps: |
       mkdir build_test_cmake
       cd build_test_cmake
+<<<<<<< HEAD
+      cmake ..\test\cmake\ -G "$env:generator" -Dglm_DIR="$env:APPVEYOR_BUILD_FOLDER/cmake/glm/"
+  - cmake --build . --config %CONFIGURATION% -- /m /v:minimal
+=======
       cmake ..\test\cmake\ -G "$env:generator" -DCMAKE_PREFIX_PATH="$env:APPVEYOR_BUILD_FOLDER/install"
   - cmake --build . --parallel --config %CONFIGURATION% -- /m /v:minimal
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
 deploy: off

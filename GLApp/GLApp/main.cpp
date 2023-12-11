@@ -9,19 +9,22 @@
 #include "Particle.h"
 
 //  Nur unter Windows
-#ifdef WIN32
 #include "Engine.h"
+#ifdef WIN32
 #include <Windows.h>
 #include <debugapi.h>
+#else
+#include <ncurses.h>
+#include <stdio.h>
 #endif
 
 #include "Physics.h"
 #include <iostream>
-#include <string>
+#include <string.h>
 #include "FileManager.h"
 
 
-#ifdef WIN32
+//#ifdef WIN32
 int main()
 {
     Physics physics;
@@ -57,6 +60,7 @@ int main()
     // Haupt-Render-Schleife
     while (!glfwWindowShouldClose(engine.window))
     {
+        #ifdef WIN32
         // check for exit Programm with Key ESC
         if (GetAsyncKeyState(27) & 0x8000)
         {
@@ -64,6 +68,14 @@ int main()
             OutputDebugString(L"ESC KEY\n");
             glfwSetWindowShouldClose(engine.window, true);
         }
+        #else
+        if (getch() == 27) // ESC
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
+            //OutputDebugString(L"ESC KEY\n");
+            glfwSetWindowShouldClose(engine.window, true);
+        }
+        #endif
 
         double currentFrameTime = glfwGetTime();
         frameTime = currentFrameTime - lastFrameTime;
@@ -98,12 +110,20 @@ int main()
             engine.playSpeed= 0;
         }
 
+        #ifdef WIN32
         //restart if R is pressed
         if (GetAsyncKeyState(82) & 0x8000)
         {
 			counter = 0;
 			engine.playSpeed = 0;
 		}
+        #else
+        if (getch() == 82)
+        {
+			counter = 0;
+			engine.playSpeed = 0;
+		}
+        #endif
 
         frameCount++;
         secondCounter += frameTime;
@@ -116,7 +136,11 @@ int main()
             snprintf(numStr, sizeof(numStr), "%d", frameCount);
 
             //std::cout << "Die umgewandelte Zeichenkette: " << numStr << std::endl;
+            #ifdef WIN32
             strcat_s(numStr, " FPS");
+            #else
+            strcat(numStr, " FPS");
+            #endif
 
             glfwSetWindowTitle(engine.window, numStr);
             //std::cout << "FPS: " << frameCount << std::endl;
@@ -131,7 +155,7 @@ int main()
     return 0;
 }
 
-#else
+/* #else
 
 int main()
 {
@@ -143,4 +167,4 @@ int main()
     std::cout << "Press enter to start" << std::endl;
 }
 
-#endif
+#endif */

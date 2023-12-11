@@ -35,8 +35,11 @@ namespace fastCos
 		std::printf("fastCos Time %d clocks\n", static_cast<int>(time_fast));
 		std::printf("cos Time %d clocks\n", static_cast<int>(time_default));
 
+<<<<<<< HEAD
+=======
 		(void) result; // Silence set but not used warning
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 		return time_fast <= time_default ? 0 : 1;
 	}
 }//namespace fastCos
@@ -71,8 +74,11 @@ namespace fastSin
 		std::printf("fastSin Time %d clocks\n", static_cast<int>(time_fast));
 		std::printf("sin Time %d clocks\n", static_cast<int>(time_default));
 
+<<<<<<< HEAD
+=======
 		(void) result; // Silence set but not used warning
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 		return time_fast <= time_default ? 0 : 1;
 	}
 }//namespace fastSin
@@ -99,8 +105,11 @@ namespace fastTan
 		std::printf("fastTan Time %d clocks\n", static_cast<int>(time_fast));
 		std::printf("tan Time %d clocks\n", static_cast<int>(time_default));
 
+<<<<<<< HEAD
+=======
 		(void) result; // Silence set but not used warning
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 		return time_fast <= time_default ? 0 : 1;
 	}
 }//namespace fastTan
@@ -128,8 +137,11 @@ namespace fastAcos
 		std::printf("fastAcos Time %d clocks\n", static_cast<int>(time_fast));
 		std::printf("acos Time %d clocks\n", static_cast<int>(time_default));
 
+<<<<<<< HEAD
+=======
 		(void) result; // Silence set but not used warning
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 		return time_fast <= time_default ? 0 : 1;
 	}
 }//namespace fastAcos
@@ -153,8 +165,11 @@ namespace fastAsin
 		std::printf("fastAsin Time %d clocks\n", static_cast<int>(time_fast));
 		std::printf("asin Time %d clocks\n", static_cast<int>(time_default));
 
+<<<<<<< HEAD
+=======
 		(void) result; // Silence set but not used warning
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 		return time_fast <= time_default ? 0 : 1;
 	}
 }//namespace fastAsin
@@ -178,8 +193,11 @@ namespace fastAtan
 		std::printf("fastAtan Time %d clocks\n", static_cast<int>(time_fast));
 		std::printf("atan Time %d clocks\n", static_cast<int>(time_default));
 
+<<<<<<< HEAD
+=======
 		(void) result; // Silence set but not used warning
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 		return time_fast <= time_default ? 0 : 1;
 	}
 }//namespace fastAtan

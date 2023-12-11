@@ -44,6 +44,10 @@ static int test_length_mat()
 
 static int test_length_vec()
 {
+<<<<<<< HEAD
+
+=======
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 	int Error = 0;
 	
 	Error += glm::vec2().length() == 2 ? 0 : 1;

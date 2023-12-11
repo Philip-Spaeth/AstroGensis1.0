@@ -1,3 +1,30 @@
+<<<<<<< HEAD
+/*
+ @licstart  The following is the entire license notice for the JavaScript code in this file.
+
+ The MIT License (MIT)
+
+ Copyright (C) 1997-2020 by Dimitri van Heesch
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ and associated documentation files (the "Software"), to deal in the Software without restriction,
+ including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all copies or
+ substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+ @licend  The above is the entire license notice for the JavaScript code in this file
+ */
+=======
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 function convertToId(search)
 {
   var result = '';
@@ -56,9 +83,16 @@ function getYPos(item)
           storing this instance.  Is needed to be able to set timeouts.
    resultPath - path to use for external files
 */
+<<<<<<< HEAD
+function SearchBox(name, resultsPath, label, extension)
+{
+  if (!name || !resultsPath) {  alert("Missing parameters to SearchBox."); }
+  if (!extension || extension == "") { extension = ".html"; }
+=======
 function SearchBox(name, resultsPath, inFrame, label)
 {
   if (!name || !resultsPath) {  alert("Missing parameters to SearchBox."); }
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
   // ---------- Instance variables
   this.name                  = name;
@@ -71,8 +105,13 @@ function SearchBox(name, resultsPath, inFrame, label)
   this.hideTimeout           = 0;
   this.searchIndex           = 0;
   this.searchActive          = false;
+<<<<<<< HEAD
+  this.searchLabel           = label;
+  this.extension             = extension;
+=======
   this.insideFrame           = inFrame;
   this.searchLabel           = label;
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
   // ----------- DOM Elements
 
@@ -110,6 +149,16 @@ function SearchBox(name, resultsPath, inFrame, label)
     var searchSelectWindow = this.DOMSearchSelectWindow();
     var searchField        = this.DOMSearchSelect();
 
+<<<<<<< HEAD
+    var left = getXPos(searchField);
+    var top  = getYPos(searchField);
+    top += searchField.offsetHeight;
+
+    // show search selection popup
+    searchSelectWindow.style.display='block';
+    searchSelectWindow.style.left =  left + 'px';
+    searchSelectWindow.style.top  =  top  + 'px';
+=======
     if (this.insideFrame)
     {
       var left = getXPos(searchField);
@@ -134,6 +183,7 @@ function SearchBox(name, resultsPath, inFrame, label)
       searchSelectWindow.style.left =  left + 'px';
       searchSelectWindow.style.top  =  top  + 'px';
     }
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
 
     // stop selection hide timer
     if (this.hideTimeout)
@@ -177,10 +227,16 @@ function SearchBox(name, resultsPath, inFrame, label)
         }
         return;
       }
+<<<<<<< HEAD
+      else
+      {
+        window.frames.MSearchResults.postMessage("take_focus", "*");
+=======
       else if (window.frames.MSearchResults.searchResults)
       {
         var elem = window.frames.MSearchResults.searchResults.NavNext(0);
         if (elem) elem.focus();
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
       }
     }
     else if (e.keyCode==27) // Escape out of the search field
@@ -324,13 +380,21 @@ function SearchBox(name, resultsPath, inFrame, label)
     if (idx!=-1)
     {
        var hexCode=idx.toString(16);
+<<<<<<< HEAD
+       resultsPage = this.resultsPath + '/' + indexSectionNames[this.searchIndex] + '_' + hexCode + this.extension;
+=======
        resultsPage = this.resultsPath + '/' + indexSectionNames[this.searchIndex] + '_' + hexCode + '.html';
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
        resultsPageWithSearch = resultsPage+'?'+escape(searchValue);
        hasResultsPage = true;
     }
     else // nothing available for this search term
     {
+<<<<<<< HEAD
+       resultsPage = this.resultsPath + '/nomatches' + this.extension;
+=======
        resultsPage = this.resultsPath + '/nomatches.html';
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
        resultsPageWithSearch = resultsPage;
        hasResultsPage = false;
     }
@@ -341,6 +405,21 @@ function SearchBox(name, resultsPath, inFrame, label)
     if (domPopupSearchResultsWindow.style.display!='block')
     {
        var domSearchBox = this.DOMSearchBox();
+<<<<<<< HEAD
+       this.DOMSearchClose().style.display = 'inline-block';
+       var domPopupSearchResults = this.DOMPopupSearchResults();
+       var left = getXPos(domSearchBox) + 150; // domSearchBox.offsetWidth;
+       var top  = getYPos(domSearchBox) + 20;  // domSearchBox.offsetHeight + 1;
+       domPopupSearchResultsWindow.style.display = 'block';
+       left -= domPopupSearchResults.offsetWidth;
+       var maxWidth = document.body.clientWidth;
+       var width = 400;
+       if (left<10) left=10;
+       if (width+left+8>maxWidth) width=maxWidth-left-8;
+       domPopupSearchResultsWindow.style.top     = top  + 'px';
+       domPopupSearchResultsWindow.style.left    = left + 'px';
+       domPopupSearchResultsWindow.style.width   = width + 'px';
+=======
        this.DOMSearchClose().style.display = 'inline';
        if (this.insideFrame)
        {
@@ -361,6 +440,7 @@ function SearchBox(name, resultsPath, inFrame, label)
          domPopupSearchResultsWindow.style.top     = top  + 'px';
          domPopupSearchResultsWindow.style.left    = left + 'px';
        }
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
     }
 
     this.lastSearchValue = searchValue;
@@ -416,12 +496,20 @@ function SearchResults(name)
 
       while (element && element!=parentElement)
       {
+<<<<<<< HEAD
+        if (element.nodeName.toLowerCase() == 'div' && element.className == 'SRChildren')
+=======
         if (element.nodeName == 'DIV' && element.className == 'SRChildren')
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
         {
           return element;
         }
 
+<<<<<<< HEAD
+        if (element.nodeName.toLowerCase() == 'div' && element.hasChildNodes())
+=======
         if (element.nodeName == 'DIV' && element.hasChildNodes())
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
         {
            element = element.firstChild;
         }
@@ -739,10 +827,21 @@ function createResults()
     if (searchData[e][1].length==2) // single result
     {
       srLink.setAttribute('href',searchData[e][1][1][0]);
+<<<<<<< HEAD
+      srLink.setAttribute('onclick','parent.searchBox.CloseResultsWindow()');
+=======
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
       if (searchData[e][1][1][1])
       {
        srLink.setAttribute('target','_parent');
       }
+<<<<<<< HEAD
+      else
+      {
+       srLink.setAttribute('target','_blank');
+      }
+=======
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
       var srScope = document.createElement('span');
       setClassAttr(srScope,'SRScope');
       srScope.innerHTML = searchData[e][1][1][2];
@@ -760,10 +859,21 @@ function createResults()
         setKeyActions(srChild,'return searchResults.NavChild(event,'+e+','+c+')');
         setClassAttr(srChild,'SRScope');
         srChild.setAttribute('href',searchData[e][1][c+1][0]);
+<<<<<<< HEAD
+        srChild.setAttribute('onclick','parent.searchBox.CloseResultsWindow()');
+=======
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
         if (searchData[e][1][c+1][1])
         {
          srChild.setAttribute('target','_parent');
         }
+<<<<<<< HEAD
+        else
+        {
+         srChild.setAttribute('target','_blank');
+        }
+=======
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
         srChild.innerHTML = searchData[e][1][c+1][2];
         srChildren.appendChild(srChild);
       }
@@ -788,4 +898,8 @@ function init_search()
   }
   searchBox.OnSelectItem(0);
 }
+<<<<<<< HEAD
+/* @license-end */
+=======
 
+>>>>>>> bf5226999d5136e24f96ff16c566118ababff449
