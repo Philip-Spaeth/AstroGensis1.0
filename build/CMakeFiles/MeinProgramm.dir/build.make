@@ -60,145 +60,145 @@ include CMakeFiles/MeinProgramm.dir/flags.make
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/main.cpp.o: CMakeFiles/MeinProgramm.dir/flags.make
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/main.cpp.o: ../GLApp/GLApp/main.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kvfg/Schreibtisch/neuGitRepo/simulation/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/MeinProgramm.dir/GLApp/GLApp/main.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/main.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/main.cpp
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/main.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/main.cpp
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MeinProgramm.dir/GLApp/GLApp/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/main.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/main.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/main.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/main.cpp.i
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MeinProgramm.dir/GLApp/GLApp/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/main.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/main.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/main.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/main.cpp.s
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/File/FileManager.cpp.o: CMakeFiles/MeinProgramm.dir/flags.make
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/File/FileManager.cpp.o: ../GLApp/GLApp/File/FileManager.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kvfg/Schreibtisch/neuGitRepo/simulation/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/MeinProgramm.dir/GLApp/GLApp/File/FileManager.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/File/FileManager.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/File/FileManager.cpp
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/File/FileManager.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/File/FileManager.cpp
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/File/FileManager.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MeinProgramm.dir/GLApp/GLApp/File/FileManager.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/File/FileManager.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/File/FileManager.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/File/FileManager.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/File/FileManager.cpp.i
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/File/FileManager.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MeinProgramm.dir/GLApp/GLApp/File/FileManager.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/File/FileManager.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/File/FileManager.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/File/FileManager.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/File/FileManager.cpp.s
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Node.cpp.o: CMakeFiles/MeinProgramm.dir/flags.make
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Node.cpp.o: ../GLApp/GLApp/Physics/BarnesHut/Node.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kvfg/Schreibtisch/neuGitRepo/simulation/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Node.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Node.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Node.cpp
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Node.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Node.cpp
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Node.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Node.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Node.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Node.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Node.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Node.cpp.i
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Node.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Node.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Node.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Node.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Node.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Node.cpp.s
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Octree.cpp.o: CMakeFiles/MeinProgramm.dir/flags.make
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Octree.cpp.o: ../GLApp/GLApp/Physics/BarnesHut/Octree.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kvfg/Schreibtisch/neuGitRepo/simulation/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Octree.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Octree.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Octree.cpp
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Octree.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Octree.cpp
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Octree.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Octree.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Octree.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Octree.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Octree.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Octree.cpp.i
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Octree.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Octree.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Octree.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Octree.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/BarnesHut/Octree.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/BarnesHut/Octree.cpp.s
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp.o: CMakeFiles/MeinProgramm.dir/flags.make
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp.o: ../GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kvfg/Schreibtisch/neuGitRepo/simulation/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp.i
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/BarredGalaxy.cpp.s
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp.o: CMakeFiles/MeinProgramm.dir/flags.make
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp.o: ../GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kvfg/Schreibtisch/neuGitRepo/simulation/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp.i
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/EllipticalGalaxy.cpp.s
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp.o: CMakeFiles/MeinProgramm.dir/flags.make
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp.o: ../GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kvfg/Schreibtisch/neuGitRepo/simulation/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp.i
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Galaxies/SpiralGalaxy.cpp.s
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Particle.cpp.o: CMakeFiles/MeinProgramm.dir/flags.make
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Particle.cpp.o: ../GLApp/GLApp/Physics/Particle.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kvfg/Schreibtisch/neuGitRepo/simulation/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Particle.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Particle.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Particle.cpp
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Particle.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Particle.cpp
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Particle.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Particle.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Particle.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Particle.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Particle.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Particle.cpp.i
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Particle.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Particle.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Particle.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Particle.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Particle.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Particle.cpp.s
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Physics.cpp.o: CMakeFiles/MeinProgramm.dir/flags.make
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Physics.cpp.o: ../GLApp/GLApp/Physics/Physics.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kvfg/Schreibtisch/neuGitRepo/simulation/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Physics.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Physics.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Physics.cpp
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Physics.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Physics.cpp
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Physics.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Physics.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Physics.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Physics.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Physics.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Physics.cpp.i
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Physics.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Physics.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Physics.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Physics.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/Physics.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Physics.cpp.s
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/SystemInit.cpp.o: CMakeFiles/MeinProgramm.dir/flags.make
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/SystemInit.cpp.o: ../GLApp/GLApp/Physics/SystemInit.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kvfg/Schreibtisch/neuGitRepo/simulation/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/SystemInit.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/SystemInit.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/SystemInit.cpp
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/SystemInit.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/SystemInit.cpp
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/SystemInit.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/SystemInit.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/SystemInit.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/SystemInit.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/SystemInit.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/SystemInit.cpp.i
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/SystemInit.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/SystemInit.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/SystemInit.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/SystemInit.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Physics/SystemInit.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/SystemInit.cpp.s
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Rendering/Engine.cpp.o: CMakeFiles/MeinProgramm.dir/flags.make
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Rendering/Engine.cpp.o: ../GLApp/GLApp/Rendering/Engine.cpp
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kvfg/Schreibtisch/neuGitRepo/simulation/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Rendering/Engine.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Rendering/Engine.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Rendering/Engine.cpp
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Rendering/Engine.cpp.o -c /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Rendering/Engine.cpp
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Rendering/Engine.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Rendering/Engine.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Rendering/Engine.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Rendering/Engine.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Rendering/Engine.cpp > CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Rendering/Engine.cpp.i
 
 CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Rendering/Engine.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Rendering/Engine.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Rendering/Engine.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Rendering/Engine.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kvfg/Schreibtisch/neuGitRepo/simulation/GLApp/GLApp/Rendering/Engine.cpp -o CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Rendering/Engine.cpp.s
 
 # Object files for target MeinProgramm
 MeinProgramm_OBJECTS = \
@@ -229,9 +229,9 @@ MeinProgramm: CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/Physics.cpp.o
 MeinProgramm: CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Physics/SystemInit.cpp.o
 MeinProgramm: CMakeFiles/MeinProgramm.dir/GLApp/GLApp/Rendering/Engine.cpp.o
 MeinProgramm: CMakeFiles/MeinProgramm.dir/build.make
-MeinProgramm: /usr/lib/x86_64-linux-gnu/libGL.so
+MeinProgramm: /usr/lib/x86_64-linux-gnu/libOpenGL.so
+MeinProgramm: /usr/lib/x86_64-linux-gnu/libGLX.so
 MeinProgramm: /usr/lib/x86_64-linux-gnu/libGLU.so
-MeinProgramm: /usr/lib/x86_64-linux-gnu/libglfw.so.3.3
 MeinProgramm: /usr/lib/x86_64-linux-gnu/libcurses.so
 MeinProgramm: /usr/lib/x86_64-linux-gnu/libform.so
 MeinProgramm: CMakeFiles/MeinProgramm.dir/link.txt
