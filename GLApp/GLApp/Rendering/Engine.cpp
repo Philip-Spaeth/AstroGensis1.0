@@ -198,10 +198,7 @@ void Engine::update(int index)
         //set the play speed to 1
         playSpeed = 1;
     }
-    {
-		//set the play speed to 1
-		playSpeed = 1;
-	}
+  
 
     //disable / enable dark matter with Z
     #ifdef WIN32
@@ -213,6 +210,7 @@ void Engine::update(int index)
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
 		showDarkMatter = !showDarkMatter;
 	}
+
 
 }
 
