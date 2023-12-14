@@ -1,5 +1,6 @@
 ﻿#include "Node.h"
 #include <iostream> 
+#include "Physics.h"
 
 Node::Node(glm::dvec3 center, double radius, double theta, int index, int maxdepth)
 {
@@ -21,29 +22,55 @@ Node::~Node()
 	}
 }
 
-
-glm::dvec3 Node::calcForce(Particle& p, double softening, double& potentialEngergy, double& calculations)
+void Node::gravity(Particle& p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations)
 {
 	double G = 6.67408e-11;
 
+	if (particle.position != p.position)
+	{
+		glm::dvec3 delta = massCenter - p.position;
+
+		double r = glm::length(delta);
+
+		if (r > 0)
+		{
+			if (Physics::PlummerSoftening)
+			{
+				//Plummer softening
+				double epsilon0 = softening / std::sqrt(1.0 + std::pow(r / a, 2));
+
+				double distance = r * r + epsilon0 * epsilon0;
+
+				//normal direct force
+				double forceMagnitude = (G * mass * p.mass) / std::pow(distance, 3 / 2);
+				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
+				Particle p2 = Particle(massCenter, mass);
+				potentialEngergy += p.calcPotentialEnergie(p2, G, epsilon0, 0);
+				force += Force;
+				calculations++;
+			}
+			else
+			{
+				double distance = r * r + softening * softening;
+				//normal direct force
+				double forceMagnitude = (G * mass * p.mass) / std::pow(distance, 3 / 2);
+				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
+				Particle p2 = Particle(massCenter, mass);
+				potentialEngergy += p.calcPotentialEnergie(p2, G, softening, 0);
+				force += Force;
+				calculations++;
+			}
+		}
+	}
+}
+
+glm::dvec3 Node::calcForce(Particle& p, double softening,double a, double& potentialEngergy, double& calculations)
+{
 	glm::dvec3 force = {0,0,0};
 
 	if (isLeaf) 
 	{
-		if (particle.position != p.position)
-		{
-			glm::dvec3 delta = massCenter - p.position;
-			double distance = glm::length(delta);
-			if (distance > softening)
-			{
-				double forceMagnitude = (G * mass * p.mass) / (distance * distance);
-				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
-				force += Force;
-				Particle p2 = Particle(massCenter, mass);
-				potentialEngergy += p.calcPotentialEnergie(p2, G, softening, 0);
-				calculations++;
-			}
-		}
+		gravity(p, force, softening, a, potentialEngergy, calculations);
 	}
 	else 
 	{
@@ -55,17 +82,7 @@ glm::dvec3 Node::calcForce(Particle& p, double softening, double& potentialEnger
 
 		if (d / r < theta)
 		{
-			if (r > softening)
-			{
-				glm::dvec3 delta = massCenter - p.position;
-				double distance = glm::length(delta);
-				double forceMagnitude = (G * mass * p.mass) / (distance * distance);
-				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
-				Particle p2 = Particle(massCenter, mass);
-				potentialEngergy += p.calcPotentialEnergie(p2, G, softening, 0);
-				force += Force;
-				calculations++;
-			}
+			gravity(p, force, softening, a, potentialEngergy, calculations);
 		}
 		else
 		{
@@ -74,7 +91,7 @@ glm::dvec3 Node::calcForce(Particle& p, double softening, double& potentialEnger
 			{
 				if(child != nullptr)
 				{
-					force += child->calcForce(p, softening, potentialEngergy, calculations);
+					force += child->calcForce(p, softening, a, potentialEngergy, calculations);
 				}
 			}
 		}

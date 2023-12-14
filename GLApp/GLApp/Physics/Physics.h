@@ -26,6 +26,9 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
+    static const bool SPH = false;
+    static const bool PlummerSoftening = true;
+
     static const int numTimeSteps = 100;
     static const int particlesSize = 10000;
 
@@ -40,19 +43,22 @@ public:
 
     //the time per frame
 
-    const double deltaTime = 1e14;
+    const double deltaTime = 1e13;
 
-
+    //barnes hut
     const double theta = 1;
     const double maxDepth = 100;
+    
+    //Plummer Softening 
+    const double softening = 1e18;
+    const double a = 1e18;
+
+
+    double maxDistance = 0;
 
     //Physikalische Konstanten
     const double G = 6.67430e-11;
-    // softening factor
-    //  galaxy = 1e18
-    // sun system = 0.2
-    const double softening = 1e12;
-    double maxDistance = 0;
+
 
     std::vector<Particle> currentParticles;
 private:

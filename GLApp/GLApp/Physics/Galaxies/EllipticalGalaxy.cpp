@@ -27,11 +27,11 @@ void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm
 		else
 		{
 			double theta = physics.random(0, glm::pi<double>());
-			double particles[j]. = physics.random(0, 2 * glm::pi<double>());
-			double r = physics.random(0, physics.random(0, galaxyRadius));
+			particles[j].angle = physics.random(0, 2 * glm::pi<double>());
+			double r = physics.random(0, galaxyRadius);
 
-			double x = r * std::sin(theta) * std::cos(phi);
-			double y = r * std::sin(theta) * std::sin(phi);
+			double x = r * std::sin(theta) * std::cos(particles[j].angle);
+			double y = r * std::sin(theta) * std::sin(particles[j].angle);
 			double z = 0;
 			double distanceToCenter = glm::abs(glm::length(glm::dvec3(x, y, z)));
 			if (distanceToCenter == 0)
@@ -67,14 +67,13 @@ void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm
 		{
 			double v = 0;
 			v = std::sqrt(physics.G * calcMassInRadius(startIndex, endIndex, position, rotation, particles, distanceToCenter) / distanceToCenter);
-
 			// No need for critical section here
 			particles[j].velocity = glm::dvec3(-v * std::sin(particles[j].angle), v * std::cos(particles[j].angle), 0) + velocity;
 		}
 	}
 }
 
-double SpiralGalaxy::calcMassInRadius(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, std::vector<Particle>& particles, double r)
+double EllipticalGalaxy::calcMassInRadius(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, std::vector<Particle>& particles, double r)
 {
 	//calc mass
 	double mass = 0;

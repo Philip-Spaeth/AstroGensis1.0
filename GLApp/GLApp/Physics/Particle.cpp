@@ -97,9 +97,15 @@ glm::dvec3 Particle::calculateGravitationalForce(const Particle& other, double G
     if (distance == 0)
     {
         return { 0, 0, 0 }; // Verhindere eine Division durch Null.
+    
     }
+    //plummer softening
+    softening = 1;
+    softening = softening * softening;
 
     double forceMagnitude = (G * mass * other.mass) / (distance * distance + softening);
+
+
     glm::dvec3 force = forceMagnitude * glm::normalize(delta);
     return force;
 }

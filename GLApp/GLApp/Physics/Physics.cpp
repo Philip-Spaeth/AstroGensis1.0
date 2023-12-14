@@ -266,7 +266,7 @@ void Physics::calculateGravitation(int t, int start, int stop) {
         // Berechne die Gesamtkraft auf das Partikel
         glm::dvec3 totalForce = { 0,0,0 };
         double potentialEngergy = 0;
-        totalForce = octree->calculateForces(currentParticles[p], softening, potentialEngergy, calulations);
+        totalForce = octree->calculateForces(currentParticles[p], softening,a, potentialEngergy, calulations);
         totalEnergie[t][p] += potentialEngergy;
         currentParticles[p].force = totalForce;
 

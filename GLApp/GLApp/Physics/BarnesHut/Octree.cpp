@@ -16,13 +16,9 @@ Octree::Octree(glm::dvec3 center, double radius, double theta, int maxDepth)
 Octree::~Octree() {
 }
 
-glm::dvec3 Octree::calculateForces(Particle& particle, double softening, double& potentialEngergy, double& calculations)
+glm::dvec3 Octree::calculateForces(Particle& particle, double softening, double a, double& potentialEngergy, double& calculations)
 {
-	if (particle.mass == 1e41)
-	{
-		return { 0,0,0 };
-	}
-	return root->calcForce(particle, softening, potentialEngergy, calculations);
+	return root->calcForce(particle, softening,a, potentialEngergy, calculations);
 }
 
 void Octree::buildTree(std::vector<Particle>& particles) 

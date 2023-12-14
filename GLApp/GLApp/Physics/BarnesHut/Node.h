@@ -14,7 +14,8 @@ public:
 	~Node();
 
 	void insert(Particle& p);
-	glm::dvec3 calcForce(Particle& p, double softening, double& potentialEngergy, double& calculations);
+	glm::dvec3 calcForce(Particle& p, double softening, double a, double& potentialEngergy, double& calculations);
+	void gravity(Particle& p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
     void calcMass();
 
 	Node* child[8] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
