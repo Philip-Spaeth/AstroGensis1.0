@@ -27,16 +27,16 @@ public:
     double random(double min, double max);
 
     static const bool SPH = false;
-    static const bool PlummerSoftening = true;
+    static const bool PlummerSoftening = false;
 
-    static const int numTimeSteps = 100;
+    static const int numTimeSteps = 1000;
     static const int particlesSize = 10000;
 
     // calculation Method:
-    int calculationMethod = 3;
+    int calculationMethod = 1;
     
     // one hour = 3600
-    // one day = 86400
+    // one day = 8ss6400
     // one year = 31536000
     // big galaxy = 1e16
     // galaxy = 1e13
@@ -51,7 +51,7 @@ public:
     
     //Plummer Softening 
     const double softening = 1e18;
-    const double a = 1e18;
+    const double a = 1e100;
 
 
     double maxDistance = 0;

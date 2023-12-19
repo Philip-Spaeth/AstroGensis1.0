@@ -75,8 +75,8 @@ bool Physics::Calc()
 			}
             octree = new Octree(glm::dvec3(0, 0, 0), maxDistance * 2, theta, maxDepth);
 
-            fileManager->saveRotationCurve(currentParticles, "");
-            fileManager->saveMassCurve(currentParticles, "");
+            //fileManager->saveRotationCurve(currentParticles, "");
+            //fileManager->saveMassCurve(currentParticles, "");
         }
 
 
@@ -100,8 +100,18 @@ bool Physics::Calc()
                     //semi implicit euler
                     if (calculationMethod == 1)
                     {
-                        currentParticles[p].eulerUpdateVelocity(currentParticles[p].calcAcceleration(currentParticles[p].force), deltaTime);
-                        currentParticles[p].eulerUpdatePosition(currentParticles[p].velocity, deltaTime);
+                        if (SPH)
+                        {
+                            // Update particle velocity based on SPH forces
+                            currentParticles[p].velocity += currentParticles[p].force / currentParticles[p].mass * deltaTime;
+                            //std::cout << currentParticles[p].force.x << " " << currentParticles[p].force.y << " " << currentParticles[p].force.z << std::endl;
+                            currentParticles[p].eulerUpdatePosition(currentParticles[p].velocity, deltaTime);
+                        }
+                        else
+                        {
+                            currentParticles[p].eulerUpdateVelocity(currentParticles[p].calcAcceleration(currentParticles[p].force), deltaTime);
+                            currentParticles[p].eulerUpdatePosition(currentParticles[p].velocity, deltaTime);
+                        }
                     }
 
                     //Drift-Kick-Drift leapfrog

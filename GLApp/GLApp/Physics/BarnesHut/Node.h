@@ -10,11 +10,12 @@ class Particle;
 class Node 
 {
 public:
-	Node(glm::dvec3 center, double radius, double theta, int index, int maxdepth);
+	Node(glm::dvec3 center, double radius, double theta, int index, int maxdepth, bool renderTree);
 	~Node();
 
 	void insert(Particle& p);
 	glm::dvec3 calcForce(Particle& p, double softening, double a, double& potentialEngergy, double& calculations);
+	void gravitySPH(Particle& p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
 	void gravity(Particle& p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
     void calcMass();
 
@@ -28,6 +29,8 @@ public:
 	double mass = 0;
 	double radius = 0;
 	double theta = 0;
+
+	bool renderTree = false;
 
 	Particle particle;
 	bool particlePushed = false;

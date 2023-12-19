@@ -8,6 +8,7 @@
 #include <future>
 #include <thread>
 #include <algorithm>
+#include <windows.h>
 
 FileManager::FileManager(){}
 
@@ -27,8 +28,8 @@ void FileManager::saveParticles(int timestep, const std::vector<Particle>& parti
     array.resize(particles.size());
     for (int i = 0; i < particles.size(); i++)
     {
-		array[i] = glm::vec4(particles[i].position, particles[i].radius);
-	}
+        array[i] = glm::vec4(particles[i].position, particles[i].radius);
+    }
     //put the particle color and dark matter bool in a the array
     std::vector<glm::vec4> color;
     color.resize(particles.size());
@@ -37,12 +38,13 @@ void FileManager::saveParticles(int timestep, const std::vector<Particle>& parti
         int darkMatter = 0;
         if (particles[i].darkMatter)
         {
-			darkMatter = 1;
-		}
+            darkMatter = 1;
+        }
         color[i] = glm::vec4(particles[i].color, darkMatter);
     }
 
-    if (file.is_open()) {
+    if (file.is_open()) 
+    {
         size_t size = array.size();
         file.write(reinterpret_cast<char*>(&size), sizeof(size));
 
@@ -58,8 +60,6 @@ void FileManager::saveParticles(int timestep, const std::vector<Particle>& parti
 
 void FileManager::loadParticles(int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec4>& color)
 {
-    array.clear();
-
     std::string fileName = "Data/Time_" + std::to_string(timestep) + ".dat";
     std::ifstream file(fileName, std::ios::binary);
 
@@ -69,7 +69,6 @@ void FileManager::loadParticles(int timestep, std::vector<glm::vec4>& array, std
 
         array.resize(Physics::particlesSize);
         color.resize(Physics::particlesSize);
-
         //load the positions and radius from the file
         file.read(reinterpret_cast<char*>(array.data()), size * sizeof(glm::vec4));
         //load the color and dark matter bool from file
@@ -77,10 +76,12 @@ void FileManager::loadParticles(int timestep, std::vector<glm::vec4>& array, std
 
         file.close();
     }
-    else {
+    else 
+    {
         std::cerr << "Fehler beim Öffnen der Datei zum Laden." << std::endl;
     }
 }
+
 
 void FileManager::saveEnergieData(std::vector<std::vector<double>>& totalEnergie, std::string path) 
 {
