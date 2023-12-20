@@ -11,6 +11,11 @@
 #include <locale>
 #include <string.h>
 #include "FileManager.h"
+#ifdef WIN32
+#else
+#include <unistd.h>
+#include <pthread.h>
+#endif
 
 Physics::Physics()
 {
@@ -45,6 +50,7 @@ bool Physics::Calc()
     }
 
     auto current_time = std::chrono::system_clock::now();
+    auto start_time = std::chrono::system_clock::now();
 
     std::cout << "Starting the calculations..." << std::endl;
 
@@ -62,10 +68,17 @@ bool Physics::Calc()
         //Start values of the particles
         if (t == 0)
         {
-            systemInit = new SystemInit();
-            systemInit->start(currentParticles);
-            fileManager = new FileManager();
-            fileManager->saveParticles(t, currentParticles, "Data");
+            if(firstrun){
+                systemInit = new SystemInit();
+                systemInit->start(currentParticles);
+                currentParticlesCopy = currentParticles;
+                fileManager = new FileManager();
+                fileManager->saveParticles(t, currentParticles, "Data");
+            }
+            else{
+                currentParticles = currentParticlesCopy;
+            }
+            start_time = std::chrono::system_clock::now();
 
 			for (int i = 0; i < currentParticles.size(); i++) {
 				double distance = sqrt(pow(currentParticles[i].position.x, 2) + pow(currentParticles[i].position.y, 2) + pow(currentParticles[i].position.z, 2));
@@ -171,10 +184,24 @@ bool Physics::Calc()
     }
 
 
-    fileManager->saveEnergieData(totalEnergie, "../Energie_Daten/1000sec/Euler_Data.txt");
+    auto end_time = std::chrono::system_clock::now();
+    if(firstrun){
+        elapsed_seconds_first = end_time - start_time;
+    }
+    else{
+        std::chrono::duration<double> elapsed_seconds = end_time - start_time;
+        std::cout << std::endl;
 
-    std::cout << std::endl;
-    std::cout << "Total Calculations: " << calulations << std::endl;
+        std::cout << "Time needed for multithreading " << !multithreading << " calculations: " << elapsed_seconds_first.count() << " seconds" << std::endl;
+        std::cout << "Time needed for multithreading " << multithreading << " calculations: " << elapsed_seconds.count() << " seconds" << std::endl;
+        fileManager->saveEnergieData(totalEnergie, "../Energie_Daten/1000sec/Euler_Data.txt");
+
+        std::cout << std::endl;
+        std::cout << "Total Calculations: " << calulations << std::endl;
+    }
+
+    firstrun = false;
+    multithreading = !multithreading;
     return true;
 }
 
@@ -240,22 +267,27 @@ void Physics::calcTime(int index, std::chrono::system_clock::time_point current_
 }
 
 void Physics::calculateGravitation(int t) {
-    int num_threads = std::thread::hardware_concurrency();
-    std::vector<std::thread> threads;
+    if (multithreading){
+        int num_threads = std::thread::hardware_concurrency();
+        std::vector<std::thread> threads;
 
-    int n = currentParticles.size(); // Gesamtanzahl der Iterationen
-    int step = n / num_threads;
+        int n = currentParticles.size(); // Gesamtanzahl der Iterationen
+        int step = n / num_threads;
 
-    for(int i = 0; i < num_threads; ++i) {
-		threads.emplace_back([this, i, step, t]() {
-			this->calculateGravitation(t, i * step, (i + 1) * step);
-			});
-	}
+        for(int i = 0; i < num_threads; ++i) {
+            threads.emplace_back([this, i, step, t]() {
+                this->calculateGravitation(t, i * step, (i + 1) * step);
+                });
+        }
 
-    // thrads abfangen
-    for (auto& thread : threads)
-    {
-        thread.join();
+        // thrads abfangen
+        for (auto& thread : threads)
+        {
+            thread.join();
+        }
+    }
+    else{
+        calculateGravitation(t, 0, currentParticles.size());
     }
 }
 

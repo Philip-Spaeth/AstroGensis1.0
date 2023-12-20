@@ -198,10 +198,6 @@ void Engine::update(int index)
         //set the play speed to 1
         playSpeed = 1;
     }
-    {
-		//set the play speed to 1
-		playSpeed = 1;
-	}
 
     //disable / enable dark matter with Z
     #ifdef WIN32

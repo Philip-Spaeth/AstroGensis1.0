@@ -26,7 +26,7 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    static const int numTimeSteps = 100;
+    static const int numTimeSteps = 10000;
     static const int particlesSize = 10;
 
     // calculation Method:
@@ -55,6 +55,8 @@ public:
     double maxDistance = 0;
 
     std::vector<Particle> currentParticles;
+    std::vector<Particle> currentParticlesCopy;
+    bool firstrun = true;
 private:
     Octree* octree;
     std::vector<std::vector<double>> totalEnergie;
@@ -65,6 +67,10 @@ private:
     std::chrono::system_clock::time_point time;
     void calculateGravitation(int timeStap);
     void calculateGravitation(int timeStap, int start, int stop);
+
+    bool multithreading = false;
+
+    std::chrono::duration<double> elapsed_seconds_first;
 };
 
 #endif // PHYSICS_H

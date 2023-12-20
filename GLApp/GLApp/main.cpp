@@ -30,6 +30,7 @@ int main()
     Physics physics;
 
     physics.Calc();
+    //physics.Calc();
 
     std::cout << std::endl;
     std::cout << "Press enter to start" << std::endl;
@@ -69,7 +70,7 @@ int main()
             glfwSetWindowShouldClose(engine.window, true);
         }
         #else
-        if (getch() == 27) // ESC
+        if (getch() == 27 & 0x8000) // ESC
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(200));
             //OutputDebugString(L"ESC KEY\n");
