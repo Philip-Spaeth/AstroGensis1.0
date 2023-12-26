@@ -10,7 +10,7 @@ Octree::Octree(glm::dvec3 center, double radius, double theta, int maxDepth)
 	this->center = center;
 	this->radius = radius;
 	this->theta = theta;
-	root = new Node(center, radius, theta, 0, maxDepth, false);
+	root = new Node(center, radius, theta, 0, maxDepth, false,new glm::vec3(1,0,0));
 }
 
 Octree::~Octree() {
@@ -18,7 +18,12 @@ Octree::~Octree() {
 
 glm::dvec3 Octree::calculateForces(Particle& particle, double softening, double a, double& potentialEngergy, double& calculations)
 {
-	return root->calcForce(particle, softening,a, potentialEngergy, calculations);
+	return root->calcForce(particle,root, softening,a, potentialEngergy, calculations);
+}
+
+void Octree::setColors()
+{
+	root->setColor();
 }
 
 void Octree::buildTree(std::vector<Particle>& particles) 

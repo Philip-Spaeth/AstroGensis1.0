@@ -3,64 +3,7 @@
 #include "Physics.h"
 #include <cmath>
 
-
-// Smoothing Length (adjust based on galactic scales)
-const double smoothingLength = 500.0;
-
-// Rest Density
-const double restDensity = 0.3;
-
-// Stiffness (Gas Constant)
-const double stiffness = 5.0;
-
-// Constants for SPH kernels (adjust as needed)
-const double PI = 3.14159265358979323846;
-const double poly6Coefficient = 315.0 / (64.0 * PI * std::pow(smoothingLength, 9));
-const double spikyGradientCoefficient = -45.0 / (PI * std::pow(smoothingLength, 6));
-const double viscosityLaplacianCoefficient = 45.0 / (PI * std::pow(smoothingLength, 6));
-
-// SPH kernel functions
-
-// Poly6 kernel for density estimation
-double kernelPoly6(double r) 
-{
-	if (r >= 0 && r <= smoothingLength) {
-		double q = 1.0 - std::pow(r / smoothingLength, 2);
-		return poly6Coefficient * std::pow(q, 3);
-	}
-	else {
-		// Verwenden Sie hier eine andere Funktion, die für große Entfernungen geeignet ist.
-		// Zum Beispiel eine konstante Dichte oder eine abgeschwächte Dichte.
-		// Experimentieren Sie mit verschiedenen Ansätzen je nach Ihren Simulationserfordernissen.
-		return 1.0; // Beispiel: Konstante Dichte für große Entfernungen
-	}
-}
-
-// Spiky gradient kernel for pressure forces
-glm::dvec3 kernelSpikyGradient(const glm::dvec3& delta, double r) {
-	double distance = glm::length(delta);
-	if (distance > 0 && distance <= smoothingLength) {
-		double coefficient = spikyGradientCoefficient * std::pow(smoothingLength - distance, 2) / distance;
-		return coefficient * delta;
-	}
-	else {
-		return glm::dvec3(1.0);
-	}
-}
-
-// Viscosity Laplacian kernel for viscosity forces
-glm::dvec3 kernelViscosityLaplacian(const glm::dvec3& delta, double r) {
-	double distance = glm::length(delta);
-	if (distance > 0 && distance <= smoothingLength) {
-		double coefficient = viscosityLaplacianCoefficient * (smoothingLength - distance);
-		return coefficient * delta / distance;
-	}
-	else {
-		return glm::dvec3(1.0);
-	}
-}
-
-Node::Node(glm::dvec3 center, double radius, double theta, int index, int maxdepth, bool renderTree)
+Node::Node(glm::dvec3 center, double radius, double theta, int index, int maxdepth, bool renderTree, glm::vec3* newparticleColor)
 {
 	this->center = center;
 	this->radius = radius;
@@ -68,6 +11,7 @@ Node::Node(glm::dvec3 center, double radius, double theta, int index, int maxdep
 	this->index = index;
 	this->maxDepth = maxdepth;
 	this->renderTree = renderTree;
+	particleColor = newparticleColor;
 }
 
 Node::~Node()
@@ -77,6 +21,70 @@ Node::~Node()
 		if (child != nullptr)
 		{
 			delete child;
+		}
+	}
+}
+void Node::color(glm::vec3 color)
+{
+	if (isLeaf)
+	{
+		particleColor->r = color.r;
+		particleColor->g = color.g;
+		particleColor->b = color.b;
+	}
+	else
+	{
+		for (Node* child : child)
+		{
+			if (child != nullptr)
+			{
+				child->color(color);
+			}
+		}
+	}
+}
+
+void Node::setColor()
+{
+	if (index >= Physics::colorDepth)
+	{
+		//if the density is high make it more red and bright if it is low make it more blue and dark
+		double mass = 0;
+		if (isLeaf)
+		{
+			mass = particle.mass;
+		}
+		else
+		{
+			mass = this->mass;
+		}
+		Physics physics;
+		double brightness = (mass - physics.minMass) / (physics.maxMass - physics.minMass);
+		double red = brightness;
+		double green = 0;
+		double blue = 1 - brightness;
+		double smoth = 0.9;
+		//make the color more smooth
+		red = red + smoth;
+		green = 0;
+		blue = blue + smoth;
+		//set the color to all the particles in the childnodes
+		for (Node* child : child)
+		{
+			if (child != nullptr)
+			{
+				child->color(glm::vec3(red,green,blue));
+			}
+		}
+	}
+	else
+	{
+		for (Node* child : child)
+		{
+			if (child != nullptr)
+			{
+				child->setColor();
+			}
 		}
 	}
 }
@@ -112,7 +120,7 @@ void Node::gravity(Particle& p, glm::dvec3& force, double softening, double a, d
 			{
 				double distance = r * r + softening * softening;
 				//normal direct force
-				double forceMagnitude = (G * mass * p.mass) / std::pow(distance, 3 / 2);
+				double forceMagnitude = (G * mass * p.mass) / std::pow(distance, 1);
 				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
 				Particle p2 = Particle(massCenter, mass);
 				potentialEngergy += p.calcPotentialEnergie(p2, G, softening, 0);
@@ -123,44 +131,108 @@ void Node::gravity(Particle& p, glm::dvec3& force, double softening, double a, d
 	}
 }
 
-void Node::gravitySPH(Particle& p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations)
+double Node::cubicSplineKernel(double r, double h)
 {
-	glm::dvec3 delta = massCenter - p.position;
-	double r = glm::length(delta);
-	if (r > 0)
-	{
-		double G = 6.67408e-11;
-
-		// SPH density estimation
-		double density = kernelPoly6(r);
-		p.density = density * mass;
-
-		// SPH pressure calculation
-		double pressure = stiffness * (p.density - restDensity);
-		p.pressure = pressure * mass;
-
-		// SPH forces
-		glm::dvec3 pressureForce = (pressure + p.pressure) / (2 * p.density) *
-			p.mass * kernelSpikyGradient(delta, smoothingLength);
-
-		glm::dvec3 viscosityForce = (p.velocity - particle.velocity) / p.density *
-			p.mass * kernelViscosityLaplacian(delta, smoothingLength);
-
-		// Gravitational force
-		double distance = r * r + softening * softening;
-		//normal direct force
-		double forceMagnitude = (G * mass * p.mass) / std::pow(distance, 3 / 2);
-		glm::dvec3 gravityForce = forceMagnitude * glm::normalize(delta);
-
-		// Total force
-		glm::dvec3 totalForce = pressureForce + viscosityForce + gravityForce;
-
-		// Update the force on the particle
-		force += totalForce;
+	double pi = 3.14159265359;
+	const double alpha_3d = 1.0 / (pi * h * h * h);
+	double q = r / h;
+	if (q < 1.0) {
+		return alpha_3d * (1 - 1.5 * q * q + 0.75 * q * q * q);
 	}
+	else if (q < 2.0) {
+		return alpha_3d * 0.25 * pow(2 - q, 3);
+	}
+	return 0.0;
 }
 
-glm::dvec3 Node::calcForce(Particle& p, double softening,double a, double& potentialEngergy, double& calculations)
+double Node::computeDensity(Particle& p, double h) 
+{
+	if (isLeaf)
+	{
+		double density = 0;
+		double r = glm::length(p.position - particle.position);
+		if (r < 2 * h)
+		{
+			density = particle.mass * cubicSplineKernel(r, h);
+		}
+		return density;
+	}
+	else
+	{
+		double density = 0;
+		for (Node* child : child)
+		{
+			if (child != nullptr)
+			{
+				double r = glm::length(p.position - child->massCenter);
+				if ((r - child->radius * 2) < 2 * h)
+				{
+					density += child->computeDensity(p, h);
+				}
+			}
+		}
+		return density;
+	}
+} 
+
+
+void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations)
+{
+	double h = 3e19; // Glättungs- rsdius/mittel
+	double k = 1e25; // Steifheitskonstante für Druck
+	double rho0 = 2.4e-20; // Ruhe- oder Referenzdichte
+
+	glm::dvec3 delta = massCenter - p.position;
+	double r = glm::length(delta);
+	double G = 6.67408e-11;
+
+	glm::dvec3 pressureForce = glm::dvec3(0.0);
+
+	if (p.position != particle.position && r > 0)
+	{
+
+		if (r < 2 * h)
+		{
+			// Dichte berechnen
+			double density_i = root->computeDensity(p, h);
+			double density_j = root->computeDensity(particle, h);
+
+			if (density_i != 0 && density_j != 0)
+			{
+				// Druck berechnen
+				double pressure_i = k * (density_i - rho0);
+				double pressure_j = k * (density_j - rho0);
+
+				// Gradient der Kernel-Funktion
+				glm::dvec3 gradKernel = glm::normalize(delta) * cubicSplineKernel(r, h);
+
+				// Druckkraft berechnen
+				double rawpressureForce = -((pressure_i / (density_i * density_i)) +
+					(pressure_j / (density_j * density_j)));
+				if (rawpressureForce > 0)
+				{
+					pressureForce = rawpressureForce * gradKernel;
+
+					// Kraft auf Partikel i anwenden
+					force -= particle.mass * pressureForce;
+				}
+			}
+			else
+			{
+				std::cout << "density is 0" << std::endl;
+			}
+		}
+
+		// Gravitationskraft
+		double forceMagnitude = (G * mass * p.mass) / (r * r + softening * softening);
+		glm::dvec3 gravityForce = forceMagnitude * glm::normalize(delta);
+		force += gravityForce;
+	}
+
+	calculations++;
+}
+
+glm::dvec3 Node::calcForce(Particle& p, Node* root, double softening,double a, double& potentialEngergy, double& calculations)
 {
 	glm::dvec3 force = {0,0,0};
 
@@ -169,7 +241,7 @@ glm::dvec3 Node::calcForce(Particle& p, double softening,double a, double& poten
 		if (Physics::SPH)
 		{
 			//SPH
-			gravitySPH(p, force, softening, a, potentialEngergy, calculations);
+			gravitySPH(p, root, force, softening, a, potentialEngergy, calculations);
 		}
 		else
 		{
@@ -190,7 +262,7 @@ glm::dvec3 Node::calcForce(Particle& p, double softening,double a, double& poten
 			if (Physics::SPH)
 			{
 				//SPH
-				gravitySPH(p, force, softening, a, potentialEngergy, calculations);
+				gravitySPH(p, root, force, softening, a, potentialEngergy, calculations);
 			}
 			else
 			{
@@ -205,7 +277,7 @@ glm::dvec3 Node::calcForce(Particle& p, double softening,double a, double& poten
 			{
 				if(child != nullptr)
 				{
-					force += child->calcForce(p, softening, a, potentialEngergy, calculations);
+					force += child->calcForce(p, root, softening, a, potentialEngergy, calculations);
 				}
 			}
 		}
@@ -221,6 +293,8 @@ void Node::insert(Particle& p)
 		{
 			mass = p.mass;
 			particle = p;
+			p.halfsize = radius;
+			particleColor = &p.color;
 			isLeaf = true;
 			massCenter = p.position;
 		}
@@ -290,7 +364,7 @@ void Node::insert(Particle& p)
 					newCenter.z += newRadius;
 					break;
 				}
-				child[quadrant] = new Node(newCenter, newRadius, theta, index + 1, maxDepth, renderTree);
+				child[quadrant] = new Node(newCenter, newRadius, theta, index + 1, maxDepth, renderTree,new  glm::vec3(1, 0, 0));
 			}
 			child[quadrant]->insert(p);
 
@@ -309,6 +383,7 @@ void Node::insert(Particle& p)
 	else
 	{
 		mass += p.mass;
+		p.halfsize = radius;
 		massCenter = (massCenter * (mass - p.mass) + p.position * p.mass) / mass;
 		//std::cout << "max depth reached in index: " << index << std::endl;
 	}
@@ -339,7 +414,8 @@ void Node::calcMass()
 	}
 }
 
-void Node::clear() {
+void Node::clear() 
+{
 	for(int i = 0; i < 8; i++)
 	{
 		if (child[i] != nullptr)

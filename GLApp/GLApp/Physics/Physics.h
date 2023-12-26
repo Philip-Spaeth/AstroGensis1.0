@@ -26,11 +26,14 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    static const bool SPH = false;
-    static const bool PlummerSoftening = false;
+    static const bool SPH = true;
+    static const bool PlummerSoftening = true;
+
+    static const bool darkEnergy = false;
+    static const int HubbleConstant = 70;
 
     static const int numTimeSteps = 1000;
-    static const int particlesSize = 10000;
+    static const int particlesSize = 1000;
 
     // calculation Method:
     int calculationMethod = 1;
@@ -42,12 +45,16 @@ public:
     // galaxy = 1e13
 
     //the time per frame
-
     const double deltaTime = 1e13;
 
     //barnes hut
     const double theta = 1;
-    const double maxDepth = 100;
+    const double maxDepth = 30;
+    //Color 
+    static const bool color = false;
+    static const int colorDepth = 5;
+    const double minMass = 0;
+    const double maxMass = 1e38;
     
     //Plummer Softening 
     const double softening = 1e18;

@@ -64,8 +64,6 @@ bool Physics::Calc()
         {
             systemInit = new SystemInit();
             systemInit->start(currentParticles);
-            fileManager = new FileManager();
-            fileManager->saveParticles(t, currentParticles, "Data");
 
 			for (int i = 0; i < currentParticles.size(); i++) {
 				double distance = sqrt(pow(currentParticles[i].position.x, 2) + pow(currentParticles[i].position.y, 2) + pow(currentParticles[i].position.z, 2));
@@ -74,9 +72,17 @@ bool Physics::Calc()
 				}
 			}
             octree = new Octree(glm::dvec3(0, 0, 0), maxDistance * 2, theta, maxDepth);
-
+            // delte tree to clear memory
+            octree->clearTree();
+            //build a new tree
+            octree->buildTree(currentParticles);
+            //set color
+            if(color) octree->setColors();
             //fileManager->saveRotationCurve(currentParticles, "");
             //fileManager->saveMassCurve(currentParticles, "");
+
+            fileManager = new FileManager();
+            fileManager->saveParticles(t, currentParticles, "Data");
         }
 
 
@@ -86,7 +92,20 @@ bool Physics::Calc()
             octree->clearTree();
             //build a new tree
             octree->buildTree(currentParticles);
+            //set color
+            if (color) octree->setColors();
 
+            //expansion of the universe
+            if (darkEnergy)
+            {
+                double H = HubbleConstant * 1e-6;
+				double a = 1 / (1 + H * deltaTime);
+                for (int p = 0; p < currentParticles.size(); p++)
+                {
+					currentParticles[p].position *= a;
+					currentParticles[p].velocity *= a;
+				}
+            }
 
             //Other methods
             if (calculationMethod != 0 && calculationMethod != 3)
@@ -100,18 +119,8 @@ bool Physics::Calc()
                     //semi implicit euler
                     if (calculationMethod == 1)
                     {
-                        if (SPH)
-                        {
-                            // Update particle velocity based on SPH forces
-                            currentParticles[p].velocity += currentParticles[p].force / currentParticles[p].mass * deltaTime;
-                            //std::cout << currentParticles[p].force.x << " " << currentParticles[p].force.y << " " << currentParticles[p].force.z << std::endl;
-                            currentParticles[p].eulerUpdatePosition(currentParticles[p].velocity, deltaTime);
-                        }
-                        else
-                        {
-                            currentParticles[p].eulerUpdateVelocity(currentParticles[p].calcAcceleration(currentParticles[p].force), deltaTime);
-                            currentParticles[p].eulerUpdatePosition(currentParticles[p].velocity, deltaTime);
-                        }
+                        currentParticles[p].eulerUpdateVelocity(currentParticles[p].calcAcceleration(currentParticles[p].force), deltaTime);
+                        currentParticles[p].eulerUpdatePosition(currentParticles[p].velocity, deltaTime);
                     }
 
                     //Drift-Kick-Drift leapfrog
