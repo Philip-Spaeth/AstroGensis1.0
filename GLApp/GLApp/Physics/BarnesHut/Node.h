@@ -13,6 +13,8 @@ public:
 	Node(glm::dvec3 center, double radius, double theta, int index, int maxdepth, bool renderTree, glm::vec3* newparticleColor);
 	~Node();
 
+	bool isInside(Particle& p);
+
 	void insert(Particle& p);
 	glm::dvec3 calcForce(Particle& p, Node* root, double softening, double a, double& potentialEngergy, double& calculations);
 	//SPH

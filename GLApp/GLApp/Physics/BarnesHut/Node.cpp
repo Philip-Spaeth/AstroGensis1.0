@@ -119,6 +119,7 @@ void Node::gravity(Particle& p, glm::dvec3& force, double softening, double a, d
 			else
 			{
 				double distance = r * r + softening * softening;
+				//double distance = r * r;
 				//normal direct force
 				double forceMagnitude = (G * mass * p.mass) / std::pow(distance, 1);
 				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
@@ -150,7 +151,7 @@ double Node::computeDensity(Particle& p, double h)
 	if (isLeaf)
 	{
 		double density = 0;
-		double r = glm::length(p.position - particle.position);
+		double r = glm::length(p.position - this->massCenter);
 		if (r < 2 * h)
 		{
 			density = particle.mass * cubicSplineKernel(r, h);
@@ -160,15 +161,13 @@ double Node::computeDensity(Particle& p, double h)
 	else
 	{
 		double density = 0;
-		for (Node* child : child)
+		// checken, ob p im quadraht also radius von particle ist
+		if(!isInside(p))
 		{
-			if (child != nullptr)
+			double r = glm::length(p.position - this->massCenter);
+			if (r < 2 * h)
 			{
-				double r = glm::length(p.position - child->massCenter);
-				if ((r - child->radius * 2) < 2 * h)
-				{
-					density += child->computeDensity(p, h);
-				}
+				density = particle.mass * cubicSplineKernel(r, h);
 			}
 		}
 		return density;
@@ -178,20 +177,22 @@ double Node::computeDensity(Particle& p, double h)
 
 void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations)
 {
-	double h = 3e19; // Glättungs- rsdius/mittel
+	double h = 3e19; // Glättungs rsdius
 	double k = 1e25; // Steifheitskonstante für Druck
 	double rho0 = 2.4e-20; // Ruhe- oder Referenzdichte
 
 	glm::dvec3 delta = massCenter - p.position;
 	double r = glm::length(delta);
-	double G = 6.67408e-11;
+	double G = -6.67408e-11;
 
 	glm::dvec3 pressureForce = glm::dvec3(0.0);
 
+	// ob das Partikel mit sich selbst interagiert
 	if (p.position != particle.position && r > 0)
 	{
-
+		// ob Abstand von Partikel i und j kleiner als 2 * h ist -> Zeit sparen
 		if (r < 2 * h)
+		//if(false)
 		{
 			// Dichte berechnen
 			double density_i = root->computeDensity(p, h);
@@ -214,17 +215,18 @@ void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softeni
 					pressureForce = rawpressureForce * gradKernel;
 
 					// Kraft auf Partikel i anwenden
-					force -= particle.mass * pressureForce;
+					force += particle.mass * pressureForce;
 				}
 			}
-			else
+			/*else
 			{
 				std::cout << "density is 0" << std::endl;
-			}
+			}*/
 		}
 
 		// Gravitationskraft
 		double forceMagnitude = (G * mass * p.mass) / (r * r + softening * softening);
+		//double forceMagnitude = (G * mass * p.mass) / (r * r);
 		glm::dvec3 gravityForce = forceMagnitude * glm::normalize(delta);
 		force += gravityForce;
 	}
@@ -427,3 +429,19 @@ void Node::clear()
 	}
 }
 
+
+bool Node::isInside(Particle& p){
+	if (p.position.x > center.x + radius || p.position.x < center.x - radius)
+	{
+		return false;
+	}
+	if (p.position.y > center.y + radius || p.position.y < center.y - radius)
+	{
+		return false;
+	}
+	if (p.position.z > center.z + radius || p.position.z < center.z - radius)
+	{
+		return false;
+	}
+	return true;
+}

@@ -32,11 +32,11 @@ public:
     static const bool darkEnergy = false;
     static const int HubbleConstant = 70;
 
-    static const int numTimeSteps = 1000;
+    static const int numTimeSteps = 10000;
     static const int particlesSize = 1000;
 
     // calculation Method:
-    int calculationMethod = 1;
+    int calculationMethod = 0;
     
     // one hour = 3600
     // one day = 8ss6400
