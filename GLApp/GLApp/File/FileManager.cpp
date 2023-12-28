@@ -6,9 +6,13 @@
 #include "Particle.h"
 #include <cmath>
 #include <future>
+
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 #include <thread>
 #include <algorithm>
-#include <windows.h>
 
 FileManager::FileManager(){}
 

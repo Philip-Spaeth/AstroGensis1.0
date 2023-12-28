@@ -119,6 +119,7 @@ void Node::gravity(Particle& p, glm::dvec3& force, double softening, double a, d
 			else
 			{
 				double distance = r * r + softening * softening;
+				//double distance = r * r;
 				//normal direct force
 				double forceMagnitude = (G * mass * p.mass) / std::pow(distance, 1);
 				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
@@ -172,7 +173,7 @@ void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softeni
 
 	glm::dvec3 delta = massCenter - p.position;
 	double r = glm::length(delta);
-	double G = 6.67408e-11;
+	double G = -6.67408e-11;
 
 	if (p.position != particle.position && r > 0) {
 		if (r < 2 * h) {
@@ -400,3 +401,19 @@ void Node::clear()
 	}
 }
 
+
+bool Node::isInside(Particle& p){
+	if (p.position.x > center.x + radius || p.position.x < center.x - radius)
+	{
+		return false;
+	}
+	if (p.position.y > center.y + radius || p.position.y < center.y - radius)
+	{
+		return false;
+	}
+	if (p.position.z > center.z + radius || p.position.z < center.z - radius)
+	{
+		return false;
+	}
+	return true;
+}
