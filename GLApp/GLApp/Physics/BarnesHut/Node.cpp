@@ -131,9 +131,9 @@ void Node::gravity(Particle& p, glm::dvec3& force, double softening, double a, d
 	}
 }
 
-double Node::cubicSplineKernel(double r, double h)
+double Node::cubicSplineKernel(double r, double h) 
 {
-	double pi = 3.14159265359;
+	const double pi = 3.14159265359;
 	const double alpha_3d = 1.0 / (pi * h * h * h);
 	double q = r / h;
 	if (q < 1.0) {
@@ -145,92 +145,65 @@ double Node::cubicSplineKernel(double r, double h)
 	return 0.0;
 }
 
-double Node::computeDensity(Particle& p, double h) 
-{
-	if (isLeaf)
-	{
-		double density = 0;
+
+double Node::computeDensity(Particle& p, double h) {
+	double density = 0.0;
+	if (isLeaf) {
 		double r = glm::length(p.position - particle.position);
-		if (r < 2 * h)
-		{
-			density = particle.mass * cubicSplineKernel(r, h);
+		if (r < 2 * h) {
+			density += particle.mass * cubicSplineKernel(r, h);
 		}
-		return density;
 	}
-	else
-	{
-		double density = 0;
-		for (Node* child : child)
-		{
-			if (child != nullptr)
-			{
-				double r = glm::length(p.position - child->massCenter);
-				if ((r - child->radius * 2) < 2 * h)
-				{
-					density += child->computeDensity(p, h);
-				}
+	else {
+		for (Node* child : child) {
+			if (child != nullptr) {
+				density += child->computeDensity(p, h);
 			}
 		}
-		return density;
 	}
-} 
+	return density;
+}
 
-
-void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations)
+void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations) 
 {
-	double h = 3e19; // Glättungs- rsdius/mittel
-	double k = 1e25; // Steifheitskonstante für Druck
-	double rho0 = 2.4e-20; // Ruhe- oder Referenzdichte
+	double h = 0.5e19; // Glättungsradius
+	double k = 5e45; // Steifheitskonstante für Druck
+	double rho0 = 2.4e-23; // Ruhe- oder Referenzdichte
 
 	glm::dvec3 delta = massCenter - p.position;
 	double r = glm::length(delta);
 	double G = 6.67408e-11;
 
-	glm::dvec3 pressureForce = glm::dvec3(0.0);
-
-	if (p.position != particle.position && r > 0)
-	{
-
-		if (r < 2 * h)
-		{
+	if (p.position != particle.position && r > 0) {
+		if (r < 2 * h) {
 			// Dichte berechnen
 			double density_i = root->computeDensity(p, h);
 			double density_j = root->computeDensity(particle, h);
 
-			if (density_i != 0 && density_j != 0)
-			{
-				// Druck berechnen
-				double pressure_i = k * (density_i - rho0);
-				double pressure_j = k * (density_j - rho0);
+			// Druck berechnen
+			double pressure_i = k * (density_i - rho0);
+			double pressure_j = k * (density_j - rho0);
 
-				// Gradient der Kernel-Funktion
-				glm::dvec3 gradKernel = glm::normalize(delta) * cubicSplineKernel(r, h);
+			// Gradient der Kernel-Funktion
+			glm::dvec3 gradKernel = -glm::normalize(delta) * (cubicSplineKernel(r, h) / r);
 
-				// Druckkraft berechnen
-				double rawpressureForce = -((pressure_i / (density_i * density_i)) +
-					(pressure_j / (density_j * density_j)));
-				if (rawpressureForce > 0)
-				{
-					pressureForce = rawpressureForce * gradKernel;
+			// Druckkraft berechnen
+			glm::dvec3 pressureForce = -particle.mass * ((pressure_i / (density_i * density_i)) +
+				(pressure_j / (density_j * density_j))) * gradKernel;
 
-					// Kraft auf Partikel i anwenden
-					force -= particle.mass * pressureForce;
-				}
-			}
-			else
-			{
-				std::cout << "density is 0" << std::endl;
-			}
+			// Kraft auf Partikel i anwenden
+			force += pressureForce;
+			//std::cout << "pressureForce: " << pressureForce.x << " " << pressureForce.y << " " << pressureForce.z << std::endl;
 		}
 
 		// Gravitationskraft
-		double forceMagnitude = (G * mass * p.mass) / (r * r + softening * softening);
-		glm::dvec3 gravityForce = forceMagnitude * glm::normalize(delta);
+		glm::dvec3 gravityForce = (G * mass * p.mass) / (r * r + softening * softening) * glm::normalize(delta);
 		force += gravityForce;
 	}
 
 	calculations++;
 }
+
 
 glm::dvec3 Node::calcForce(Particle& p, Node* root, double softening,double a, double& potentialEngergy, double& calculations)
 {
