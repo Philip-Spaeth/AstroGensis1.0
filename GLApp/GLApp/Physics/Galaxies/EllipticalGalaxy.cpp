@@ -1,18 +1,21 @@
 
-#include "EllipticalGalaxy.h"
+/*#include "EllipticalGalaxy.h"
 
 void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double size, std::vector<Particle>& particles)
 {
 
 	int particleSize = endIndex + 1;
 
-	double galaxyRadius = 1e21; // Radius der kugelf�rmigen Galaxie
+	double galaxyRadius = 1e21; // Radius der kugelf�rmigen Galaxie
+
+	double totalMass = 1e40; // Gesamtmasse der Galaxie
+	double mass = totalMass / particleSize; // Masse eines einzelnen Partikels
 
 	double starSpeed = 1;
 
 	int i = 0;
 
-	// Erstellen einer kugelf�rmigen Galaxie
+	// Erstellen einer kugelf�rmigen Galaxie
 	for (int j = startIndex; j != endIndex; j++)
 	{
 		// Mass Sagittarius A
@@ -20,18 +23,20 @@ void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm
 		{
 			particles[j].position = position;
 			particles[j].velocity = velocity;
-			particles[j].mass = 1e36;
-			particles[j].radius = 2;
+			particles[j].mass = totalMass / particleSize;
+			particles[j].radius = 1;
 			particles[j].color = glm::vec3(1, 1, 1);
 		}
 		else
 		{
 			double theta = physics.random(0, glm::pi<double>());
-			double particles[j]. = physics.random(0, 2 * glm::pi<double>());
-			double r = physics.random(0, physics.random(0, galaxyRadius));
+			particles[j].angle = physics.random(0, 2 * glm::pi<double>());
+			//linier distribution
+			double scaledI = i / (double)particleSize;
+			double r = galaxyRadius * std::pow(scaledI, 1.0 / 3.0);
 
-			double x = r * std::sin(theta) * std::cos(phi);
-			double y = r * std::sin(theta) * std::sin(phi);
+			double x = r * std::sin(theta) * std::cos(particles[j].angle);
+			double y = r * std::sin(theta) * std::sin(particles[j].angle);
 			double z = 0;
 			double distanceToCenter = glm::abs(glm::length(glm::dvec3(x, y, z)));
 			if (distanceToCenter == 0)
@@ -39,64 +44,71 @@ void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm
 				distanceToCenter = 1;
 			}
 			particles[j].position = glm::dvec3(x, y, z) + position;
-			particles[j].mass = 1e36;
-			particles[j].radius = 0.1;
+
+			double v = 0;
+			double massInSphere = 0;
+			massInSphere = totalMass * distanceToCenter / galaxyRadius;
+			//double mass = octree.calculateTotalMassInSphere(position, distanceToCenterb);
+			v = std::sqrt(physics.G * massInSphere / distanceToCenter);
+			// No need for critical section here
+			particles[j].velocity = glm::dvec3(-v * std::sin(particles[j].angle), v * std::cos(particles[j].angle), 0) + velocity;
+
+			particles[j].mass = totalMass / particleSize;
+			particles[j].radius = 1;
 			//make the stars in the center brighter
-			double brightness = 1 - (particles[j].CalculateDistance(particles[startIndex]) / galaxyRadius);
-			particles[j].color = glm::vec3(brightness - 0.1, brightness - 0.1, brightness);
+			//double brightness = 1 - (particles[j].CalculateDistance(particles[startIndex]) / galaxyRadius);
+			//particles[j].color = glm::vec3(brightness - 0.1, brightness - 0.1, brightness);
 		}
 
 		i++;
 	}
+}*/
 
-	//calc the center of mass of the galaxy
-	glm::dvec3 centerOfMass = glm::dvec3(0, 0, 0);
-	double totalMassGalaxy = 0;
-	for (int j = startIndex; j != endIndex; j++)
-	{
-		centerOfMass += particles[j].position * particles[j].mass;
-		totalMassGalaxy += particles[j].mass;
-	}
-	centerOfMass /= totalMassGalaxy;
+#include "EllipticalGalaxy.h"
 
-	// Calculate velocity
-	for (int j = startIndex; j < endIndex; j++)
-	{
-		double distanceToCenter = glm::length(particles[j].position - centerOfMass);
-		if (distanceToCenter != 0)
-		{
-			double v = 0;
-			v = std::sqrt(physics.G * calcMassInRadius(startIndex, endIndex, position, rotation, particles, distanceToCenter) / distanceToCenter);
-
-			// No need for critical section here
-			particles[j].velocity = glm::dvec3(-v * std::sin(particles[j].angle), v * std::cos(particles[j].angle), 0) + velocity;
-		}
-	}
-}
-
-double SpiralGalaxy::calcMassInRadius(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, std::vector<Particle>& particles, double r)
+void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double size, std::vector<Particle>& particles)
 {
-	//calc mass
-	double mass = 0;
+    int particleSize = endIndex + 1;
 
-	for (int i = startIndex; i < endIndex; i++)
-	{
-		double distanceToCenter = glm::length(particles[i].position - position);
+    double galaxyRadius = 1e21; // Radius der Galaxie
+    double totalMass = 1e40; // Gesamtmasse der Galaxie
+    double mass = totalMass / particleSize; // Masse eines einzelnen Partikels
 
-		// Check if the particle is within the specified radius
-		if (distanceToCenter <= r)
-		{
-			mass += particles[i].mass;
-		}
-	}
+    // Erstellen einer elliptischen Galaxie
+    for (int j = startIndex; j != endIndex; j++)
+    {
+        // Zentrales massives Objekt (z.B. schwarzes Loch)
+        if (j == startIndex)
+        {
+            particles[j].position = position;
+            particles[j].velocity = velocity;
+            particles[j].mass = totalMass / particleSize * 10; // Größere Masse für das zentrale Objekt
+            particles[j].radius = 1;
+            particles[j].color = glm::vec3(1, 1, 1);
+        }
+        else
+        {
+            double theta = physics.random(0, glm::pi<double>());
+            double phi = physics.random(0, 2 * glm::pi<double>());
 
+            // Modifizierte Dichteverteilung für eine elliptische Galaxie
+            double scaledI = std::pow((double)(j - startIndex) / (particleSize - startIndex), 1.0 / 3.0);
+            double r = galaxyRadius * scaledI;
 
-	//calc p for v = sqrt(G*(4/3*pi*r^2*p))
-	//p = m / V
-	double V = (static_cast<double>(3) / 4) * 3.14 * (r * r * r);
-	double p = mass / V;
+            double x = r * std::sin(theta) * std::cos(phi);
+            double y = r * std::sin(theta) * std::sin(phi);
+            double z = r * std::cos(theta); // Für eine dreidimensionale Struktur
 
-	//print out p
-	//std::cout << p << std::endl;
-	return mass;
+            particles[j].position = glm::dvec3(x, y, z) + position;
+
+            // Geschwindigkeitsberechnung basierend auf der Gravitation
+            double distanceToCenter = glm::length(particles[j].position - position);
+            double massInSphere = totalMass * std::pow(scaledI, 3); // Masse innerhalb der Kugel
+            double v = std::sqrt(physics.G * massInSphere / distanceToCenter);
+
+            particles[j].velocity = glm::dvec3(-v * std::sin(phi), v * std::cos(phi), 0) + velocity;
+            particles[j].mass = mass;
+            particles[j].radius = 1;
+        }
+    }
 }

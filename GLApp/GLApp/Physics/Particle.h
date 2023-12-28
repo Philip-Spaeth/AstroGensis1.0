@@ -17,6 +17,10 @@ public:
     glm::dvec3 velocity = { 0,0,0 };
     glm::dvec3 force = { 0,0,0 };
     double mass;
+    //SPH variables
+    double density = 0;
+    double pressure = 0;
+    double halfsize = 0;
 
     // RungeKuta variables
     glm::dvec3 YnVelocity = { 0,0,0 };

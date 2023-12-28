@@ -210,8 +210,6 @@ void Engine::update(int index)
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
 		showDarkMatter = !showDarkMatter;
 	}
-
-
 }
 
 void Engine::renderParticles()
@@ -258,7 +256,7 @@ void Engine::renderParticles()
             glDrawArrays(GL_POINTS, 0, 1);
         }
     }
-    if (tracks == false)
+    if (true)
     {
         for (int p = 0; p < positions.size(); p++)
         {
@@ -293,7 +291,6 @@ void Engine::renderParticles()
             glDrawArrays(GL_POINTS, 0, 1);
         }
     }
-
     // VAO l�sen
     glBindVertexArray(0);
 }

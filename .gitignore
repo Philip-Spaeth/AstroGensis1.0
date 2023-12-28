@@ -11,7 +11,7 @@
 *.user
 *.userosscache
 *.sln.docstates
-build/*
+/build/
 
 #delete the Data 
 *.txt
@@ -369,3 +369,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+Doku/doku.docx

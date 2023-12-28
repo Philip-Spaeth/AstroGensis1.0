@@ -26,33 +26,46 @@ public:
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
 
-    static const int numTimeSteps = 100;
-    static const int particlesSize = 10000;
+    static const bool SPH = true;
+    static const bool PlummerSoftening = true;
+
+    static const bool darkEnergy = false;
+    static const int HubbleConstant = 70;
+
+    static const int numTimeSteps = 10000;
+    static const int particlesSize = 1000;
 
     // calculation Method:
-    int calculationMethod = 3;
+    int calculationMethod = 0;
     
     // one hour = 3600
-    // one day = 86400
+    // one day = 8ss6400
     // one year = 31536000
     // big galaxy = 1e16
     // galaxy = 1e13
 
     //the time per frame
+    const double deltaTime = 1e13;
 
-    const double deltaTime = 1e14;
-
-
+    //barnes hut
     const double theta = 1;
-    const double maxDepth = 100;
+    const double maxDepth = 30;
+    //Color 
+    static const bool color = false;
+    static const int colorDepth = 5;
+    const double minMass = 0;
+    const double maxMass = 1e38;
+    
+    //Plummer Softening 
+    const double softening = 1e18;
+    const double a = 1e100;
+
+
+    double maxDistance = 0;
 
     //Physikalische Konstanten
     const double G = 6.67430e-11;
-    // softening factor
-    //  galaxy = 1e18
-    // sun system = 0.2
-    const double softening = 1e12;
-    double maxDistance = 0;
+
 
     std::vector<Particle> currentParticles;
 private:

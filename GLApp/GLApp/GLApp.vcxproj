@@ -81,7 +81,8 @@
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>D:\Git-Repos\simulation\External Libraries\GLM;$(LibraryPath)</LibraryPath>
+    <LibraryPath>D:\Git-Repos\simulation\External Libraries\GLM;C:\3 Schule\Next\External Libraries\Boost\libs;$(LibraryPath)</LibraryPath>
+    <ExternalIncludePath>C:\3 Schule\Next\External Libraries\Boost;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

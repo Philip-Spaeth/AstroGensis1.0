@@ -10,19 +10,20 @@ Octree::Octree(glm::dvec3 center, double radius, double theta, int maxDepth)
 	this->center = center;
 	this->radius = radius;
 	this->theta = theta;
-	root = new Node(center, radius, theta, 0, maxDepth);
+	root = new Node(center, radius, theta, 0, maxDepth, false,new glm::vec3(1,0,0));
 }
 
 Octree::~Octree() {
 }
 
-glm::dvec3 Octree::calculateForces(Particle& particle, double softening, double& potentialEngergy, double& calculations)
+glm::dvec3 Octree::calculateForces(Particle& particle, double softening, double a, double& potentialEngergy, double& calculations)
 {
-	if (particle.mass == 1e41)
-	{
-		return { 0,0,0 };
-	}
-	return root->calcForce(particle, softening, potentialEngergy, calculations);
+	return root->calcForce(particle,root, softening,a, potentialEngergy, calculations);
+}
+
+void Octree::setColors()
+{
+	root->setColor();
 }
 
 void Octree::buildTree(std::vector<Particle>& particles) 
@@ -59,4 +60,55 @@ void Octree::insert(std::vector<Particle>& particles, int start, int end)
 void Octree::clearTree() 
 {
 	root->clear();
+}
+
+double Octree::calculateTotalMassInSphere(Node* currentNode, glm::dvec3 targetPosition, double radius)
+{
+	double totalMass = 0.0;
+	int maxDepth = 9;
+
+	// Calculate the distance from the target position to the center of the current cube
+	double distanceToCenter = glm::length(currentNode->center - targetPosition);
+
+	if (currentNode->isLeaf)
+	{
+		// Cube is a leaf, check if it is inside the sphere
+		if (distanceToCenter + currentNode->radius < radius && currentNode->index < maxDepth)
+		{
+			// Cube is inside the sphere, add its mass to the total mass
+			return currentNode->mass;
+		}
+		else
+		{
+			// Cube is outside the sphere, no need to check further
+			return 0.0;
+		}
+	}
+	if (currentNode->index > maxDepth)
+	{
+		// Cube is not a leaf, check if it is far enough away from the target position
+		if (distanceToCenter + currentNode->radius < radius * currentNode->theta)
+		{
+			// Cube is far enough away, add its mass to the total mass
+			return currentNode->mass;
+		}
+	}
+	else
+	{
+		// Cube intersects with the sphere, check its children
+		for (Node* child : currentNode->child)
+		{
+			if (child != nullptr)
+			{
+				totalMass += calculateTotalMassInSphere(child, targetPosition, radius);
+			}
+		}
+	}
+
+	return totalMass;
+}
+
+double Octree::calculateTotalMassInSphere(glm::dvec3 targetPosition, double radius)
+{
+	return calculateTotalMassInSphere(root, targetPosition, radius);
 }

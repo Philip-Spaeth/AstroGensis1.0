@@ -1,5 +1,79 @@
 #include "SpiralGalaxy.h"
 #include <omp.h>
+#include <iostream>
+
+using namespace std;
+
+void SpiralGalaxy::ellipticalOrbit(Particle& p, double r, double angle)
+{
+	double ellipticity = 0.1;
+	double mainAxis = r;
+	double minorAxis = r * (ellipticity + 1);
+
+	double a = physics.random(0, 2 * 3.14);
+	double x = mainAxis * std::cos(a);
+	double y = minorAxis * std::sin(a);
+
+	p.position = glm::dvec3(x * std::cos(angle) - y * sin(angle), x * std::sin(angle) + y * cos(angle), 0);
+
+	double distanceToCenter = glm::abs(glm::length(p.position));
+	if (distanceToCenter == 0)
+	{
+		distanceToCenter = 1;
+	}
+
+	double v = 0;
+	v = std::sqrt(physics.G * 1e40 / distanceToCenter);
+
+	//velocity tangent to the orbit 
+	glm::dvec3 direction = glm::dvec3(-p.position.y, p.position.x, 0);
+	direction = glm::normalize(direction);
+	p.velocity = direction * v;
+}
+
+void SpiralGalaxy::densityWaveSb(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double size, std::vector<Particle>& particles)
+{
+	int particleSize = endIndex + 1;
+
+	double galaxyRadius = 1e21; // Radius der kugelförmigen Galaxie
+
+	double totalMass = 1e40; // Gesamtmasse der Galaxie
+	double mass = totalMass / particleSize; // Masse eines einzelnen Partikels
+
+	int i = 0;
+
+	// Erstellen einer kugelförmigen Galaxie
+	for (int j = startIndex; j != endIndex; j++)
+	{
+		// Mass Sagittarius A
+		if (j == startIndex)
+		{
+			particles[j].position = position;
+			particles[j].velocity = velocity;
+			particles[j].mass = 1e40;
+			particles[j].radius = 1;
+			particles[j].color = glm::vec3(1, 1, 1);
+		}
+		else
+		{
+			double r = galaxyRadius * std::pow(i / (double)particleSize, 1.0);
+			particles[j].angle = sqrt(r) * 2.0 * 3.14;
+
+			//denisty wave angle with A and k
+			double A = 1;
+			double alpha = (i / (double)particleSize) * 2 * 3.14 * A;
+
+			ellipticalOrbit(particles[j], r, alpha);
+
+			particles[j].mass = 1e36;
+			particles[j].radius = 1;
+			particles[j].darkMatter = false;
+			particles[j].color = glm::vec3(1,1,1);
+		}
+		i++;
+	}
+}
+
 
 void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double size, std::vector<Particle>& particles)
 {
