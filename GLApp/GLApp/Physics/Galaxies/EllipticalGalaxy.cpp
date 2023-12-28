@@ -1,5 +1,5 @@
 
-/*#include "EllipticalGalaxy.h"
+#include "EllipticalGalaxy.h"
 
 void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double size, std::vector<Particle>& particles)
 {
@@ -18,6 +18,7 @@ void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm
 	// Erstellen einer kugelf�rmigen Galaxie
 	for (int j = startIndex; j != endIndex; j++)
 	{
+		//particles[j].velocity = glm::dvec3(0.1, 0.1, 0.1);
 		// Mass Sagittarius A
 		if (j == startIndex)
 		{
@@ -62,8 +63,9 @@ void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm
 
 		i++;
 	}
-}*/
+}
 
+/*
 #include "EllipticalGalaxy.h"
 
 void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double size, std::vector<Particle>& particles)
@@ -112,3 +114,4 @@ void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm
         }
     }
 }
+*/

@@ -27,12 +27,12 @@ public:
     double random(double min, double max);
 
     static const bool SPH = true;
-    static const bool PlummerSoftening = true;
+    static const bool PlummerSoftening = false;
 
     static const bool darkEnergy = false;
     static const int HubbleConstant = 70;
 
-    static const int numTimeSteps = 10000;
+    static const int numTimeSteps = 1000;
     static const int particlesSize = 1000;
 
     // calculation Method:

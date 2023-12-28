@@ -109,7 +109,7 @@ void Node::gravity(Particle& p, glm::dvec3& force, double softening, double a, d
 				double distance = r * r + epsilon0 * epsilon0;
 
 				//normal direct force
-				double forceMagnitude = (G * mass * p.mass) / std::pow(distance, 3 / 2);
+				double forceMagnitude = G*((mass * p.mass) / std::pow(distance, 3 / 2));
 				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
 				Particle p2 = Particle(massCenter, mass);
 				potentialEngergy += p.calcPotentialEnergie(p2, G, epsilon0, 0);
@@ -121,7 +121,7 @@ void Node::gravity(Particle& p, glm::dvec3& force, double softening, double a, d
 				double distance = r * r + softening * softening;
 				//double distance = r * r;
 				//normal direct force
-				double forceMagnitude = (G * mass * p.mass) / std::pow(distance, 1);
+				double forceMagnitude = G*((mass * p.mass) / std::pow(distance, 2));
 				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
 				Particle p2 = Particle(massCenter, mass);
 				potentialEngergy += p.calcPotentialEnergie(p2, G, softening, 0);
@@ -167,16 +167,18 @@ double Node::computeDensity(Particle& p, double h) {
 
 void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations) 
 {
-	double h = 0.5e19; // Glättungsradius
+	double h = 3e19; // Glättungsradius
+	//double h = 3e40;
 	double k = 5e45; // Steifheitskonstante für Druck
-	double rho0 = 2.4e-23; // Ruhe- oder Referenzdichte
+	double rho0 = 2.4e23; // Ruhe- oder Referenzdichte
 
 	glm::dvec3 delta = massCenter - p.position;
 	double r = glm::length(delta);
-	double G = -6.67408e-11;
+	double G = 6.67408e-11;
 
 	if (p.position != particle.position && r > 0) {
 		if (r < 2 * h) {
+		//if (true) {
 			// Dichte berechnen
 			double density_i = root->computeDensity(p, h);
 			double density_j = root->computeDensity(particle, h);
@@ -189,16 +191,29 @@ void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softeni
 			glm::dvec3 gradKernel = -glm::normalize(delta) * (cubicSplineKernel(r, h) / r);
 
 			// Druckkraft berechnen
-			glm::dvec3 pressureForce = -particle.mass * ((pressure_i / (density_i * density_i)) +
+			glm::dvec3 pressureForce = particle.mass * ((pressure_i / (density_i * density_i)) +
 				(pressure_j / (density_j * density_j))) * gradKernel;
 
 			// Kraft auf Partikel i anwenden
+			//force += pressureForce;
+			Physics physics;
+			glm::dvec3 gravityForce = G*((mass * p.mass) / (r * r + softening * softening)) * glm::normalize(delta);
+			gravityForce = gravityForce + pressureForce;
+
+			//gravityForce = gravityForce * -1.0;
+			//p.velocity -= gravityForce;
+			//p.velocity = p.velocity * 0.0;
 			force += pressureForce;
 			//std::cout << "pressureForce: " << pressureForce.x << " " << pressureForce.y << " " << pressureForce.z << std::endl;
 		}
 
 		// Gravitationskraft
-		glm::dvec3 gravityForce = (G * mass * p.mass) / (r * r + softening * softening) * glm::normalize(delta);
+		glm::dvec3 gravityForce = G*((mass * p.mass) / (r * r + softening * softening)) * glm::normalize(delta);
+
+		//double distance = r * r + softening * softening;
+		//double forceMagnitude = G*((mass * p.mass) / std::pow(distance, 2));
+		//		glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
+		//force += glm::dvec3(0,0,0);
 		force += gravityForce;
 	}
 
@@ -231,7 +246,7 @@ glm::dvec3 Node::calcForce(Particle& p, Node* root, double softening,double a, d
 		// Calculate height of the node
 		double d = radius * 2; 
 
-		if (d / r < theta)
+		if (d / r > theta)
 		{
 			if (Physics::SPH)
 			{
@@ -256,6 +271,18 @@ glm::dvec3 Node::calcForce(Particle& p, Node* root, double softening,double a, d
 			}
 		}
 	}
+
+	/* if(Physics::SPH){
+		double h = 0.5e19; // Glättungsradius
+		glm::dvec3 delta = massCenter - p.position;
+		double r = glm::length(delta);
+
+		if(r < 2*h){
+			p.velocity *- 1.0;
+		}
+	} */
+	//p.velocity *- 1.0;
+
 	return force;
 }
 
