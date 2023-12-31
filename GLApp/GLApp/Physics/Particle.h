@@ -19,8 +19,6 @@ public:
     double mass;
     //SPH variables
     double density = 0;
-    double pressure = 0;
-    double halfsize = 0;
 
     // RungeKuta variables
     glm::dvec3 YnVelocity = { 0,0,0 };
@@ -42,6 +40,7 @@ public:
     //variables for render
     double radius;
     glm::vec3 color;
+    void setColor();
 
 
     //SystemInit

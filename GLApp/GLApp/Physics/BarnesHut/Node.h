@@ -20,7 +20,6 @@ public:
 	//SPH
 	void gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
 	double cubicSplineKernel(double r, double h);
-	double computeDensity(Particle& p, double h);
 
 	void gravity(Particle& p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
     void calcMass();
@@ -38,6 +37,9 @@ public:
 	double mass = 0;
 	double radius = 0;
 	double theta = 0;
+	//SPH
+	double density = 0;
+	void calcDensity(Particle& p,double h);
 
 	bool renderTree = false;
 

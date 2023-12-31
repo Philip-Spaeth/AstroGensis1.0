@@ -16,6 +16,7 @@ public:
     void setColors();
     double calculateTotalMassInSphere(glm::dvec3 targetPosition, double radius);
     double calculateTotalMassInSphere(Node* currentNode, glm::dvec3 targetPosition, double radius);
+    void calcdensity(Particle& p,double h);
     glm::dvec3 calculateForces(Particle& particle, double softening, double a, double& potentialEngergy, double& calculations);
     void clearTree();
 private:

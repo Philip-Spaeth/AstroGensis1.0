@@ -76,8 +76,20 @@ bool Physics::Calc()
             octree->clearTree();
             //build a new tree
             octree->buildTree(currentParticles);
-            //set color
-            if(color) octree->setColors();
+            //SPH density
+            if (SPH)
+            {
+                for (int p = 0; p < currentParticles.size(); p++)
+                {
+                    currentParticles[p].density = 0;
+                    octree->calcdensity(currentParticles[p], h);
+                    //color based on density
+                    if (color) currentParticles[p].setColor();
+
+                }
+            }
+
+            //rotation and masscurves
             //fileManager->saveRotationCurve(currentParticles, "");
             //fileManager->saveMassCurve(currentParticles, "");
 
@@ -92,8 +104,18 @@ bool Physics::Calc()
             octree->clearTree();
             //build a new tree
             octree->buildTree(currentParticles);
-            //set color
-            if (color) octree->setColors();
+            //SPH density
+            if (SPH)
+            {
+                for (int p = 0; p < currentParticles.size(); p++)
+                {
+					currentParticles[p].density = 0;
+					octree->calcdensity(currentParticles[p], h);
+                    //color based on density
+                    if (color) currentParticles[p].setColor();
+
+				}
+            }
 
             //expansion of the universe
             if (darkEnergy)

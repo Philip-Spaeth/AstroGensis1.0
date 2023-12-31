@@ -25,6 +25,10 @@ void Octree::setColors()
 {
 	root->setColor();
 }
+void Octree::calcdensity(Particle& p, double h)
+{
+	root->calcDensity(p,h);
+}
 
 void Octree::buildTree(std::vector<Particle>& particles) 
 {

@@ -21,51 +21,47 @@ class Physics {
 public:
     Physics();
 
-    bool Calc();
-
-    void setRandomSeed(unsigned int seed);
-    double random(double min, double max);
-
-    static const bool SPH = true;
-    static const bool PlummerSoftening = true;
-
-    static const bool darkEnergy = false;
-    static const int HubbleConstant = 70;
-
-    static const int numTimeSteps = 10000;
-    static const int particlesSize = 1000;
-
-    // calculation Method:
-    int calculationMethod = 0;
-    
-    // one hour = 3600
-    // one day = 8ss6400
-    // one year = 31536000
-    // big galaxy = 1e16
-    // galaxy = 1e13
+    static const int numTimeSteps = 100;
+    static const int particlesSize = 10000;
 
     //the time per frame
     const double deltaTime = 1e13;
 
-    //barnes hut
-    const double theta = 1;
-    const double maxDepth = 30;
-    //Color 
-    static const bool color = false;
-    static const int colorDepth = 5;
-    const double minMass = 0;
-    const double maxMass = 1e38;
-    
-    //Plummer Softening 
+    // calculation Method:
+    int calculationMethod = 1;
+
+    //Softening
+    static const bool PlummerSoftening = true;
     const double softening = 1e18;
     const double a = 1e100;
 
+    //barnes hut
+    const double theta = 1;
+    const double maxDepth = 30;
 
+    //SPH
+    static const bool SPH = true;
+    const double h = 1e19;
+    const double k = 1e45;
+    const double rh0 = 1e-23;
+
+    //dark Energy / Cosmological Constant
+    static const bool darkEnergy = false;
+    static const int HubbleConstant = 70;
+
+    //Color of the Particles (only for OpenGL)
+    static const bool color = true;
+
+    //for the size of the octree
     double maxDistance = 0;
 
     //Physikalische Konstanten
     const double G = 6.67430e-11;
 
+    bool Calc();
+
+    void setRandomSeed(unsigned int seed);
+    double random(double min, double max);
 
     std::vector<Particle> currentParticles;
 private:
@@ -80,4 +76,4 @@ private:
     void calculateGravitation(int timeStap, int start, int stop);
 };
 
-#endif // PHYSICS_H
+#endif

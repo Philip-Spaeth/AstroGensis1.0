@@ -46,47 +46,6 @@ void Node::color(glm::vec3 color)
 
 void Node::setColor()
 {
-	if (index >= Physics::colorDepth)
-	{
-		//if the density is high make it more red and bright if it is low make it more blue and dark
-		double mass = 0;
-		if (isLeaf)
-		{
-			mass = particle.mass;
-		}
-		else
-		{
-			mass = this->mass;
-		}
-		Physics physics;
-		double brightness = (mass - physics.minMass) / (physics.maxMass - physics.minMass);
-		double red = brightness;
-		double green = 0;
-		double blue = 1 - brightness;
-		double smoth = 0.9;
-		//make the color more smooth
-		red = red + smoth;
-		green = 0;
-		blue = blue + smoth;
-		//set the color to all the particles in the childnodes
-		for (Node* child : child)
-		{
-			if (child != nullptr)
-			{
-				child->color(glm::vec3(red,green,blue));
-			}
-		}
-	}
-	else
-	{
-		for (Node* child : child)
-		{
-			if (child != nullptr)
-			{
-				child->setColor();
-			}
-		}
-	}
 }
 
 void Node::gravity(Particle& p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations)
@@ -146,55 +105,70 @@ double Node::cubicSplineKernel(double r, double h)
 	return 0.0;
 }
 
+void Node::calcDensity(Particle& p, double h)
+{
+	//choose the node in wich the particle is in and the radius of the node is the closest to h and than save the density of the node in the particle
+	if (radius < h)
+	{
+		p.density = density;
+	}
+	else
+	{
+		// choose the child wich is the closest to the particle
+		int quadrant = 0;
+		if (p.position.x > center.x)
+		{
+			quadrant += 1;
+		}
+		if (p.position.y > center.y)
+		{
+			quadrant += 2;
+		}
+		if (p.position.z > center.z)
+		{
+			quadrant += 4;
+		}
 
-double Node::computeDensity(Particle& p, double h) {
-	double density = 0.0;
-	if (isLeaf) {
-		double r = glm::length(p.position - particle.position);
-		if (r < 2 * h) {
-			density += particle.mass * cubicSplineKernel(r, h);
+		if (child[quadrant] != nullptr)
+		{
+			child[quadrant]->calcDensity(p, h);
+		}
+		else
+		{
+			p.density = density;
 		}
 	}
-	else {
-		for (Node* child : child) {
-			if (child != nullptr) {
-				density += child->computeDensity(p, h);
-			}
-		}
-	}
-	return density;
 }
 
 void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations) 
 {
-	double h = 0.5e19; // Glättungsradius
-	double k = 5e45; // Steifheitskonstante für Druck
-	double rho0 = 2.4e-23; // Ruhe- oder Referenzdichte
+	Physics physics;
+	double h = physics.h; // Glättungsradius
+	double k = physics.k; // Steifheitskonstante für Druck
+	double rho0 = physics.rh0; // Ruhe- oder Referenzdichte
 
 	glm::dvec3 delta = massCenter - p.position;
 	double r = glm::length(delta);
-	double G = -6.67408e-11;
+	double G = 6.67408e-11;
 
-	if (p.position != particle.position && r > 0) {
-		if (r < 2 * h) {
+	if (r > 0) 
+	{
+		if (r < 2 * h) 
+		{
 			// Dichte berechnen
-			double density_i = root->computeDensity(p, h);
-			double density_j = root->computeDensity(particle, h);
+			double density_i = p.density;
 
 			// Druck berechnen
 			double pressure_i = k * (density_i - rho0);
-			double pressure_j = k * (density_j - rho0);
 
 			// Gradient der Kernel-Funktion
-			glm::dvec3 gradKernel = -glm::normalize(delta) * (cubicSplineKernel(r, h) / r);
+			glm::dvec3 gradKernel = glm::normalize(delta) * (cubicSplineKernel(r, h) / r);
 
-			// Druckkraft berechnen
-			glm::dvec3 pressureForce = -particle.mass * ((pressure_i / (density_i * density_i)) +
-				(pressure_j / (density_j * density_j))) * gradKernel;
-
+			//(original)
+			double pressureForce = particle.mass * (pressure_i / (density_i * density_i));
+			glm::dvec3 vecPressureForce = pressureForce * gradKernel;
 			// Kraft auf Partikel i anwenden
-			force += pressureForce;
-			//std::cout << "pressureForce: " << pressureForce.x << " " << pressureForce.y << " " << pressureForce.z << std::endl;
+			force += vecPressureForce;
 		}
 
 		// Gravitationskraft
@@ -267,7 +241,6 @@ void Node::insert(Particle& p)
 		{
 			mass = p.mass;
 			particle = p;
-			p.halfsize = radius;
 			particleColor = &p.color;
 			isLeaf = true;
 			massCenter = p.position;
@@ -357,10 +330,12 @@ void Node::insert(Particle& p)
 	else
 	{
 		mass += p.mass;
-		p.halfsize = radius;
 		massCenter = (massCenter * (mass - p.mass) + p.position * p.mass) / mass;
 		//std::cout << "max depth reached in index: " << index << std::endl;
 	}
+	//calc the density of the node
+	density = mass / (4.0 / 3.0 * 3.14159265359 * radius * radius * radius);
+
 	//std::cout << "inserted particle " << "in node " << index <<"  mass: " << mass << "radius: "<< radius << std::endl;
 }
 

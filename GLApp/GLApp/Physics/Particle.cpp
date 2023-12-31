@@ -203,3 +203,37 @@ double Particle::CalculateDistance(const Particle& other) const {
     glm::dvec3 delta = other.position - position;
     return glm::length(delta);
 }
+
+void Particle::setColor()
+{
+    //set the color based on the density
+
+    double maxDensity = 1e-20;
+    double minDensity = 1e-25;
+
+    double density = this->density;
+
+    if (density > maxDensity)
+    {
+		density = maxDensity;
+	}
+    else if (density < minDensity)
+    {
+		density = minDensity;
+	}
+    double colorValue = (density - minDensity) / (maxDensity - minDensity);
+
+    if (colorValue > 1)
+    {
+		colorValue = 1;
+	}
+    else if (colorValue < 0)
+    {
+		colorValue = 0;
+	}
+
+    //that it gets brither in the middle
+    double colorSoftening = 0;
+
+	color = glm::dvec3(colorValue + colorSoftening, colorValue, 1 - colorValue + colorSoftening);
+}

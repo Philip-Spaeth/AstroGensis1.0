@@ -1,5 +1,4 @@
-
-/*#include "EllipticalGalaxy.h"
+#include "EllipticalGalaxy.h"
 
 void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double size, std::vector<Particle>& particles)
 {
@@ -59,11 +58,10 @@ void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm
 			//double brightness = 1 - (particles[j].CalculateDistance(particles[startIndex]) / galaxyRadius);
 			//particles[j].color = glm::vec3(brightness - 0.1, brightness - 0.1, brightness);
 		}
-
 		i++;
 	}
-}*/
-
+}
+/*
 #include "EllipticalGalaxy.h"
 
 void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double size, std::vector<Particle>& particles)
@@ -112,3 +110,4 @@ void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm
         }
     }
 }
+*/
