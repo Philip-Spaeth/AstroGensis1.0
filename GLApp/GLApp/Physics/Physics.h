@@ -42,7 +42,7 @@ public:
     //SPH
     static const bool SPH = true;
     const double h = 1e19;
-    const double k = 1e45;
+    const double k = 2e45;
     const double rh0 = 1e-23;
 
     //dark Energy / Cosmological Constant

@@ -162,7 +162,7 @@ void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softeni
 			double pressure_i = k * (density_i - rho0);
 
 			// Gradient der Kernel-Funktion
-			glm::dvec3 gradKernel = glm::normalize(delta) * (cubicSplineKernel(r, h) / r);
+			glm::dvec3 gradKernel = -glm::normalize(delta) * (cubicSplineKernel(r, h) / r);
 
 			//(original)
 			double pressureForce = particle.mass * (pressure_i / (density_i * density_i));
