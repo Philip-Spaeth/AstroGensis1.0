@@ -224,8 +224,8 @@ double Particle::CalculateDistance(const Particle& other) const {
 
 void Particle::setColor()
 {
-    double maxDensity = 5e-20;
-    double midDensity = 3e-21;
+    double maxDensity = 5e-21;
+    double midDensity = 6e-22;
     //set the color based on the density
     double r = density / midDensity;
     double g = 0;
