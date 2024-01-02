@@ -21,7 +21,7 @@ class Physics {
 public:
     Physics();
 
-    static const int numTimeSteps = 1000;
+    static const int numTimeSteps = 100;
     static const int particlesSize = 10000;
 
     //the time per frame
@@ -41,10 +41,10 @@ public:
 
     //SPH
     static const bool SPH = true;
-    const double h = 1e19;
-    //const double k = 1e46;
-    const double k = 1;
-    const double rh0 = 1e-20;
+    double h = 1e18;
+    double k = 1e45;
+    double rh0 = 1e-19;
+    double mu = 0;
 
     //dark Energy / Cosmological Constant
     static const bool darkEnergy = false;
@@ -52,6 +52,7 @@ public:
 
     //Color of the Particles (only for OpenGL)
     static const bool color = true;
+    double colorH = 1e19;
 
     //for the size of the octree
     double maxDistance = 0;

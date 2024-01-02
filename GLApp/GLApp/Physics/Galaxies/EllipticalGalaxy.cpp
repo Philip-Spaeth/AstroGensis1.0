@@ -30,9 +30,10 @@ void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm
 		{
 			double theta = physics.random(0, glm::pi<double>());
 			particles[j].angle = physics.random(0, 2 * glm::pi<double>());
+
 			//linier distribution
 			double scaledI = i / (double)particleSize;
-			double r = galaxyRadius * std::pow(scaledI, 1.0 / 3.0);
+			double r = galaxyRadius * std::pow(scaledI, 1);
 
 			double x = r * std::sin(theta) * std::cos(particles[j].angle);
 			double y = r * std::sin(theta) * std::sin(particles[j].angle);
@@ -50,8 +51,7 @@ void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm
 			//double mass = octree.calculateTotalMassInSphere(position, distanceToCenterb);
 			v = std::sqrt(physics.G * massInSphere / distanceToCenter);
 			// No need for critical section here
-			//particles[j].velocity = glm::dvec3(-v * std::sin(particles[j].angle), v * std::cos(particles[j].angle), 0) + velocity;
-			particles[j].velocity = { 0,0,0 };
+			particles[j].velocity = glm::dvec3(-v * std::sin(particles[j].angle), v * std::cos(particles[j].angle), 0) + velocity;
 			particles[j].mass = totalMass / particleSize;
 			particles[j].radius = 1;
 			//make the stars in the center brighter

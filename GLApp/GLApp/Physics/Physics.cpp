@@ -76,22 +76,30 @@ bool Physics::Calc()
             octree->clearTree();
             //build a new tree
             octree->buildTree(currentParticles);
-            //SPH density
+            
+            double mediumDensity = 0;
+            int densityN = 0;
+            //only for color
+            for (int p = 0; p < currentParticles.size(); p++)
+            {
+                currentParticles[p].density = 0;
+                //For color and SPH calculations
+                octree->calcdensity(currentParticles[p], colorH, mediumDensity, densityN);
+            }
+            //only for color
+            mediumDensity = mediumDensity / densityN;
+            for (int p = 0; p < currentParticles.size(); p++)
+            {
+                if (color) currentParticles[p].setColor(mediumDensity);
+            }
+            ///for SPH
             if (SPH)
             {
-                double mediumDensity = 0;
-                int densityN = 0;
                 for (int p = 0; p < currentParticles.size(); p++)
                 {
                     currentParticles[p].density = 0;
                     //For color and SPH calculations
                     octree->calcdensity(currentParticles[p], h, mediumDensity, densityN);
-                }
-                //only for color
-                mediumDensity = mediumDensity / densityN;
-                for (int p = 0; p < currentParticles.size(); p++)
-                {
-                    if (color) currentParticles[p].setColor(mediumDensity);
                 }
             }
 
@@ -111,22 +119,29 @@ bool Physics::Calc()
             //build a new tree
             octree->buildTree(currentParticles);
 
-            //SPH density
+            double mediumDensity = 0;
+            int densityN = 0;
+            //only for color
+            for (int p = 0; p < currentParticles.size(); p++)
+            {
+                currentParticles[p].density = 0;
+                //For color and SPH calculations
+                octree->calcdensity(currentParticles[p], colorH, mediumDensity, densityN);
+            }
+            //only for color
+            mediumDensity = mediumDensity / densityN;
+            for (int p = 0; p < currentParticles.size(); p++)
+            {
+                if (color) currentParticles[p].setColor(mediumDensity);
+            }
+            ///for SPH
             if (SPH)
             {
-                double mediumDensity = 0;
-                int densityN = 0;
                 for (int p = 0; p < currentParticles.size(); p++)
                 {
                     currentParticles[p].density = 0;
                     //For color and SPH calculations
                     octree->calcdensity(currentParticles[p], h, mediumDensity, densityN);
-                }
-                //only for color
-                mediumDensity = mediumDensity / densityN;
-                for (int p = 0; p < currentParticles.size(); p++)
-                {
-                    if (color) currentParticles[p].setColor(mediumDensity);
                 }
             }
 

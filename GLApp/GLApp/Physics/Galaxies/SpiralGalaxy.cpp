@@ -1,5 +1,3 @@
-
-
 #include "SpiralGalaxy.h"
 #include <omp.h>
 #include <iostream>
