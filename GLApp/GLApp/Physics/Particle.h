@@ -46,7 +46,7 @@ public:
     glm::vec3 color;
     //infrared
     glm::vec3 densityColor;
-    void setColor();
+    void setColor(double mediumDensity);
 
 
     //SystemInit

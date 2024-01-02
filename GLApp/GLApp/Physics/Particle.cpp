@@ -222,10 +222,10 @@ double Particle::CalculateDistance(const Particle& other) const {
     return glm::length(delta);
 }
 
-void Particle::setColor()
+void Particle::setColor(double mediumDensity)
 {
-    double maxDensity = 5e-21;
-    double midDensity = 6e-22;
+    double maxDensity = mediumDensity * 1;
+    double midDensity = mediumDensity;
     //set the color based on the density
     double r = density / midDensity;
     double g = 0;

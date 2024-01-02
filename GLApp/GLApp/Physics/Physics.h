@@ -21,11 +21,11 @@ class Physics {
 public:
     Physics();
 
-    static const int numTimeSteps = 10;
+    static const int numTimeSteps = 100;
     static const int particlesSize = 10000;
 
     //the time per frame
-    const double deltaTime = 3e12;
+    const double deltaTime = 3e13;
 
     // calculation Method:
     int calculationMethod = 1;
@@ -36,7 +36,7 @@ public:
     const double a = 1e100;
 
     //barnes hut
-    const double theta = 1;
+    const double theta = 2;
     const double maxDepth = 30;
 
     //SPH

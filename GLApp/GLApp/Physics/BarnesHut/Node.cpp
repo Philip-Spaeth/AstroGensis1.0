@@ -105,12 +105,14 @@ double Node::cubicSplineKernel(double r, double h)
 	return 0.0;
 }
 
-void Node::calcDensity(Particle& p, double h)
+void Node::calcDensity(Particle& p, double h, double& medium, int& n)
 {
 	//choose the node in wich the particle is in and the radius of the node is the closest to h and than save the density of the node in the particle
 	if (radius < h)
 	{
 		p.density = density;
+		n++;
+		medium += density;
 	}
 	else
 	{
@@ -131,11 +133,13 @@ void Node::calcDensity(Particle& p, double h)
 
 		if (child[quadrant] != nullptr)
 		{
-			child[quadrant]->calcDensity(p, h);
+			child[quadrant]->calcDensity(p, h, medium, n);
 		}
 		else
 		{
 			p.density = density;
+			n++;
+			medium += density;
 		}
 	}
 }

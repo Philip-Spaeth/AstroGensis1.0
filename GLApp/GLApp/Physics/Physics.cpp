@@ -79,13 +79,19 @@ bool Physics::Calc()
             //SPH density
             if (SPH)
             {
+                double mediumDensity = 0;
+                int densityN = 0;
                 for (int p = 0; p < currentParticles.size(); p++)
                 {
                     currentParticles[p].density = 0;
-                    octree->calcdensity(currentParticles[p], h);
-                    //color based on density
-                    if (color) currentParticles[p].setColor();
-
+                    //For color and SPH calculations
+                    octree->calcdensity(currentParticles[p], h, mediumDensity, densityN);
+                }
+                //only for color
+                mediumDensity = mediumDensity / densityN;
+                for (int p = 0; p < currentParticles.size(); p++)
+                {
+                    if (color) currentParticles[p].setColor(mediumDensity);
                 }
             }
 
@@ -108,15 +114,22 @@ bool Physics::Calc()
             //SPH density
             if (SPH)
             {
+                double mediumDensity = 0;
+                int densityN = 0;
                 for (int p = 0; p < currentParticles.size(); p++)
                 {
-					currentParticles[p].density = 0;
-					octree->calcdensity(currentParticles[p], h);
-                    //color based on density
-                    if (color) currentParticles[p].setColor();
-
-				}
+                    currentParticles[p].density = 0;
+                    //For color and SPH calculations
+                    octree->calcdensity(currentParticles[p], h, mediumDensity, densityN);
+                }
+                //only for color
+                mediumDensity = mediumDensity / densityN;
+                for (int p = 0; p < currentParticles.size(); p++)
+                {
+                    if (color) currentParticles[p].setColor(mediumDensity);
+                }
             }
+
             //Dark Energy / hubbleconstant
             if (HubbleConstant)
             {

@@ -39,7 +39,7 @@ public:
 	double theta = 0;
 	//SPH
 	double density = 0;
-	void calcDensity(Particle& p,double h);
+	void calcDensity(Particle& p,double h, double& medium, int& n);
 
 	bool renderTree = false;
 
