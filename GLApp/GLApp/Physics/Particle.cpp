@@ -1,5 +1,5 @@
 #include "Particle.h"
-
+#include "Physics.h"
 Particle::Particle(double x, double y, double z)  : position(x, y, z), velocity(0.0f, 0.0f, 0.0f), mass(0), radius(1.0f), color(glm::dvec3(1.0f, 1.0f, 1.0f))
 {}
  
@@ -193,6 +193,24 @@ double Particle::calcPotentialEnergie(const Particle& other, double G, double so
 
     double potentialEnergie = (0.5) * ((- G * mass * other.mass) / (distance));
     return potentialEnergie;
+}
+
+//dark energy / hubblekosntant
+void Particle::hubbleExpansion() 
+{
+    glm::dvec3 delta = position;
+    double distance = glm::length(delta);
+
+    if (distance == 0) {
+        return; // Verhindere eine Division durch Null.
+    }
+
+    // Hubble-Effekt
+    double hubbleEffect = Physics::HubbleConstant * 1e-3 / 3.0857e22; // Umrechnung von km/s/Mpc in SI-Einheiten
+    glm::dvec3 hubbleVelocity = delta * hubbleEffect; // Relative Geschwindigkeit aufgrund der Expansion
+
+    // Aktualisiere die Geschwindigkeit des Partikels
+    velocity += hubbleVelocity;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

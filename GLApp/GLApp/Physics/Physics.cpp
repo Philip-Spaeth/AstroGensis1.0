@@ -104,6 +104,7 @@ bool Physics::Calc()
             octree->clearTree();
             //build a new tree
             octree->buildTree(currentParticles);
+
             //SPH density
             if (SPH)
             {
@@ -116,17 +117,13 @@ bool Physics::Calc()
 
 				}
             }
-
-            //expansion of the universe
-            if (darkEnergy)
+            //Dark Energy / hubbleconstant
+            if (HubbleConstant)
             {
-                double H = HubbleConstant * 1e-6;
-				double a = 1 / (1 + H * deltaTime);
                 for (int p = 0; p < currentParticles.size(); p++)
                 {
-					currentParticles[p].position *= a;
-					currentParticles[p].velocity *= a;
-				}
+                    currentParticles[p].hubbleExpansion();
+                }
             }
 
             //Other methods

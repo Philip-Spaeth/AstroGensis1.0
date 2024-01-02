@@ -36,6 +36,9 @@ public:
     //dark matter or not
     bool darkMatter = false;
 
+    //dark Energy / hubbleconstant
+    void hubbleExpansion();
+
 
     //variables for render
     double radius;
