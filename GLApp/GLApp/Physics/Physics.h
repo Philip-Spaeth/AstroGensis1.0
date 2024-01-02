@@ -21,11 +21,11 @@ class Physics {
 public:
     Physics();
 
-    static const int numTimeSteps = 100;
+    static const int numTimeSteps = 1000;
     static const int particlesSize = 10000;
 
     //the time per frame
-    const double deltaTime = 3e13;
+    const double deltaTime = 1e13;
 
     // calculation Method:
     int calculationMethod = 1;
@@ -36,13 +36,14 @@ public:
     const double a = 1e100;
 
     //barnes hut
-    const double theta = 2;
+    const double theta = 1;
     const double maxDepth = 30;
 
     //SPH
     static const bool SPH = true;
-    const double h = 2e19;
-    const double k = 1e46;
+    const double h = 1e19;
+    //const double k = 1e46;
+    const double k = 1;
     const double rh0 = 1e-20;
 
     //dark Energy / Cosmological Constant
