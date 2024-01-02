@@ -21,11 +21,11 @@ class Physics {
 public:
     Physics();
 
-    static const int numTimeSteps = 100;
+    static const int numTimeSteps = 10;
     static const int particlesSize = 10000;
 
     //the time per frame
-    const double deltaTime = 1e13;
+    const double deltaTime = 3e12;
 
     // calculation Method:
     int calculationMethod = 1;
@@ -40,14 +40,14 @@ public:
     const double maxDepth = 30;
 
     //SPH
-    static const bool SPH = false;
-    const double h = 5e18;
-    const double k = 2e44;
+    static const bool SPH = true;
+    const double h = 2e19;
+    const double k = 1e46;
     const double rh0 = 1e-20;
 
     //dark Energy / Cosmological Constant
     static const bool darkEnergy = false;
-    static const int HubbleConstant = 7e9;
+    static const int HubbleConstant = 70;
 
     //Color of the Particles (only for OpenGL)
     static const bool color = true;

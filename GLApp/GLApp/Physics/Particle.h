@@ -42,7 +42,10 @@ public:
 
     //variables for render
     double radius;
+    //visible color
     glm::vec3 color;
+    //infrared
+    glm::vec3 densityColor;
     void setColor();
 
 

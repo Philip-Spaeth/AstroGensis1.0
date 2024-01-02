@@ -103,7 +103,7 @@ void Engine::start()
     // Erstellen des FileManagers
     fileManager = new FileManager();
 
-    fileManager->loadParticles(0, positions, colors);
+    fileManager->loadParticles(0, positions, colors, densityColors);
 
     // Hier VBO und VAO erstellen und konfigurieren
     GLuint VBO;
@@ -210,6 +210,17 @@ void Engine::update(int index)
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
 		showDarkMatter = !showDarkMatter;
 	}
+
+    //disable / enable dark matter with U
+    #ifdef WIN32
+    if (GetAsyncKeyState(85) & 0x8000)
+    #else
+    if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
+    #endif
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        densityColor = !densityColor;
+    }
 }
 
 void Engine::renderParticles()
@@ -260,20 +271,31 @@ void Engine::renderParticles()
     {
         for (int p = 0; p < positions.size(); p++)
         {
-            if(showDarkMatter == false && colors[p].w == 1)
+            if(showDarkMatter == false && colors[p].x == 0 && colors[p].y == 0 && colors[p].z == 1000)
 			{
                 continue;
 			}
-            if (showDarkMatter == true && colors[p].w == 1)
+            if (showDarkMatter == true && colors[p].r == 0 && colors[p].g == 0 && colors[p].b == 1000)
             {
-                // Setzen Sie die Farbe auf blau für dunkle Materie
-                glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(glm::vec3(0,0,1)));
+                if (densityColor)
+                {
+                    glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr((densityColors[p])));
+                }
+                else
+                {
+                    glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr((colors[p])));
+                }
             }
             else
 			{
-				// Setzen Sie die Farbe im Shader
-                glm::vec3 color = glm::vec3(colors[p].x, colors[p].y, colors[p].z);
-				glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(color));
+                if (densityColor)
+                {
+                    glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr((densityColors[p])));
+                }
+                else
+                {
+                    glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr((colors[p])));
+                }
 			}
 
             glm::vec3 scaledPosition = glm::vec3(

@@ -50,8 +50,8 @@ void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm
 			//double mass = octree.calculateTotalMassInSphere(position, distanceToCenterb);
 			v = std::sqrt(physics.G * massInSphere / distanceToCenter);
 			// No need for critical section here
-			particles[j].velocity = glm::dvec3(-v * std::sin(particles[j].angle), v * std::cos(particles[j].angle), 0) + velocity;
-
+			//particles[j].velocity = glm::dvec3(-v * std::sin(particles[j].angle), v * std::cos(particles[j].angle), 0) + velocity;
+			particles[j].velocity = { 0,0,0 };
 			particles[j].mass = totalMass / particleSize;
 			particles[j].radius = 1;
 			//make the stars in the center brighter

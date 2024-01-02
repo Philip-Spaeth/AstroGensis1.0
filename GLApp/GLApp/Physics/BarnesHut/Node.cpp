@@ -153,7 +153,7 @@ void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softeni
 
 	if (r > 0) 
 	{
-		if (r < 2 * h) 
+		// if (r < 2 * h) 
 		{
 			// Dichte berechnen
 			double density_i = p.density;
@@ -166,10 +166,13 @@ void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softeni
 
 			//(original)
 			double pressureForce = particle.mass * (pressure_i / (density_i * density_i));
-			
-			glm::dvec3 vecPressureForce = pressureForce * gradKernel;
-			// Kraft auf Partikel i anwenden
-			force += vecPressureForce;
+			//nur wenn abstoßend
+			if (pressureForce > 0)
+			{
+				glm::dvec3 vecPressureForce = pressureForce * gradKernel;
+				// Kraft auf Partikel i anwenden
+				force += vecPressureForce;
+			}
 		}
 
 		// Gravitationskraft

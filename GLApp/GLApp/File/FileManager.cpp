@@ -30,21 +30,16 @@ void FileManager::saveParticles(int timestep, const std::vector<Particle>& parti
     //put the particle positions and radius in a the array
     std::vector<glm::vec4> array;
     array.resize(particles.size());
+    //put the particle color and dark matter bool in a the array
+    std::vector<glm::vec3> color;
+    std::vector<glm::vec3> densitycolor;
+    color.resize(particles.size());
+    densitycolor.resize(particles.size());
     for (int i = 0; i < particles.size(); i++)
     {
         array[i] = glm::vec4(particles[i].position, particles[i].radius);
-    }
-    //put the particle color and dark matter bool in a the array
-    std::vector<glm::vec4> color;
-    color.resize(particles.size());
-    for (int i = 0; i < particles.size(); i++)
-    {
-        int darkMatter = 0;
-        if (particles[i].darkMatter)
-        {
-            darkMatter = 1;
-        }
-        color[i] = glm::vec4(particles[i].color, darkMatter);
+        color[i] = glm::vec3(particles[i].color);
+        densitycolor[i] = glm::vec3(particles[i].densityColor);
     }
 
     if (file.is_open()) 
@@ -53,7 +48,8 @@ void FileManager::saveParticles(int timestep, const std::vector<Particle>& parti
         file.write(reinterpret_cast<char*>(&size), sizeof(size));
 
         file.write(reinterpret_cast<const char*>(array.data()), size * sizeof(glm::vec4));
-        file.write(reinterpret_cast<const char*>(color.data()), size * sizeof(glm::vec4));
+        file.write(reinterpret_cast<const char*>(color.data()), size * sizeof(glm::vec3));
+        file.write(reinterpret_cast<const char*>(densitycolor.data()), size * sizeof(glm::vec3));
 
         file.close();
     }
@@ -62,7 +58,7 @@ void FileManager::saveParticles(int timestep, const std::vector<Particle>& parti
     }
 }
 
-void FileManager::loadParticles(int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec4>& color)
+void FileManager::loadParticles(int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec3>& color, std::vector<glm::vec3>& densitycolor)
 {
     std::string fileName = "Data/Time_" + std::to_string(timestep) + ".dat";
     std::ifstream file(fileName, std::ios::binary);
@@ -73,10 +69,14 @@ void FileManager::loadParticles(int timestep, std::vector<glm::vec4>& array, std
 
         array.resize(Physics::particlesSize);
         color.resize(Physics::particlesSize);
+        densitycolor.resize(Physics::particlesSize);
         //load the positions and radius from the file
         file.read(reinterpret_cast<char*>(array.data()), size * sizeof(glm::vec4));
         //load the color and dark matter bool from file
-        file.read(reinterpret_cast<char*>(color.data()), size * sizeof(glm::vec4));
+        file.read(reinterpret_cast<char*>(color.data()), size * sizeof(glm::vec3));
+        //load the color and dark matter bool from file
+        file.read(reinterpret_cast<char*>(densitycolor.data()), size * sizeof(glm::vec3));
+
 
         file.close();
     }

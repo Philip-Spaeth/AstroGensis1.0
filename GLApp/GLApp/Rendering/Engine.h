@@ -29,6 +29,7 @@ public:
     double changeSpeed = 1;
 
     bool showDarkMatter = true;
+    bool densityColor = true;
 
     double passedTime = 0;
 
@@ -39,7 +40,8 @@ public:
     //render Tree
     const double theta = 0;
     std::vector<glm::vec4> positions;
-    std::vector<glm::vec4> colors;
+    std::vector<glm::vec3> colors;
+    std::vector<glm::vec3> densityColors;
 private:
 
     bool BGstars = true;
