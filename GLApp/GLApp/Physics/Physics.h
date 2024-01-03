@@ -21,7 +21,7 @@ class Physics {
 public:
     Physics();
 
-    static const int numTimeSteps = 100;
+    static const int numTimeSteps = 1;
     static const int particlesSize = 10000;
 
     //the time per frame
@@ -41,9 +41,9 @@ public:
 
     //SPH
     static const bool SPH = true;
-    double h = 1e18;
-    double k = 1e45;
-    double rh0 = 1e-19;
+    double h = 5e18;
+    double k = 1e46;
+    double rh0 = 5e-23;
     double mu = 0;
 
     //dark Energy / Cosmological Constant

@@ -193,9 +193,9 @@ void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softeni
 			glm::dvec3 gradKernel = glm::normalize(delta) * (cubicSplineKernel(r, h) / r);
 
 			//(original)
-			double pressureForce = -particle.mass * (pressure_i / (density_i * density_i));
+			double pressureForce = - particle.mass * (pressure_i / (density_i * density_i));
 			//nur wenn abstoßend
-			//if (pressureForce < 0)
+			if (pressureForce < 0)
 			{
 				glm::dvec3 vecPressureForce = pressureForce * gradKernel;
 				// Kraft auf Partikel i anwenden
