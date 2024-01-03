@@ -68,6 +68,12 @@ private:
     bool shouldClose = false;
     GLuint VAO;
     GLuint instanceVBO;
+    GLuint framebuffer;
+    GLuint textureColorbuffer;
+    GLuint rbo;
+    GLuint blurShaderProgram; // Shader-Programm für den Blur-Effekt
+    GLuint quadVAO; // VAO für das Quad, auf das der Blur-Effekt angewendet wird
+    void renderBlur();
     void renderParticles();
     void checkShaderCompileStatus(GLuint shader, const char* shaderType);
     void checkShaderLinkStatus(GLuint program);

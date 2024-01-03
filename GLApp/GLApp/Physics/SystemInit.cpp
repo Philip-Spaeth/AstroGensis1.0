@@ -8,16 +8,21 @@
 
 void SystemInit::start(std::vector<Particle>& particles)
 {
+	//planet systemns without SPH
 	//solarSystem(particles);
 	//ourSolarSystem(particles);
 
-	ellipticalGalaxy.E0(0, 9999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
-	//ellipticalGalaxy.E0(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
+	//galaxies
+	//ellipticalGalaxy.S0(1, 9999, { 0,0,0 }, { -1,2,- 1}, {0,0,0}, 2, particles);
+	//ellipticalGalaxy.E0(10000, 19999, { 3e21,1e21,0 }, {2.2, 3.14,2 }, { 0,0,0 }, 1, particles);
 	
-	//spiralGalaxy.densityWaveSb(0, 9999, { 0,0,0 }, { 0, 0, 0}, { 0,0,0 }, 1, particles);
-	//spiralGalaxy.Sb(10000, 19999, { 1e22,0,0 }, { 0, 0, 0 }, { 0,0,0 }, 1, particles);
-
-	//barredGalaxy.SBc(0, 9999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
+	spiralGalaxy.Sa(1, 9999, { -1e22,0,0 }, { 0, 0, 0}, { 0,0,0 }, 1, particles);
+	spiralGalaxy.Sb(10000, 19999, { 0,0,0 }, { 0, 0, 0 }, { 0,0,0 }, 1, particles);
+	spiralGalaxy.Sc(20000, 29999, { 1e22,0,0 }, { 0, 0, 0 }, { 0,0,0 }, 1, particles);
+	
+	//barredGalaxy.SBa(0, 9999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
+	//barredGalaxy.SBb(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
+	//barredGalaxy.SBc(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
 }
 
 

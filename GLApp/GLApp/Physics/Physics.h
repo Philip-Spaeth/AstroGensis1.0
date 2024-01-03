@@ -22,10 +22,10 @@ public:
     Physics();
 
     static const int numTimeSteps = 1;
-    static const int particlesSize = 10000;
+    static const int particlesSize = 30000;
 
     //the time per frame
-    const double deltaTime = 1e13;
+    const double deltaTime = 1e14;
 
     // calculation Method:
     int calculationMethod = 1;
@@ -36,13 +36,13 @@ public:
     const double a = 1e100;
 
     //barnes hut
-    const double theta = 1;
+    const double theta = 1.9;
     const double maxDepth = 30;
 
     //SPH
     static const bool SPH = true;
     double h = 5e18;
-    double k = 1e46;
+    double k = 1e45;
     double rh0 = 5e-23;
     double mu = 0;
 

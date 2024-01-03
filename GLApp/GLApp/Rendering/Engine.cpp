@@ -53,6 +53,87 @@ bool Engine::init(double physicsFaktor)
         std::cerr << "Failed to initialize GLEW" << std::endl;
         return false;
     }
+    const char* blurVertexShaderSource = R"glsl(
+    #version 330 core
+    layout (location = 0) in vec2 aPos;
+    layout (location = 1) in vec2 aTexCoords;
+
+    out vec2 TexCoords;
+
+    void main()
+    {
+        TexCoords = aTexCoords;
+        gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);
+    }
+    )glsl";
+
+        const char* blurFragmentShaderSource = R"glsl(
+    #version 330 core
+    out vec4 FragColor;
+
+    in vec2 TexCoords;
+
+    uniform sampler2D screenTexture;
+
+    void main()
+    {             
+        float blurSize = 1.0 / 300.0; // Ändere die Größe des Blurs
+        vec4 color = vec4(0.0);
+        color += texture(screenTexture, TexCoords + vec2(-blurSize, -blurSize)) * 0.05;
+        color += texture(screenTexture, TexCoords + vec2( blurSize, -blurSize)) * 0.05;
+        color += texture(screenTexture, TexCoords + vec2(-blurSize,  blurSize)) * 0.05;
+        color += texture(screenTexture, TexCoords + vec2( blurSize,  blurSize)) * 0.05;
+        color += texture(screenTexture, TexCoords) * 0.8;
+        FragColor = color;
+    }
+    )glsl";
+        GLuint blurVertexShader, blurFragmentShader;
+        blurVertexShader = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(blurVertexShader, 1, &blurVertexShaderSource, NULL);
+        glCompileShader(blurVertexShader);
+        checkShaderCompileStatus(blurVertexShader, "BLUR VERTEX");
+
+        blurFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(blurFragmentShader, 1, &blurFragmentShaderSource, NULL);
+        glCompileShader(blurFragmentShader);
+        checkShaderCompileStatus(blurFragmentShader, "BLUR FRAGMENT");
+
+        GLuint blurShaderProgram = glCreateProgram();
+        glAttachShader(blurShaderProgram, blurVertexShader);
+        glAttachShader(blurShaderProgram, blurFragmentShader);
+        glLinkProgram(blurShaderProgram);
+        checkShaderLinkStatus(blurShaderProgram);
+
+        // Speichere blurShaderProgram in einem Klassenmitglied, um es später zu verwenden
+        this->blurShaderProgram = blurShaderProgram;
+
+    // Framebuffer erstellen
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+    // Textur erstellen
+    glGenTextures(1, &textureColorbuffer);
+    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1200, 800, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // Textur an Framebuffer binden
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+
+    // Renderbuffer-Objekt für Tiefen- und Stencil-Test erstellen
+    glGenRenderbuffers(1, &rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1200, 800);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+    // Renderbuffer an Framebuffer binden
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // Shader-Programm kompilieren und verlinken
     const char* vertexShaderSource = "#version 330 core\n"
@@ -94,6 +175,8 @@ bool Engine::init(double physicsFaktor)
     checkShaderLinkStatus(shaderProgram);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+
     
     return true;
 }
@@ -118,6 +201,31 @@ void Engine::start()
     // Konfigurieren des VAO f�r das VBO
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    GLuint quadVAO, quadVBO;
+    float quadVertices[] = {
+        // Positionen   // Texturen
+        -1.0f,  1.0f,  0.0f, 1.0f,
+        -1.0f, -1.0f,  0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+
+        -1.0f,  1.0f,  0.0f, 1.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+         1.0f,  1.0f,  1.0f, 1.0f
+    };
+
+    glGenVertexArrays(1, &quadVAO);
+    glGenBuffers(1, &quadVBO);
+    glBindVertexArray(quadVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+    // Speichere quadVAO in einem Klassenmitglied, um es später zu verwenden
+    this->quadVAO = quadVAO;
+
 
     //place the BGstars in the background
     if (BGstars)
@@ -154,6 +262,7 @@ void Engine::update(int index)
     }
 
     renderParticles();
+    renderBlur();
 
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -223,9 +332,19 @@ void Engine::update(int index)
     }
 }
 
+void Engine::renderBlur()
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glUseProgram(blurShaderProgram);
+    glBindVertexArray(quadVAO);
+    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
 void Engine::renderParticles()
 {
-    // L�schen des Bildschirms
+    // Binden des Framebuffers
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Deaktivieren Sie den Tiefentest und das Z-Buffering
@@ -271,11 +390,11 @@ void Engine::renderParticles()
     {
         for (int p = 0; p < positions.size(); p++)
         {
-            if(showDarkMatter == false && colors[p].x == 0 && colors[p].y == 0 && colors[p].z == 1000)
+            if(showDarkMatter == false && colors[p].x == 0 && colors[p].y == 1000 && colors[p].z == 0)
 			{
                 continue;
 			}
-            if (showDarkMatter == true && colors[p].r == 0 && colors[p].g == 0 && colors[p].b == 1000)
+            if (showDarkMatter == true && colors[p].r == 0 && colors[p].g == 1000 && colors[p].b == 0)
             {
                 if (densityColor)
                 {
@@ -315,6 +434,8 @@ void Engine::renderParticles()
     }
     // VAO l�sen
     glBindVertexArray(0);
+    // Lösen des Framebuffers
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Engine::processInput()
