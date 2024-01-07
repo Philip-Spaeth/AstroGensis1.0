@@ -73,7 +73,6 @@ void Node::gravity(Particle& p, glm::dvec3& force, double softening, double a, d
 				Particle p2 = Particle(massCenter, mass);
 				potentialEngergy += p.calcPotentialEnergie(p2, G, epsilon0, 0);
 				force += Force;
-				calculations++;
 			}
 			else
 			{
@@ -85,13 +84,152 @@ void Node::gravity(Particle& p, glm::dvec3& force, double softening, double a, d
 				Particle p2 = Particle(massCenter, mass);
 				potentialEngergy += p.calcPotentialEnergie(p2, G, softening, 0);
 				force += Force;
-				calculations++;
 			}
+
+			calculations++;
 		}
 	}
 }
 
-double Node::cubicSplineKernel(double r, double h) 
+
+void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations)
+{
+	double G = 6.67408e-11;
+
+	if (particle.position != p.position)
+	{
+		glm::dvec3 delta = massCenter - p.position;
+
+		Physics physics;
+		double h = physics.h; // Glättungsradius
+		double k = physics.k; // Steifheitskonstante für Druck
+		double rho0 = physics.rh0; // Ruhe- oder Referenzdichte
+		double mu = physics.mu;
+
+		double r = glm::length(delta);
+
+		if (r > 0)
+		{
+			//normal newtonian gravity
+			if (Physics::PlummerSoftening)
+			{
+				//Plummer softening
+				double epsilon0 = softening / std::sqrt(1.0 + std::pow(r / a, 2));
+
+				double distance = r * r + epsilon0 * epsilon0;
+
+				//normal direct force
+				double forceMagnitude = (G * mass * p.mass) / std::pow(distance, 3 / 2);
+				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
+				Particle p2 = Particle(massCenter, mass);
+				potentialEngergy += p.calcPotentialEnergie(p2, G, epsilon0, 0);
+				force += Force;
+			}
+			else
+			{
+				double distance = r * r + softening * softening;
+				//double distance = r * r;
+				//normal direct force
+				double forceMagnitude = (G * mass * p.mass) / std::pow(distance, 1);
+				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
+				Particle p2 = Particle(massCenter, mass);
+				potentialEngergy += p.calcPotentialEnergie(p2, G, softening, 0);
+				force += Force;
+			}
+			
+			//SPH
+			if (r < 2 * h)
+			{
+				//Druckkraft
+				// Dichte berechnen
+				double density_i = p.density;
+				// Druck berechnen
+				double pressure_i = k * (density_i - rho0);
+				// Gradient der Kernel-Funktion
+				glm::dvec3 gradKernel = glm::normalize(delta) * (cubicSplineKernel(r, h) / r);
+
+				//(original)
+				double pressureForce = -particle.mass * (pressure_i / (density_i * density_i));
+				//nur wenn abstoßend
+				if (pressureForce < 0)
+				{
+					glm::dvec3 vecPressureForce = pressureForce * gradKernel;
+					// Kraft auf Partikel i anwenden
+					force += vecPressureForce;
+				}
+
+				//Viskosen Kraft
+				//if both velocities are a rational number
+				if (!std::isnan(glm::length(p.velocity)) && !std::isnan(glm::length(particle.velocity)))
+				{
+					glm::dvec3 velocityDiff = p.velocity - particle.velocity;
+					double distance = glm::length(p.position - massCenter);
+					glm::dvec3 laplaceKernelGrad = laplaceCubicSplineKernel(delta, h);
+
+					glm::dvec3 viscousForce = -mu * (mass / p.density) * (velocityDiff / (distance + softening)) * laplaceKernelGrad;
+					force += viscousForce;
+				}
+			}
+
+			calculations++;
+		}
+	}
+}
+
+glm::dvec3 Node::calcForce(Particle& p, Node* root, double softening, double a, double& potentialEngergy, double& calculations)
+{
+	glm::dvec3 force = { 0,0,0 };
+
+	if (isLeaf)
+	{
+		if (Physics::SPH)
+		{
+			//SPH
+			gravitySPH(p, root, force, softening, a, potentialEngergy, calculations);
+		}
+		else
+		{
+			//normal direct force
+			gravity(p, force, softening, a, potentialEngergy, calculations);
+		}
+	}
+	else
+	{
+		glm::dvec3 delta = massCenter - p.position;
+		double r = glm::length(delta);
+
+		// Calculate height of the node
+		double d = radius * 2;
+
+		if (d / r < theta)
+		{
+			if (Physics::SPH)
+			{
+				//SPH
+				gravitySPH(p, root, force, softening, a, potentialEngergy, calculations);
+			}
+			else
+			{
+				//normal direct force
+				gravity(p, force, softening, a, potentialEngergy, calculations);
+			}
+		}
+		else
+		{
+			// For all child nodes n
+			for (Node* child : child)
+			{
+				if (child != nullptr)
+				{
+					force += child->calcForce(p, root, softening, a, potentialEngergy, calculations);
+				}
+			}
+		}
+	}
+	return force;
+}
+
+double Node::cubicSplineKernel(double r, double h)
 {
 	const double pi = 3.14159265359;
 	const double alpha_3d = 1.0 / (pi * h * h * h);
@@ -144,7 +282,7 @@ void Node::calcDensity(Particle& p, double h, double& medium, int& n)
 	}
 }
 
-glm::dvec3 Node::laplaceCubicSplineKernel(const glm::dvec3& rVec, double h) 
+glm::dvec3 Node::laplaceCubicSplineKernel(const glm::dvec3& rVec, double h)
 {
 	double r = glm::length(rVec);
 	if (r > 2 * h) {
@@ -162,115 +300,6 @@ glm::dvec3 Node::laplaceCubicSplineKernel(const glm::dvec3& rVec, double h)
 	}
 
 	return factor * glm::normalize(rVec);
-}
-
-void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations) 
-{
-	Physics physics;
-	double h = physics.h; // Glättungsradius
-	double k = physics.k; // Steifheitskonstante für Druck
-	double rho0 = physics.rh0; // Ruhe- oder Referenzdichte
-
-	glm::dvec3 delta = massCenter - p.position;
-	double r = glm::length(delta);
-	double G = 6.67408e-11;
-
-	if (r > 0) 
-	{
-		// Gravitationskraft
-		glm::dvec3 gravityForce = (G * mass * p.mass) / (r * r + softening * softening) * glm::normalize(delta);
-		force += gravityForce;
-
-		//Druckkraft
-		{
-			// Dichte berechnen
-			double density_i = p.density;
-
-			// Druck berechnen
-			double pressure_i = k * (density_i - rho0);
-
-			// Gradient der Kernel-Funktion
-			glm::dvec3 gradKernel = glm::normalize(delta) * (cubicSplineKernel(r, h) / r);
-
-			//(original)
-			double pressureForce = - particle.mass * (pressure_i / (density_i * density_i));
-			//nur wenn abstoßend
-			if (pressureForce < 0)
-			{
-				glm::dvec3 vecPressureForce = pressureForce * gradKernel;
-				// Kraft auf Partikel i anwenden
-				force += vecPressureForce;
-			}
-		}
-
-		//Viskosen Kraft
-		//if (false)
-		{
-			double mu = physics.mu; // Setzen Sie einen geeigneten Wert
-			glm::dvec3 velocityDiff = p.velocity - particle.velocity;
-			double distance = glm::length(p.position - massCenter);
-			glm::dvec3 laplaceKernelGrad = laplaceCubicSplineKernel(delta, h);
-
-			glm::dvec3 viscousForce = -mu * (mass / p.density) * (velocityDiff / (distance + softening)) * laplaceKernelGrad;
-			force += viscousForce;
-		}
-	}
-
-	calculations++;
-}
-
-
-glm::dvec3 Node::calcForce(Particle& p, Node* root, double softening,double a, double& potentialEngergy, double& calculations)
-{
-	glm::dvec3 force = {0,0,0};
-
-	if (isLeaf) 
-	{
-		if (Physics::SPH)
-		{
-			//SPH
-			gravitySPH(p, root, force, softening, a, potentialEngergy, calculations);
-		}
-		else
-		{
-			//normal direct force
-			gravity(p, force, softening, a, potentialEngergy, calculations);
-		}
-	}
-	else 
-	{
-		glm::dvec3 delta = massCenter - p.position;
-		double r = glm::length(delta);
-
-		// Calculate height of the node
-		double d = radius * 2; 
-
-		if (d / r < theta)
-		{
-			if (Physics::SPH)
-			{
-				//SPH
-				gravitySPH(p, root, force, softening, a, potentialEngergy, calculations);
-			}
-			else
-			{
-				//normal direct force
-				gravity(p, force, softening, a, potentialEngergy, calculations);
-			}
-		}
-		else
-		{
-			// For all child nodes n
-			for (Node* child : child) 
-			{
-				if(child != nullptr)
-				{
-					force += child->calcForce(p, root, softening, a, potentialEngergy, calculations);
-				}
-			}
-		}
-	}
-	return force;
 }
 
 void Node::insert(Particle& p)

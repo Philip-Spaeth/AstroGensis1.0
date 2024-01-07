@@ -247,9 +247,9 @@ void Engine::start()
 void Engine::update(int index)
 {
     //calculate the time
-    if (isRunning) 
+    if (isRunning && index != oldIndex) 
     {
-        //calcTime(index);
+        calcTime(index);
     }
 
     processMouseInput();
@@ -330,6 +330,7 @@ void Engine::update(int index)
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
         densityColor = !densityColor;
     }
+    oldIndex = index;
 }
 
 void Engine::renderBlur()
@@ -569,6 +570,19 @@ void Engine::calcTime(glm::dvec3 position, int index)
     else if (passedTime < 31536000) { passedTime /= 86400; Unit = " days"; }
     else { passedTime /= 31536000; Unit = " years"; }
 
+
+    std::string time; 
+    //set the time to like millions, billions, trillions, ...
+    if (passedTime < 1000) { time = std::to_string((int)passedTime); }
+	else if (passedTime < 1000000) { passedTime /= 1000; time = std::to_string((int)passedTime) + " thousand"; }
+	else if (passedTime < 1000000000) { passedTime /= 1000000; time = std::to_string((int)passedTime) + " million"; }
+	else if (passedTime < 1000000000000) { passedTime /= 1000000000; time = std::to_string((int)passedTime) + " billion"; }
+	else if (passedTime < 1000000000000000) { passedTime /= 1000000000000; time = std::to_string((int)passedTime) + " trillion"; }
+	else { passedTime /= 1000000000000000; time = std::to_string((int)passedTime) + " quadrillion"; }
+    
+    //print out the past time in the right unit
+    std::cout << std::scientific << std::setprecision(0) << "passed time: " << time << Unit << std::endl;
+    /*
     // Berechne das Enddatum basierend auf der "passedTime"
     int startYear = 2020;
     int startMonth = 01;
@@ -663,6 +677,7 @@ void Engine::calcTime(glm::dvec3 position, int index)
         //print out the past time in the right unit
         std::cout << std::scientific << std::setprecision(0) << "passed time: " << passedTime << Unit << "    date: " << currentYear << "." << month << "." << day << std::endl;
     }
+    */
 }
 double Engine::random(double min, double max)
 {

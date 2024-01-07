@@ -195,7 +195,7 @@ void FileManager::saveRotationCurve(std::vector<Particle>& particles, std::strin
             double otherVelocity = sqrt(pow(steps[k - 1].velocity.x, 2) + pow(steps[k - 1].velocity.y, 2) + pow(steps[k - 1].velocity.z, 2));
             if (myVelocity > otherVelocity * 2)
             {
-                //steps[k].velocity = steps[k - 1].velocity;
+                steps[k].velocity = steps[k - 1].velocity;
 		    }
         }
     }

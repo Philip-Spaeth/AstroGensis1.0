@@ -1,3 +1,4 @@
+
 #include "SpiralGalaxy.h"
 #include <omp.h>
 #include <iostream>
@@ -14,8 +15,20 @@ void SpiralGalaxy::ellipticalOrbit(Particle& p, double m, double diskR, double r
 	double x = mainAxis * std::cos(a);
 	double y = minorAxis * std::sin(a);
 
+	double bulgeScale = 0.07;
+	double diskScale = 0.03;
+	double bulgeR = diskR / 5;
+
 	double z = 0;
-	double depth = 0.2; // Die maximale Tiefe/Z-Höhe
+	// Berechnen der Z-Koordinate basierend auf der Position im Bulge oder in der Disk
+	if (r < bulgeR)
+	{
+		z = physics.gaussianRandom() * bulgeScale * diskR;
+	}
+	else 
+	{
+		z = physics.gaussianRandom() * diskScale * diskR;
+	}
 
 	// Setzen Sie die Position
 	p.position = glm::dvec3(x * std::cos(angle) - y * sin(angle), x * std::sin(angle) + y * cos(angle), z);
@@ -49,6 +62,13 @@ void SpiralGalaxy::Sa(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 
 	int i = 0;
 
+	glm::mat4 transform = glm::mat4(1.0f); // Identity matrix
+	// Apply rotations
+	transform = glm::rotate(transform, (float)rotation.x, glm::vec3(1, 0, 0));
+	transform = glm::rotate(transform, (float)rotation.y, glm::vec3(0, 1, 0));
+	transform = glm::rotate(transform, (float)rotation.z, glm::vec3(0, 0, 1));
+
+
 	for (int j = startIndex; j != endIndex; j++)
 	{
 		double scaledI = i / (double)particleSize;
@@ -69,6 +89,15 @@ void SpiralGalaxy::Sa(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 		particles[j].darkMatter = false;
 		particles[j].color = glm::vec3(1, 1, 1);
 		i++;
+
+		glm::vec4 pos = glm::vec4(particles[j].position - position, 1.0);
+		glm::vec4 vel = glm::vec4(particles[j].velocity, 1.0);
+
+		pos = transform * pos;
+		vel = transform * vel;
+
+		particles[j].position = glm::dvec3(pos) + position;
+		particles[j].velocity = glm::dvec3(vel);
 	}
 }
 
@@ -82,6 +111,14 @@ void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 	double mass = totalMass / particleSize; // Masse eines einzelnen Partikels
 
 	int i = 0;
+
+	glm::mat4 transform = glm::mat4(1.0f); // Identity matrix
+
+	// Apply rotations
+	transform = glm::rotate(transform, (float)rotation.x, glm::vec3(1, 0, 0));
+	transform = glm::rotate(transform, (float)rotation.y, glm::vec3(0, 1, 0));
+	transform = glm::rotate(transform, (float)rotation.z, glm::vec3(0, 0, 1));
+
 
 	for (int j = startIndex; j != endIndex; j++)
 	{
@@ -103,6 +140,15 @@ void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 		particles[j].darkMatter = false;
 		particles[j].color = glm::vec3(1,1,1);
 		i++;
+
+		glm::vec4 pos = glm::vec4(particles[j].position - position, 1.0);
+		glm::vec4 vel = glm::vec4(particles[j].velocity, 1.0);
+
+		pos = transform * pos;
+		vel = transform * vel;
+
+		particles[j].position = glm::dvec3(pos) + position;
+		particles[j].velocity = glm::dvec3(vel);
 	}
 }
 
@@ -116,6 +162,14 @@ void SpiralGalaxy::Sc(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 	double mass = totalMass / particleSize; // Masse eines einzelnen Partikels
 
 	int i = 0;
+
+	glm::mat4 transform = glm::mat4(1.0f); // Identity matrix
+
+	// Apply rotations
+	transform = glm::rotate(transform, (float)rotation.x, glm::vec3(1, 0, 0));
+	transform = glm::rotate(transform, (float)rotation.y, glm::vec3(0, 1, 0));
+	transform = glm::rotate(transform, (float)rotation.z, glm::vec3(0, 0, 1));
+
 
 	for (int j = startIndex; j != endIndex; j++)
 	{
@@ -137,5 +191,14 @@ void SpiralGalaxy::Sc(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 		particles[j].darkMatter = false;
 		particles[j].color = glm::vec3(1, 1, 1);
 		i++;
+
+		glm::vec4 pos = glm::vec4(particles[j].position - position, 1.0);
+		glm::vec4 vel = glm::vec4(particles[j].velocity, 1.0);
+
+		pos = transform * pos;
+		vel = transform * vel;
+
+		particles[j].position = glm::dvec3(pos) + position;
+		particles[j].velocity = glm::dvec3(vel);
 	}
 }

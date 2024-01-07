@@ -33,7 +33,23 @@ void EllipticalGalaxy::S0(int startIndex, int endIndex, glm::dvec3 position, glm
 
 		double x = r * std::sin(theta) * std::cos(particles[j].angle);
 		double y = r * std::sin(theta) * std::sin(particles[j].angle);
+
+		double bulgeScale = 0.05;
+		double diskScale = 0.03;
+		double bulgeR = galaxyRadius / 5;
+
 		double z = 0;
+		// Berechnen der Z-Koordinate basierend auf der Position im Bulge oder in der Disk
+		if (r < bulgeR)
+		{
+			z = physics.gaussianRandom() * bulgeScale * galaxyRadius;
+		}
+		else
+		{
+			z = physics.gaussianRandom() * diskScale * galaxyRadius;
+		}
+		z = 0;
+
 		double distanceToCenter = glm::abs(glm::length(glm::dvec3(x, y, z)));
 		if (distanceToCenter == 0)
 		{

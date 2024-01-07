@@ -22,35 +22,36 @@ public:
     Physics();
 
     static const int numTimeSteps = 1;
-    static const int particlesSize = 30000;
+    static const int particlesSize = 10000;
 
     //the time per frame
-    const double deltaTime = 1e14;
+    const double deltaTime = 1e13;
 
     // calculation Method:
     int calculationMethod = 1;
 
     //Softening
     static const bool PlummerSoftening = true;
-    const double softening = 1e18;
+    const double softening = 5e18;
     const double a = 1e100;
 
     //barnes hut
-    const double theta = 1.9;
+    const double theta = 1;
     const double maxDepth = 30;
 
-    //SPH
-    static const bool SPH = true;
-    double h = 5e18;
-    double k = 1e45;
-    double rh0 = 5e-23;
-    double mu = 0;
+    //SPH takes extra calculation time
+    static const bool SPH = false;
+    double h = 1e19;
+    double k = 1e46;
+    double rh0 = 10e-21;
+    double mu = 1e44;
+    //ok good for S0:     double k = 5e45; double rh0 = 25e-21;
 
     //dark Energy / Cosmological Constant
-    static const bool darkEnergy = false;
+    static const bool darkEnergy = true;
     static const int HubbleConstant = 70;
 
-    //Color of the Particles (only for OpenGL)
+    //Color of the Particles (only for OpenGL) takes extra calculation time
     static const bool color = true;
     double colorH = 1e19;
 
@@ -64,6 +65,7 @@ public:
 
     void setRandomSeed(unsigned int seed);
     double random(double min, double max);
+    double gaussianRandom(double mean = 0.0, double stddev = 1.0);
 
     std::vector<Particle> currentParticles;
 private:

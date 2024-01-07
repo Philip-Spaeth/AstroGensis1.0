@@ -11,6 +11,8 @@
 #include <locale>
 #include <string.h>
 #include "FileManager.h"
+#include <random>
+#include <chrono>
 
 Physics::Physics()
 {
@@ -80,18 +82,22 @@ bool Physics::Calc()
             double mediumDensity = 0;
             int densityN = 0;
             //only for color
-            for (int p = 0; p < currentParticles.size(); p++)
+            if (color)
             {
-                currentParticles[p].density = 0;
-                //For color and SPH calculations
-                octree->calcdensity(currentParticles[p], colorH, mediumDensity, densityN);
+                for (int p = 0; p < currentParticles.size(); p++)
+                {
+                    currentParticles[p].density = 0;
+                    //For color and SPH calculations
+                    octree->calcdensity(currentParticles[p], colorH, mediumDensity, densityN);
+                }
+                //only for color
+                mediumDensity = mediumDensity / densityN;
+                for (int p = 0; p < currentParticles.size(); p++)
+                {
+                    if (color) currentParticles[p].setColor(mediumDensity);
+                }
             }
-            //only for color
-            mediumDensity = mediumDensity / densityN;
-            for (int p = 0; p < currentParticles.size(); p++)
-            {
-                if (color) currentParticles[p].setColor(mediumDensity);
-            }
+
             ///for SPH
             if (SPH)
             {
@@ -104,8 +110,8 @@ bool Physics::Calc()
             }
 
             //rotation and masscurves
-            //fileManager->saveRotationCurve(currentParticles, "");
-            //fileManager->saveMassCurve(currentParticles, "");
+            fileManager->saveRotationCurve(currentParticles, "");
+            fileManager->saveMassCurve(currentParticles, "");
 
             fileManager = new FileManager();
             fileManager->saveParticles(t, currentParticles, "Data");
@@ -122,18 +128,22 @@ bool Physics::Calc()
             double mediumDensity = 0;
             int densityN = 0;
             //only for color
-            for (int p = 0; p < currentParticles.size(); p++)
+            if (color)
             {
-                currentParticles[p].density = 0;
-                //For color and SPH calculations
-                octree->calcdensity(currentParticles[p], colorH, mediumDensity, densityN);
+                for (int p = 0; p < currentParticles.size(); p++)
+                {
+                    currentParticles[p].density = 0;
+                    //For color and SPH calculations
+                    octree->calcdensity(currentParticles[p], colorH, mediumDensity, densityN);
+                }
+                //only for color
+                mediumDensity = mediumDensity / densityN;
+                for (int p = 0; p < currentParticles.size(); p++)
+                {
+                    if (color) currentParticles[p].setColor(mediumDensity);
+                }
             }
-            //only for color
-            mediumDensity = mediumDensity / densityN;
-            for (int p = 0; p < currentParticles.size(); p++)
-            {
-                if (color) currentParticles[p].setColor(mediumDensity);
-            }
+           
             ///for SPH
             if (SPH)
             {
@@ -340,4 +350,17 @@ void Physics::calculateGravitation(int t, int start, int stop) {
 
         calulations++;
     }
+}
+
+double Physics::gaussianRandom(double mean, double stddev) 
+{
+    // Erstellen eines Zufallszahlengenerators
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine generator(seed);
+
+    // Erstellen einer Normalverteilung
+    std::normal_distribution<double> distribution(mean, stddev);
+
+    // Generieren und Rückgabe einer Zahl aus dieser Verteilung
+    return distribution(generator);
 }

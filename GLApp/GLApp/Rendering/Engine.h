@@ -43,7 +43,7 @@ public:
     std::vector<glm::vec3> colors;
     std::vector<glm::vec3> densityColors;
 private:
-
+    int oldIndex = 0;
     bool BGstars = true;
     int amountOfStars = 1000;
     std::vector<glm::vec4> bgStars;
