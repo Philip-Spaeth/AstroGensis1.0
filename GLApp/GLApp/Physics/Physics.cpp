@@ -120,6 +120,18 @@ bool Physics::Calc()
 
         else
         {
+            if(newDistanceCalc)
+            { 
+                //mayby problem when particles fly far away
+                for (int i = 0; i < currentParticles.size(); i++) {
+                    double distance = sqrt(pow(currentParticles[i].position.x, 2) + pow(currentParticles[i].position.y, 2) + pow(currentParticles[i].position.z, 2));
+                    if (distance > maxDistance) {
+                        maxDistance = distance;
+                    }
+                }
+                octree = new Octree(glm::dvec3(0, 0, 0), maxDistance * 2, theta, maxDepth);
+            }
+
             // delte tree to clear memory
             octree->clearTree();
             //build a new tree
@@ -238,6 +250,12 @@ bool Physics::Calc()
                         currentParticles[p].rungeKuttaUpdatePosition(deltaTime, k);
                     }
                 }
+            }
+            if (t == 100)
+            {
+                //rotation and masscurves
+                fileManager->saveRotationCurve(currentParticles, "");
+                fileManager->saveMassCurve(currentParticles, "");
             }
 
             fileManager->saveParticles(t, currentParticles, "Data");

@@ -183,23 +183,6 @@ void FileManager::saveRotationCurve(std::vector<Particle>& particles, std::strin
 			}
         }
     }
-    if(true)
-    {
-        for (int k = 0; k < steps.size(); k++)
-        {
-            if (k < 20)
-            {
-                continue;
-            }
-            double myVelocity = sqrt(pow(steps[k].velocity.x, 2) + pow(steps[k].velocity.y, 2) + pow(steps[k].velocity.z, 2));
-            double otherVelocity = sqrt(pow(steps[k - 1].velocity.x, 2) + pow(steps[k - 1].velocity.y, 2) + pow(steps[k - 1].velocity.z, 2));
-            if (myVelocity > otherVelocity * 2)
-            {
-                steps[k].velocity = steps[k - 1].velocity;
-		    }
-        }
-    }
-
     //print out the velocity and the distance to the center of mass
 	for (int i = 0; i < steps.size(); i++)
 	{

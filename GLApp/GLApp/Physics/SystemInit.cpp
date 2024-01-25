@@ -13,13 +13,12 @@ void SystemInit::start(std::vector<Particle>& particles)
 	//ourSolarSystem(particles);
 
 	//galaxies
-
-	//ellipticalGalaxy.S0(1, 9999, { 0,0,0 }, { 0,0,0}, {0,0,0}, 2, particles);
-	ellipticalGalaxy.S0(1, 9999, { 0,0,0 }, {0, 0,0 }, { 0,0,0 }, 1, particles);
+	ellipticalGalaxy.S0(1, 9999, { 0,0,0 }, { 0,0,0 }, {0,0,0}, 1, particles);
+	//ellipticalGalaxy.S0(10000, 19999, { 0,0,0 }, {290,356,-10 }, { 0,0,0 }, 1, particles);
 	
-	//spiralGalaxy.Sa(0, 9999, { 0,0,0 }, { -1,2,-1 }, { 0,0,0 }, 1, particles);
-	//spiralGalaxy.Sb(1, 9999, { 0,0,0 }, { 2,-1,0 }, { 0,0,0 }, 1, particles);
-	//spiralGalaxy.Sc(20000, 29999, { 1e22,0,0 }, { 1,2,1 }, { 0,0,0 }, 5, particles);
+	//spiralGalaxy.Sb(1, 9999, { 0,0,0 }, { 0,3.14,0 }, { 0,0,0 }, 1, particles);
+	//ellipticalGalaxy.S0(10000, 19999, { 1.065e21, 0.565e21,0 }, { 0, 0, 0 }, { 0,0,0 }, 0.3, particles);
+	//spiralGalaxy.Sc(20000, 29999, { 1e22,0,0 }, { 1,2,1 }, { 0,0,0 }, 0.5, particles);
 	
 	//barredGalaxy.SBa(0, 9999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
 	//barredGalaxy.SBb(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);

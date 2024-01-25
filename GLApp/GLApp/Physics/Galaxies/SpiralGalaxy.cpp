@@ -17,7 +17,7 @@ void SpiralGalaxy::ellipticalOrbit(Particle& p, double m, double diskR, double r
 
 	double bulgeScale = 0.07;
 	double diskScale = 0.03;
-	double bulgeR = diskR / 5;
+	double bulgeR = diskR / 30;
 
 	double z = 0;
 	// Berechnen der Z-Koordinate basierend auf der Position im Bulge oder in der Disk
@@ -128,7 +128,7 @@ void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 		particles[j].angle = sqrt(r) * 2.0 * 3.14;
 
 		//denisty wave angle with A and k
-		double A = 1;
+		double A = 0.7;
 		double alpha = (i / (double)particleSize) * 2 * 3.14 * A;
 
 		ellipticalOrbit(particles[j], totalMass, galaxyRadius, r, alpha);
