@@ -10,10 +10,10 @@ void SystemInit::start(std::vector<Particle>& particles)
 {
 	//planet systemns without SPH
 	//solarSystem(particles);
-	//ourSolarSystem(particles);
+	ourSolarSystem(particles);
 
 	//galaxies
-	ellipticalGalaxy.S0(1, 9999, { 0,0,0 }, { 0,0,0 }, {0,0,0}, 1, particles);
+	//ellipticalGalaxy.S0(1, 9999, { 0,0,0 }, { 0,0,0 }, {0,0,0}, 1, particles);
 	//ellipticalGalaxy.S0(10000, 19999, { 0,0,0 }, {290,356,-10 }, { 0,0,0 }, 1, particles);
 	
 	//spiralGalaxy.Sb(1, 9999, { 0,0,0 }, { 0,3.14,0 }, { 0,0,0 }, 1, particles);

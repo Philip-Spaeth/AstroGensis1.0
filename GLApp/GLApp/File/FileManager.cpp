@@ -14,17 +14,19 @@
 #include <thread>
 #include <algorithm>
 
-FileManager::FileManager(){}
+FileManager::FileManager(std::string newDataFolder){
+    dataFolder = newDataFolder;
+}
 
 FileManager::~FileManager(){}
 
 void FileManager::saveParticles(int timestep, const std::vector<Particle>& particles, const std::string& path)
 {
-    std::string dataFolder = "Data";
-    std::filesystem::create_directory(dataFolder);
+    dataFolder = path;
+    std::filesystem::create_directory("Data/" + dataFolder);
 
     // Save data to a file for this time step
-    std::string fileName = "Data/Time_" + std::to_string(timestep) + ".dat";
+    std::string fileName = "Data/" + dataFolder + "/Time_" + std::to_string(timestep) + ".dat";
     std::ofstream file(fileName, std::ios::binary);
 
     //put the particle positions and radius in a the array
@@ -60,7 +62,7 @@ void FileManager::saveParticles(int timestep, const std::vector<Particle>& parti
 
 void FileManager::loadParticles(int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec3>& color, std::vector<glm::vec3>& densitycolor)
 {
-    std::string fileName = "Data/Time_" + std::to_string(timestep) + ".dat";
+    std::string fileName = "Data/" + dataFolder + "/Time_" + std::to_string(timestep) + ".dat";
     std::ifstream file(fileName, std::ios::binary);
 
     if (file.is_open()) {

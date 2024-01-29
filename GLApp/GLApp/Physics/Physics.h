@@ -19,21 +19,23 @@ class Octree;
 
 class Physics {
 public:
-    Physics();
+    //Physics();
+    Physics(std::string dataFolder = "Data");
+    std::string dataFolder = "Data";
 
-    static const int numTimeSteps = 500;
-    static const int particlesSize = 10000;
+    static const int numTimeSteps = 1000;
+    static const int particlesSize = 10;
 
     //the time per frame
     //Optimal Value for ellipticalgalaxy : 1e13
-    const double deltaTime = 1e13;
+    const double deltaTime = 3600;
 
     // calculation Method:
     int calculationMethod = 1;
 
     //Softening
-    static const bool PlummerSoftening = true;
-    const double softening = 1e18;
+    static const bool PlummerSoftening = false;
+    const double softening = 10;
     const double a = 1e100;
 
     //barnes hut
@@ -43,7 +45,7 @@ public:
     double maxDistance = 0;
 
     //SPH takes extra calculation time
-    static const bool SPH = true;
+    static const bool SPH = false;
     double h = 1e18;
     double k = 3e46;
     double rh0 = 1e-19;

@@ -27,9 +27,12 @@
 //#ifdef WIN32
 int main()
 {
-    Physics physics;
+    std::string dataFolder = "Data";
+
+    Physics physics(dataFolder);
 
     physics.Calc();
+    dataFolder = physics.dataFolder;
 
     std::cout << std::endl;
     std::cout << "Press enter to start" << std::endl;
@@ -37,8 +40,8 @@ int main()
     std::string input;
     std::getline(std::cin, input);
 
-    Engine engine;
-    FileManager* fileManager = new FileManager();
+    Engine engine(dataFolder);
+    FileManager* fileManager = new FileManager(dataFolder);
 
     if (!engine.init(physics.deltaTime)) {
         std::cerr << "Engine initialization failed." << std::endl;

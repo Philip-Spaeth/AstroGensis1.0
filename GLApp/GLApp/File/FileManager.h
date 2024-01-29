@@ -12,8 +12,10 @@
 class FileManager
 {
 	public:
-	FileManager();
+	FileManager(std::string dataFolder);
 	~FileManager();
+
+	std::string dataFolder = "Data";
 	
 	void saveParticles(int timestep, const std::vector<Particle>& particles, const std::string& path);
 	void loadParticles(int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec3>& color, std::vector<glm::vec3>& densitycolor);

@@ -13,10 +13,12 @@
 #include "FileManager.h"
 #include <random>
 #include <chrono>
+namespace fs = std::filesystem;
 
-Physics::Physics()
+
+Physics::Physics(std::string newDataFolder)
 {
-
+    dataFolder = newDataFolder;
     // Initialisieren des Zufallszahlengenerators
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
 }
@@ -31,7 +33,22 @@ bool Physics::Calc()
 
     if (input == "o")
     {
-        return false;
+        while(true){
+            // Select Folder of Simulation
+            std::cout << "Bitte geben Sie den Namen des Projektes ein." << std::endl;
+            std::cout << "ENTER wählt automatisch 'Data' aus." << std::endl;
+            std::string inputDataFolder;
+            std::getline(std::cin, inputDataFolder);
+            if(inputDataFolder == "") inputDataFolder = "Data";
+            dataFolder = inputDataFolder;
+            // check if directory exists
+            std::string path = "Data/" + dataFolder;
+            if (fs::exists(path) && fs::is_directory(path)) {
+                return false;
+            } else {
+                std::cout << "Der Ordner existiert nicht. \n" << std::endl;
+            }
+        }
     }
 
     // Select calculation method
@@ -46,12 +63,22 @@ bool Physics::Calc()
         calculationMethod = std::stoi(inputCalculationMethod);
     }
 
+    // Select Folder save Data
+    std::cout << "Bitte geben Sie einen Namen ein, unter welchen die Simulation gespeichert werden soll." << std::endl;
+    std::cout << "ENTER wählt automatisch 'Data' aus." << std::endl;
+    std::string inputDataFolder;
+    std::getline(std::cin, inputDataFolder);
+    if(inputDataFolder == "") inputDataFolder = "Data";
+    dataFolder = inputDataFolder;
+
     auto current_time = std::chrono::system_clock::now();
 
     std::cout << "Starting the calculations..." << std::endl;
 
-    std::string dataFolder = "Data";
-    std::filesystem::create_directory(dataFolder);
+    std::cout << dataFolder << std::endl;
+    std::string dataFile = "Data/" + dataFolder;
+    std::filesystem::create_directory(dataFile);
+
 
     totalEnergie.resize(numTimeSteps);
 
@@ -113,9 +140,8 @@ bool Physics::Calc()
             //rotation and masscurves
             //fileManager->saveRotationCurve(currentParticles, "");
             //fileManager->saveMassCurve(currentParticles, "");
-
-            fileManager = new FileManager();
-            fileManager->saveParticles(t, currentParticles, "Data");
+            fileManager = new FileManager(dataFolder);
+            fileManager->saveParticles(t, currentParticles, dataFolder);
         }
 
 
@@ -259,7 +285,7 @@ bool Physics::Calc()
                 fileManager->saveMassCurve(currentParticles, "");
             }
 
-            fileManager->saveParticles(t, currentParticles, "Data");
+            fileManager->saveParticles(t, currentParticles, dataFolder);
 
             calcTime(t, current_time);
         }

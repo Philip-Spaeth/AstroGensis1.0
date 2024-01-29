@@ -14,8 +14,9 @@
 #include <string>
 
 
- Engine::Engine() : window(nullptr), shaderProgram(0), VAO(0)
+ Engine::Engine(std::string NewDataFolder) : window(nullptr), shaderProgram(0), VAO(0)
 {
+    dataFolder = NewDataFolder;
      // start kamera position
      cameraPosition = glm::vec3(0.0f, 0.0f, 1000.0f);                     
      cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -184,7 +185,7 @@ bool Engine::init(double physicsFaktor)
 void Engine::start()
 {
     // Erstellen des FileManagers
-    fileManager = new FileManager();
+    fileManager = new FileManager(dataFolder);
 
     fileManager->loadParticles(0, positions, colors, densityColors);
 

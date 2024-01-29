@@ -13,7 +13,8 @@ class FileManager;
 
 class Engine {
 public:
-    Engine();
+    Engine(std::string dataFolder);
+    std::string dataFolder;
 
     bool init(double physicsFaktor);
     void start();
@@ -60,7 +61,7 @@ private:
     double cameraViewDistance = 1e15;
     glm::mat4 view;
 
-    // Funktionen für Kamerasteuerung 
+    // Funktionen fï¿½r Kamerasteuerung 
     void processMouseInput();
     void processInput();
 
@@ -71,8 +72,8 @@ private:
     GLuint framebuffer;
     GLuint textureColorbuffer;
     GLuint rbo;
-    GLuint blurShaderProgram; // Shader-Programm für den Blur-Effekt
-    GLuint quadVAO; // VAO für das Quad, auf das der Blur-Effekt angewendet wird
+    GLuint blurShaderProgram; // Shader-Programm fï¿½r den Blur-Effekt
+    GLuint quadVAO; // VAO fï¿½r das Quad, auf das der Blur-Effekt angewendet wird
     void renderBlur();
     void renderParticles();
     void checkShaderCompileStatus(GLuint shader, const char* shaderType);
