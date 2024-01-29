@@ -21,11 +21,12 @@ class Physics {
 public:
     Physics();
 
-    static const int numTimeSteps = 1000;
+    static const int numTimeSteps = 500;
     static const int particlesSize = 10000;
 
     //the time per frame
-    const double deltaTime = 1e14;
+    //Optimal Value for ellipticalgalaxy : 1e13
+    const double deltaTime = 1e13;
 
     // calculation Method:
     int calculationMethod = 1;
@@ -44,10 +45,10 @@ public:
     //SPH takes extra calculation time
     static const bool SPH = true;
     double h = 1e18;
-    double k = 1e47;
+    double k = 3e46;
     double rh0 = 1e-19;
-    double mu = 1e48;
-    //ok good for S0:     double h = 1e18;double k = 1e47;double rh0 = 1e-19;double mu = 1e48;
+    double mu = 1e47;
+    //ok good for S0:      double h = 1e18;     double k = 3e46;    double rh0 = 1e-19;     double mu = 1e47;
 
     //dark Energy / Cosmological Constant
     static const bool darkEnergy = true;

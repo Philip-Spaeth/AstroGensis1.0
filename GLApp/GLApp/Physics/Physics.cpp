@@ -59,7 +59,7 @@ bool Physics::Calc()
 
     for (int t = 0; t < numTimeSteps; ++t) 
     {
-        totalEnergie[t].resize(particlesSize);
+        totalEnergie[t].resize(particlesSize);  
 
         //Start values of the particles
         if (t == 0)
@@ -67,7 +67,8 @@ bool Physics::Calc()
             systemInit = new SystemInit();
             systemInit->start(currentParticles);
 
-			for (int i = 0; i < currentParticles.size(); i++) {
+			for (int i = 0; i < currentParticles.size(); i++) 
+            {
 				double distance = sqrt(pow(currentParticles[i].position.x, 2) + pow(currentParticles[i].position.y, 2) + pow(currentParticles[i].position.z, 2));
 				if (distance > maxDistance) {
 					maxDistance = distance;
@@ -110,8 +111,8 @@ bool Physics::Calc()
             }
 
             //rotation and masscurves
-            fileManager->saveRotationCurve(currentParticles, "");
-            fileManager->saveMassCurve(currentParticles, "");
+            //fileManager->saveRotationCurve(currentParticles, "");
+            //fileManager->saveMassCurve(currentParticles, "");
 
             fileManager = new FileManager();
             fileManager->saveParticles(t, currentParticles, "Data");
@@ -251,7 +252,7 @@ bool Physics::Calc()
                     }
                 }
             }
-            if (t == 100)
+            if(false)//if (t == 100)
             {
                 //rotation and masscurves
                 fileManager->saveRotationCurve(currentParticles, "");

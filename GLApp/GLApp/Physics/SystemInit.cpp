@@ -25,11 +25,6 @@ void SystemInit::start(std::vector<Particle>& particles)
 	//barredGalaxy.SBc(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
 }
 
-
-
-
-
-
 // solar system stuff 
 
 void SystemInit::solarSystem(std::vector<Particle>& particles)
