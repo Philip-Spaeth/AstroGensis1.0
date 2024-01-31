@@ -52,7 +52,7 @@ void EllipticalGalaxy::S0(int startIndex, int endIndex, glm::dvec3 position, glm
         // Berechnen der Z-Koordinate basierend auf der Position im Bulge oder in der Disk
         if (r < bulgeR)
         {
-            z = physics.gaussianRandom() * bulgeScale * galaxyRadius;
+            z = (physics.gaussianRandom() * bulgeScale * galaxyRadius);
         }
         else
         {

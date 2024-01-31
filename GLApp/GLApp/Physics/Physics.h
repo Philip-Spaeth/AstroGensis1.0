@@ -23,12 +23,12 @@ public:
     Physics(std::string dataFolder = "Data");
     std::string dataFolder = "Data";
 
-    static const int numTimeSteps = 100;
-    static const int particlesSize = 10;
+    static const int numTimeSteps = 1;
+    static const int particlesSize = 10000;
 
     //the time per frame
     //Optimal Value for ellipticalgalaxy : 1e13
-    const double deltaTime = 3600;
+    const double deltaTime = 5e13;
 
     // calculation Method:
     int calculationMethod = 1;
@@ -45,9 +45,9 @@ public:
     double maxDistance = 0;
 
     //SPH takes extra calculation time
-    static const bool SPH = false;
-    double h = 1e18;
-    double k = 3e46;
+    static const bool SPH = true;
+    double h = 5e18;
+    double k = 3e47;
     double rh0 = 1e-19;
     double mu = 1e47;
     //ok good for S0:      double h = 1e18;     double k = 3e46;    double rh0 = 1e-19;     double mu = 1e47;
@@ -58,7 +58,7 @@ public:
 
     //Color of the Particles (only for OpenGL) takes extra calculation time
     static const bool color = true;
-    double colorH = 1e19;
+    double colorH = 2e19;
 
     //Physikalische Konstanten
     const double G = 6.67430e-11;
