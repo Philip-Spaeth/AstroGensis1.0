@@ -23,7 +23,7 @@ public:
     Physics(std::string dataFolder = "Data");
     std::string dataFolder = "Data";
 
-    static const int numTimeSteps = 1000;
+    static const int numTimeSteps = 100;
     static const int particlesSize = 10;
 
     //the time per frame

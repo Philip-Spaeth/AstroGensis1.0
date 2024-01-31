@@ -25,30 +25,50 @@ Physics::Physics(std::string newDataFolder)
 
 bool Physics::Calc()
 {
-    // Nur neu berechnen, wenn Enter gedrückt wird
-    std::cout << "Press enter to start the calculations or press o to use render the old calculations" << std::endl;
-
     std::string input;
     std::getline(std::cin, input);
 
-    if (input == "o")
+    while(true)
     {
-        while(true){
-            // Select Folder of Simulation
-            std::cout << "Bitte geben Sie den Namen des Projektes ein." << std::endl;
-            std::cout << "ENTER wählt automatisch 'Data' aus." << std::endl;
-            std::string inputDataFolder;
-            std::getline(std::cin, inputDataFolder);
-            if(inputDataFolder == "") inputDataFolder = "Data";
-            dataFolder = inputDataFolder;
-            // check if directory exists
-            std::string path = "Data/" + dataFolder;
-            if (fs::exists(path) && fs::is_directory(path)) {
-                return false;
-            } else {
-                std::cout << "Der Ordner existiert nicht. \n" << std::endl;
-            }
+        // Select Folder of Simulation
+        //Display all folders in the Data folder
+        std::cout << "Choose a old simulation or press ENTER to start a new one" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Available simulations: " << std::endl;
+        std::cout << std::endl;
+        int i = 1;
+        for (const auto& entry : fs::directory_iterator("Data"))
+        {
+			std::cout << "[" << i << "]" << entry.path().filename() << std::endl;
+            i++;
+		}
+        std::cout << std::endl;
+        std::cout << "ENTER to start a new simulation" << std::endl;
+        std::cout << std::endl;
+
+        //check wich folder to use based on the i number from above
+        std::string Input;
+        std::getline(std::cin, Input);
+        if (Input == "")
+        {
+            break;
         }
+        else
+        {
+			int i = std::stoi(Input);
+			int j = 1;
+            for (const auto& entry : fs::directory_iterator("Data"))
+            {
+                if (i == j)
+                {
+					dataFolder = entry.path().filename().string();
+                    return false;
+					break;
+				}
+				j++;
+			}
+			break;
+		}
     }
 
     // Select calculation method
@@ -65,7 +85,7 @@ bool Physics::Calc()
 
     // Select Folder save Data
     std::cout << "Bitte geben Sie einen Namen ein, unter welchen die Simulation gespeichert werden soll." << std::endl;
-    std::cout << "ENTER wählt automatisch 'Data' aus." << std::endl;
+    std::cout << "ENTER standard: 'Data'." << std::endl;
     std::string inputDataFolder;
     std::getline(std::cin, inputDataFolder);
     if(inputDataFolder == "") inputDataFolder = "Data";
