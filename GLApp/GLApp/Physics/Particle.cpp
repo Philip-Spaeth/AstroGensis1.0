@@ -204,9 +204,9 @@ void Particle::hubbleExpansion()
     if (distance == 0) {
         return; // Verhindere eine Division durch Null.
     }
-
+    Physics phy;
     // Hubble-Effekt
-    double hubbleEffect = Physics::HubbleConstant * 1e-3 / 3.0857e22; // Umrechnung von km/s/Mpc in SI-Einheiten
+    double hubbleEffect = phy.HubbleConstant * 1e-3 / 3.0857e22; // Umrechnung von km/s/Mpc in SI-Einheiten
     glm::dvec3 hubbleVelocity = delta * hubbleEffect; // Relative Geschwindigkeit aufgrund der Expansion
 
     // Aktualisiere die Geschwindigkeit des Partikels

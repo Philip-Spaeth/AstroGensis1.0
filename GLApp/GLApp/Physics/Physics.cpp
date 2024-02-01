@@ -21,6 +21,10 @@ Physics::Physics(std::string newDataFolder)
     dataFolder = newDataFolder;
     // Initialisieren des Zufallszahlengenerators
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
+
+    fileManager = new FileManager(dataFolder);
+    //Initilize the parameters based of the configfile
+    if (configFile) config();
 }
 
 bool Physics::Calc()
@@ -111,7 +115,6 @@ bool Physics::Calc()
         //Start values of the particles
         if (t == 0)
         {
-            systemInit = new SystemInit();
             systemInit->start(currentParticles);
 
 			for (int i = 0; i < currentParticles.size(); i++) 
@@ -158,9 +161,9 @@ bool Physics::Calc()
             }
 
             //rotation and masscurves
+            fileManager = new FileManager(dataFolder);
             //fileManager->saveRotationCurve(currentParticles, "");
             //fileManager->saveMassCurve(currentParticles, "");
-            fileManager = new FileManager(dataFolder);
             fileManager->saveParticles(t, currentParticles, dataFolder);
         }
 
@@ -428,4 +431,40 @@ double Physics::gaussianRandom(double mean, double stddev)
 
     // Generieren und Rückgabe einer Zahl aus dieser Verteilung
     return distribution(generator);
+
+}
+
+bool stringToBool(const std::string& str);
+
+void Physics::config()
+{
+    auto config = fileManager->parseIniFile("config.ini");
+
+    numTimeSteps = std::stoi(config["Zeitschritte"]);
+    deltaTime = std::stof(config["DeltaT"]);
+    particlesSize = std::stoi(config["Partikelanzahl"]);
+
+    PlummerSoftening = stringToBool(config["PlummerSoftening"]);
+	softening = std::stof(config["SofteningLenght"]);
+	theta = std::stof(config["Theta"]);
+
+	SPH = stringToBool(config["SPH"]);
+    h = std::stoi(config["h"]);
+    k = std::stoi(config["k"]); 
+    rh0 = std::stoi(config["rho0"]);
+    mu = std::stoi(config["mu"]);
+
+	HubbleConstant = std::stoi(config["HubbleConstant"]);
+}
+
+bool stringToBool(const std::string& str) {
+    if (str == "1" || str == "true" || str == "True" || str == "TRUE") {
+        return true;
+    }
+    else if (str == "0" || str == "false" || str == "False" || str == "FALSE") {
+        return false;
+    }
+    else {
+        throw std::invalid_argument("Invalid boolean string");
+    }
 }

@@ -19,42 +19,42 @@ class Octree;
 
 class Physics {
 public:
-    //Physics();
     Physics(std::string dataFolder = "Data");
     std::string dataFolder = "Data";
 
-    static const int numTimeSteps = 1;
-    static const int particlesSize = 10000;
+    bool configFile = false;
+
+    int numTimeSteps = 10;
+    int particlesSize = 10000;
 
     //the time per frame
     //Optimal Value for ellipticalgalaxy : 1e13
-    const double deltaTime = 5e13;
-
+    double deltaTime = 1e14;
     // calculation Method:
     int calculationMethod = 1;
 
     //Softening
-    static const bool PlummerSoftening = false;
-    const double softening = 10;
-    const double a = 1e100;
+    bool PlummerSoftening = true;
+    double softening = 1e18;
+    double a = 1e100;
 
     //barnes hut
-    const double theta = 1;
+    double theta = 1;
     const double maxDepth = 100;
     const bool newDistanceCalc = false;
     double maxDistance = 0;
 
     //SPH takes extra calculation time
-    static const bool SPH = true;
-    double h = 5e18;
-    double k = 3e47;
-    double rh0 = 1e-19;
+    bool SPH = true;
+    double h = 1e19;
+    double k = 1e46;
+    double rh0 = 0.5e-21;
     double mu = 1e47;
     //ok good for S0:      double h = 1e18;     double k = 3e46;    double rh0 = 1e-19;     double mu = 1e47;
 
     //dark Energy / Cosmological Constant
-    static const bool darkEnergy = true;
-    static const int HubbleConstant = 70;
+    bool darkEnergy = true;
+    int HubbleConstant = 70;
 
     //Color of the Particles (only for OpenGL) takes extra calculation time
     static const bool color = true;
@@ -71,6 +71,7 @@ public:
 
     std::vector<Particle> currentParticles;
 private:
+    void config();
     Octree* octree;
     std::vector<std::vector<double>> totalEnergie;
     double calulations = 0;

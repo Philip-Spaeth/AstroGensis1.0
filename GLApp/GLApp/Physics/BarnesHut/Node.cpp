@@ -60,7 +60,7 @@ void Node::gravity(Particle& p, glm::dvec3& force, double softening, double a, d
 
 		if (r > 0)
 		{
-			if (Physics::PlummerSoftening)
+			if (true)
 			{
 				//Plummer softening
 				double epsilon0 = softening / std::sqrt(1.0 + std::pow(r / a, 2));
@@ -111,7 +111,7 @@ void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softeni
 		if (r > 0)
 		{
 			//normal newtonian gravity
-			if (Physics::PlummerSoftening)
+			if (physics.PlummerSoftening)
 			{
 				//Plummer softening
 				double epsilon0 = softening / std::sqrt(1.0 + std::pow(r / a, 2));
@@ -178,11 +178,13 @@ void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softeni
 
 glm::dvec3 Node::calcForce(Particle& p, Node* root, double softening, double a, double& potentialEngergy, double& calculations)
 {
+	Physics physics;
+
 	glm::dvec3 force = { 0,0,0 };
 
 	if (isLeaf)
 	{
-		if (Physics::SPH)
+		if (physics.SPH)
 		{
 			//SPH
 			gravitySPH(p, root, force, softening, a, potentialEngergy, calculations);
@@ -203,7 +205,7 @@ glm::dvec3 Node::calcForce(Particle& p, Node* root, double softening, double a, 
 
 		if (d / r < theta)
 		{
-			if (Physics::SPH)
+			if (physics.SPH)
 			{
 				//SPH
 				gravitySPH(p, root, force, softening, a, potentialEngergy, calculations);

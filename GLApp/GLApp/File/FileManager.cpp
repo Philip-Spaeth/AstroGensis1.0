@@ -6,6 +6,11 @@
 #include "Particle.h"
 #include <cmath>
 #include <future>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <map>
+#include <string>
 
 #ifdef WIN32
 #include <windows.h>
@@ -20,8 +25,59 @@ FileManager::FileManager(std::string newDataFolder){
 
 FileManager::~FileManager(){}
 
+std::map<std::string, std::string> FileManager::parseIniFile(const std::string& filename) 
+{
+    std::map<std::string, std::string> result;
+    std::ifstream file(filename);
+    std::string line, key, value;
+
+    while (std::getline(file, line)) {
+        std::istringstream is_line(line);
+        // Ignoriere Kommentarzeilen und leere Zeilen
+        if (line.empty() || line[0] == '#' || line[0] == ';') continue;
+
+        if (std::getline(is_line, key, '=') && std::getline(is_line, value)) {
+            result[key] = value;
+        }
+    }
+    return result;
+}
+
+std::vector<std::map<std::string, std::string>> FileManager::parseIniFileBySection(const std::string& filename) {
+    std::vector<std::map<std::string, std::string>> sections;
+    std::ifstream file(filename);
+    std::string line, section, key, value;
+    std::map<std::string, std::string> currentSection;
+
+    while (std::getline(file, line)) {
+        std::istringstream is_line(line);
+        if (line.empty() || line[0] == '#' || line[0] == ';') continue;
+
+        if (line[0] == '[') {
+            if (!currentSection.empty()) {
+                sections.push_back(currentSection);
+                currentSection.clear();
+            }
+            section = line.substr(1, line.find(']') - 1);
+            continue;
+        }
+
+        if (std::getline(is_line, key, '=') && std::getline(is_line, value)) {
+            currentSection[key] = value;
+        }
+    }
+    if (!currentSection.empty()) {
+        sections.push_back(currentSection);
+    }
+
+    return sections;
+}
+
 void FileManager::saveParticles(int timestep, const std::vector<Particle>& particles, const std::string& path)
 {
+
+    Physics physics;
+
     dataFolder = path;
     std::filesystem::create_directory("Data/" + dataFolder);
 
@@ -62,6 +118,8 @@ void FileManager::saveParticles(int timestep, const std::vector<Particle>& parti
 
 void FileManager::loadParticles(int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec3>& color, std::vector<glm::vec3>& densitycolor)
 {
+    Physics physics;
+
     std::string fileName = "Data/" + dataFolder + "/Time_" + std::to_string(timestep) + ".dat";
     std::ifstream file(fileName, std::ios::binary);
 
@@ -69,9 +127,9 @@ void FileManager::loadParticles(int timestep, std::vector<glm::vec4>& array, std
         size_t size;
         file.read(reinterpret_cast<char*>(&size), sizeof(size));
 
-        array.resize(Physics::particlesSize);
-        color.resize(Physics::particlesSize);
-        densitycolor.resize(Physics::particlesSize);
+        array.resize(physics.particlesSize);
+        color.resize(physics.particlesSize);
+        densitycolor.resize(physics.particlesSize);
         //load the positions and radius from the file
         file.read(reinterpret_cast<char*>(array.data()), size * sizeof(glm::vec4));
         //load the color and dark matter bool from file

@@ -4,6 +4,8 @@
 
 void EllipticalGalaxy::S0(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double size, std::vector<Particle>& particles)
 {
+    Physics physics;
+
     int particleSize = endIndex + 1 - startIndex;
 
     double galaxyRadius = 1e21 * size; // Radius der kugelförmigen Galaxie
@@ -50,14 +52,23 @@ void EllipticalGalaxy::S0(int startIndex, int endIndex, glm::dvec3 position, glm
         double diskScale = 0.03;
         double bulgeR = galaxyRadius / 10;
         // Berechnen der Z-Koordinate basierend auf der Position im Bulge oder in der Disk
+        z = physics.gaussianRandom() * 0.05 * galaxyRadius;
+        double l = (galaxyRadius * 0.5) / r;
+        if (l > 2)
+        {
+            l = 2;
+        }
+        z = z * l;
+
+        //wenn in bulge rotier um die mitte der galaxie random
         if (r < bulgeR)
         {
-            z = (physics.gaussianRandom() * bulgeScale * galaxyRadius);
+            double random = physics.random(0, 2 * 3.14);
+            x = x * std::cos(random) - y * std::sin(random);
+            y = x * std::sin(random) + y * std::cos(random);
+            z = z * std::cos(random) - y * std::sin(random);
         }
-        else
-        {
-            z = physics.gaussianRandom() * diskScale * galaxyRadius;
-        }
+
         //distanz zum zetrum berechnen
         double distanceToCenter = glm::abs(glm::length(glm::dvec3(x, y, 0)));
         //null ausschließen um division durch null zu vehindern
@@ -109,6 +120,7 @@ void EllipticalGalaxy::S0(int startIndex, int endIndex, glm::dvec3 position, glm
 
 void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double size, std::vector<Particle>& particles)
 {
+    Physics physics;
     int particleSize = endIndex + 1;
 
     double galaxyRadius = 1e21 * size; // Radius der Galaxie

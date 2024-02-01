@@ -6,6 +6,7 @@
 #include "Node.h"
 #include "Particle.h"
 
+class Node;
 
 class Octree {
 public:

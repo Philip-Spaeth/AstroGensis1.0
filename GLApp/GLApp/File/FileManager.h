@@ -6,7 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include "Physics.h"
+#include <map>
 
 
 class FileManager
@@ -16,6 +16,9 @@ class FileManager
 	~FileManager();
 
 	std::string dataFolder = "Data";
+
+	std::vector<std::map<std::string, std::string>> parseIniFileBySection(const std::string& filename);
+	std::map<std::string, std::string> parseIniFile(const std::string& filename);
 	
 	void saveParticles(int timestep, const std::vector<Particle>& particles, const std::string& path);
 	void loadParticles(int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec3>& color, std::vector<glm::vec3>& densitycolor);
@@ -27,6 +30,4 @@ class FileManager
 
 	//massCurve in galaxy, dark and visible matter
 	void saveMassCurve(std::vector<Particle>& particles, std::string path);
-
-	private:
 };

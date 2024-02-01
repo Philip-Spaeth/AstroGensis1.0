@@ -4,6 +4,7 @@
 #include <vector>
 #include <glm.hpp>
 #include "Particle.h"
+#include "Physics.h"
 
 class Particle;
 

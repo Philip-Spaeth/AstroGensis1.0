@@ -193,7 +193,8 @@ void Engine::start()
     GLuint VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * Physics::particlesSize, &positions[0], GL_STATIC_DRAW);
+    Physics p;
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * p.particlesSize, &positions[0], GL_STATIC_DRAW);
 
     // Erstellen des Vertex Array Objects (VAO)
     glGenVertexArrays(1, &VAO);
