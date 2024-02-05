@@ -7,10 +7,7 @@
 #include <iostream>
 #include <string>
 #include <map>
-<<<<<<< Updated upstream
-=======
 #include "Physics.h"
->>>>>>> Stashed changes
 
 class Physics;
 
@@ -27,11 +24,7 @@ class FileManager
 	std::map<std::string, std::string> parseIniFile(const std::string& filename);
 	
 	void saveParticles(int timestep, const std::vector<Particle>& particles, const std::string& path);
-<<<<<<< Updated upstream
-	void loadParticles(int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec3>& color, std::vector<glm::vec3>& densitycolor);
-=======
 	void loadParticles(Physics* p, int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec3>& color, std::vector<glm::vec3>& densitycolor);
->>>>>>> Stashed changes
 
 	void saveEnergieData(std::vector<std::vector<double>>& totalEnergie, std::string path);
 

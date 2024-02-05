@@ -22,17 +22,10 @@ public:
     Physics(std::string dataFolder = "Data");
     std::string dataFolder = "Data";
 
-<<<<<<< Updated upstream
-    bool configFile = false;
-
-    int numTimeSteps = 10;
-    int particlesSize = 10000;
-=======
     bool configFile = true;
 
     int numTimeSteps = 2;
     int particlesSize = 20000;
->>>>>>> Stashed changes
 
     //the time per frame
     //Optimal Value for ellipticalgalaxy : 1e13
@@ -46,11 +39,7 @@ public:
     double a = 1e100;
 
     //barnes hut
-<<<<<<< Updated upstream
-    double theta = 1;
-=======
     double theta = 3.5;
->>>>>>> Stashed changes
     const double maxDepth = 100;
     const bool newDistanceCalc = false;
     double maxDistance = 0;

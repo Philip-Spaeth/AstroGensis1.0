@@ -30,19 +30,10 @@
 int main()
 {
     std::string dataFolder = "Data";
-<<<<<<< Updated upstream
-
-    Physics physics(dataFolder);
-
-    physics.Calc();
-    dataFolder = physics.dataFolder;
-=======
-
     Physics* physics = new Physics(dataFolder);
 
     physics->Calc();
     dataFolder = physics->dataFolder;
->>>>>>> Stashed changes
 
     std::cout << std::endl;
     std::cout << "Press enter to start" << std::endl;
@@ -102,11 +93,7 @@ int main()
             std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>((1.0 / TARGET_FPS - frameTime) * 1000)));
         }
 
-<<<<<<< Updated upstream
-        fileManager->loadParticles(counter, engine.positions, engine.colors, engine.densityColors);
-=======
         fileManager->loadParticles(physics, counter, engine.positions, engine.colors, engine.densityColors);
->>>>>>> Stashed changes
 
         // update particles
         engine.update(counter);

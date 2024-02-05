@@ -10,8 +10,6 @@
 #include <string>
 #include <sstream>
 #include <map>
-<<<<<<< Updated upstream
-=======
 #include <iostream>
 #include <filesystem>
 #include <string>
@@ -20,7 +18,6 @@
 #include <string>
 #include <unordered_map>
 namespace fs = std::filesystem;
->>>>>>> Stashed changes
 
 using namespace std;
 
@@ -37,38 +34,7 @@ glm::vec3 parseVector3(const std::string& vecString) {
 
 std::unordered_map<std::string, std::string> readTheConfig(const std::string& filename)
 {
-<<<<<<< Updated upstream
-	Physics p;
-	//Init nach Config File
-	if (p.configFile)
-	{
-		FileManager*fileManager = new FileManager("");
-		auto galaxyConfigs = fileManager->parseIniFileBySection("config.ini");
-
-		for (auto& config : galaxyConfigs) {
-			createGalaxy(config, particles);
-		}
-	}
-	//manuelles Initialisieren
-	else
-	{
-		//planet systemns without SPH
-		//solarSystem(particles);
-		//ourSolarSystem(particles);
-
-		//galaxies
-		//ellipticalGalaxy.E0(1, 9999, { 0,0,0 }, { 0,0,0 }, {0,0,0}, 1, particles);
-		ellipticalGalaxy.S0(1, 9999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
-
-		//spiralGalaxy.Sb(1, 9999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
-		//ellipticalGalaxy.S0(10000, 19999, { 1.065e21, 0.565e21,0 }, { 0, 0, 0 }, { 0,0,0 }, 0.3, particles);
-		//spiralGalaxy.Sc(20000, 29999, { 1e22,0,0 }, { 1,2,1 }, { 0,0,0 }, 0.5, particles);
-
-		//barredGalaxy.SBa(0, 9999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
-		//barredGalaxy.SBb(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
-		//barredGalaxy.SBc(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
-	}
-=======
+	
 	std::unordered_map<std::string, std::string> config;
 	std::ifstream file(filename);
 	std::string line;
@@ -115,40 +81,8 @@ std::unordered_map<std::string, std::string> readTheConfig(const std::string& fi
 	}
 
 	return config;
->>>>>>> Stashed changes
 }
 
-void SystemInit::createGalaxy(const std::map<std::string, std::string>& config, std::vector<Particle>& particles) {
-	std::string type = config.at("Typ");
-	std::string hubbleKlassifikation = config.at("HubbleKlassifikation");
-	int particleSize = std::stoi(config.at("ParticleSize"));
-	double radius = std::stod(config.at("Radius"));
-	double gesammtMasse = std::stod(config.at("GesammtMasse"));
-	double anteilBaryonischeMaterie = std::stod(config.at("AnteilBaryonischeMaterie"));
-	double anteilDunkleMaterie = std::stod(config.at("AnteilDunkleMaterie"));
-
-	// Position und Geschwindigkeit extrahieren
-	std::vector<std::string> posTokens, velTokens, rotTokens;
-	std::string token;
-	std::istringstream posStream(config.at("Position"));
-	std::istringstream velStream(config.at("Geschwindigkeit"));
-	std::istringstream rotStream(config.at("Rotation"));
-
-<<<<<<< Updated upstream
-	while (std::getline(posStream, token, ',')) {
-		posTokens.push_back(token);
-	}
-	while (std::getline(velStream, token, ',')) {
-		velTokens.push_back(token);
-	}
-	while (std::getline(rotStream, token, ',')) {
-		rotTokens.push_back(token);
-	}
-
-	glm::dvec3 position(std::stod(posTokens[0]), std::stod(posTokens[1]), std::stod(posTokens[2]));
-	glm::dvec3 geschwindigkeit(std::stod(velTokens[0]), std::stod(velTokens[1]), std::stod(velTokens[2]));
-	glm::dvec3 rotation(std::stod(rotTokens[0]), std::stod(rotTokens[1]), std::stod(rotTokens[2]));
-=======
 void SystemInit::start(std::vector<Particle>& particles)
 {
 	Physics p;
@@ -235,18 +169,6 @@ void SystemInit::start(std::vector<Particle>& particles)
 		//barredGalaxy.SBa(0, 9999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
 		//barredGalaxy.SBb(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
 		//barredGalaxy.SBc(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
-	}
-}
->>>>>>> Stashed changes
-
-	// Hier erstellen Sie die Galaxie basierend auf dem Typ und den weiteren Parametern
-	if (type == "Spiral") {
-		// Erstellen Sie eine Spiralgalaxie
-		// Beispiel: spiralGalaxy.createGalaxy(particleSize, radius, position, geschwindigkeit, rotation, gesammtMasse, anteilBaryonischeMaterie, anteilDunkleMaterie, particles);
-	}
-	else if (type == "Elliptisch") {
-		// Erstellen Sie eine elliptische Galaxie
-		// Beispiel: ellipticalGalaxy.createGalaxy(particleSize, radius, position, geschwindigkeit, rotation, gesammtMasse, anteilBaryonischeMaterie, anteilDunkleMaterie, particles);
 	}
 }
 

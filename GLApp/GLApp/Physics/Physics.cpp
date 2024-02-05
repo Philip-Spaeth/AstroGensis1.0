@@ -11,8 +11,6 @@
 #include "FileManager.h"
 #include <random>
 #include <chrono>
-<<<<<<< Updated upstream
-=======
 #include <iostream>
 #include <filesystem>
 #include <string>
@@ -20,7 +18,6 @@
 #include <sstream>
 #include <string>
 #include <unordered_map>
->>>>>>> Stashed changes
 namespace fs = std::filesystem;
 
 
@@ -29,10 +26,6 @@ Physics::Physics(std::string newDataFolder)
     dataFolder = newDataFolder;
     // Initialisieren des Zufallszahlengenerators
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
-
-    fileManager = new FileManager(dataFolder);
-    //Initilize the parameters based of the configfile
-    if (configFile) config();
 }
 
 void createDataFolder(const std::string& dataFolder) {
@@ -63,23 +56,6 @@ bool Physics::Calc()
 
     while(true)
     {
-<<<<<<< Updated upstream
-        // Select Folder of Simulation
-        //Display all folders in the Data folder
-        std::cout << "Choose a old simulation or press ENTER to start a new one" << std::endl;
-        std::cout << std::endl;
-        std::cout << "Available simulations: " << std::endl;
-        std::cout << std::endl;
-        int i = 1;
-        for (const auto& entry : fs::directory_iterator("Data"))
-        {
-			std::cout << "[" << i << "]" << entry.path().filename() << std::endl;
-            i++;
-		}
-        std::cout << std::endl;
-        std::cout << "ENTER to start a new simulation" << std::endl;
-        std::cout << std::endl;
-=======
         std::string dataPath = "Data"; // Pfad zum Data-Ordner
 
         std::cout << "Choose an old simulation or press ENTER to start a new one\n\n";
@@ -98,7 +74,6 @@ bool Physics::Calc()
         }
 
         std::cout << "\nPress ENTER to start a new simulation\n\n";
->>>>>>> Stashed changes
 
         //check wich folder to use based on the i number from above
         std::string Input;
@@ -156,11 +131,6 @@ bool Physics::Calc()
 
     std::cout << dataFolder << std::endl;
     std::string dataFile = "Data/" + dataFolder;
-<<<<<<< Updated upstream
-    std::filesystem::create_directory(dataFile);
-=======
->>>>>>> Stashed changes
-
 
     totalEnergie.resize(numTimeSteps);
 
@@ -373,7 +343,7 @@ bool Physics::Calc()
     }
 
 
-    fileManager->saveEnergieData(totalEnergie, "../Energie_Daten/1000sec/Euler_Data.txt");
+    //fileManager->saveEnergieData(totalEnergie, "../Energie_Daten/1000sec/Euler_Data.txt");
 
     std::cout << std::endl;
     std::cout << "Total Calculations: " << calulations << std::endl;
@@ -494,29 +464,6 @@ double Physics::gaussianRandom(double mean, double stddev)
 
 bool stringToBool(const std::string& str);
 
-<<<<<<< Updated upstream
-void Physics::config()
-{
-    auto config = fileManager->parseIniFile("config.ini");
-
-    numTimeSteps = std::stoi(config["Zeitschritte"]);
-    deltaTime = std::stof(config["DeltaT"]);
-    particlesSize = std::stoi(config["Partikelanzahl"]);
-
-    PlummerSoftening = stringToBool(config["PlummerSoftening"]);
-	softening = std::stof(config["SofteningLenght"]);
-	theta = std::stof(config["Theta"]);
-
-	SPH = stringToBool(config["SPH"]);
-    h = std::stoi(config["h"]);
-    k = std::stoi(config["k"]); 
-    rh0 = std::stoi(config["rho0"]);
-    mu = std::stoi(config["mu"]);
-
-	HubbleConstant = std::stoi(config["HubbleConstant"]);
-}
-
-=======
 std::unordered_map<std::string, std::string> readConfig(const std::string& filename) 
 {
     std::unordered_map<std::string, std::string> config;
@@ -663,8 +610,6 @@ void Physics::config() {
     std::cout << std::endl;
 }
 
-
->>>>>>> Stashed changes
 bool stringToBool(const std::string& str) {
     if (str == "1" || str == "true" || str == "True" || str == "TRUE") {
         return true;
