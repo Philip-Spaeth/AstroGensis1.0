@@ -166,7 +166,10 @@ void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softeni
 					double distance = glm::length(p.position - massCenter);
 					glm::dvec3 laplaceKernelGrad = laplaceCubicSplineKernel(delta, h);
 
-					glm::dvec3 viscousForce = -mu * (mass / p.density) * (velocityDiff / (distance + softening)) * laplaceKernelGrad;
+					glm::dvec3 viscousForce = -mu * (mass / p.density) * (velocityDiff / (distance + softening)) * glm::dot(laplaceKernelGrad, laplaceKernelGrad);
+					glm::dvec3 ds = { 1,4,2 };
+					glm::dvec3 gh = {4, 3, 21};
+					glm::dvec3 ki = ds* gh;
 					force += viscousForce;
 				}
 			}

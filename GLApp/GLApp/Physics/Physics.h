@@ -29,7 +29,7 @@ public:
 
     //the time per frame
     //Optimal Value for ellipticalgalaxy : 1e13
-    double deltaTime = 1e12;
+    double deltaTime = 1e14;
     // calculation Method:
     int calculationMethod = 1;
 

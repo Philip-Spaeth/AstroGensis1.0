@@ -61,7 +61,7 @@ void SpiralGalaxy::ellipticalOrbit(Particle& p, double m, double diskR, double r
 		}
 	}
 	// Berechnung der Geschwindigkeit
-	double v = (std::sqrt(6.67430e-11 * m / distanceToCenter) * e) * ellipticity;
+	double v = (std::sqrt(6.67430e-11 * m / distanceToCenter)) * ellipticity;
 
 	//velocity tangent to the orbit 
 	glm::dvec3 direction = glm::dvec3(-p.position.y, p.position.x, p.position.z);
