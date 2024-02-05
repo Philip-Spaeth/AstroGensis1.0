@@ -24,12 +24,12 @@ public:
 
     bool configFile = true;
 
-    int numTimeSteps = 1;
+    int numTimeSteps = 10;
     int particlesSize = 20000;
 
     //the time per frame
     //Optimal Value for ellipticalgalaxy : 1e13
-    double deltaTime = 1e14;
+    double deltaTime = 1e12;
     // calculation Method:
     int calculationMethod = 1;
 

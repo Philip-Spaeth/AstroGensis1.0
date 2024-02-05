@@ -21,14 +21,30 @@ namespace fs = std::filesystem;
 
 using namespace std;
 
-// Hilfsfunktion zum Parsen von glm::vec3 aus einem String
-glm::vec3 parseVector3(const std::string& vecString) {
-	std::istringstream iss(vecString);
-	std::vector<double> values;
-	std::string s;
+glm::vec3 parseVector3(const string& vecString) {
+	istringstream iss(vecString);
+	vector<double> values;
+	string s;
+
 	while (getline(iss, s, ',')) {
-		values.push_back(std::stod(s));
+		// Entferne Leerzeichen am Anfang und am Ende des Strings
+		s.erase(0, s.find_first_not_of(" \t"));
+		s.erase(s.find_last_not_of(" \t") + 1);
+
+		try {
+			values.push_back(stod(s));
+		}
+		catch (const std::invalid_argument& e) {
+			cerr << "Ungültiges Format für Vektor: " << vecString << endl;
+			throw;
+		}
 	}
+
+	if (values.size() != 3) {
+		cerr << "Ungültige Anzahl an Elementen für Vektor: " << vecString << endl;
+		throw std::runtime_error("Vector parsing error");
+	}
+
 	return glm::vec3(values[0], values[1], values[2]);
 }
 
