@@ -2,12 +2,17 @@
 #include <gtc/matrix_transform.hpp> 
 #include <gtx/transform.hpp>
 
+<<<<<<< Updated upstream
 void EllipticalGalaxy::S0(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double size, std::vector<Particle>& particles)
+=======
+void EllipticalGalaxy::S0(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double anteilBaryonischeMaterie, double anteilDunkleMaterie, double powNumberNormal, double powNumberDark, std::vector<Particle>& particles)
+>>>>>>> Stashed changes
 {
     Physics physics;
 
     int particleSize = endIndex + 1 - startIndex;
 
+<<<<<<< Updated upstream
     double galaxyRadius = 1e21 * size; // Radius der kugelförmigen Galaxie
 
     double totalMass = 2.8e40 * size; // Gesamtmasse der Galaxie
@@ -16,6 +21,16 @@ void EllipticalGalaxy::S0(int startIndex, int endIndex, glm::dvec3 position, glm
 
     double powNumber = 0.5; // Verteilungsparameter für baryonische Materie
     double darkPowNumber = 2; // Verteilungsparameter für dunkle Materie
+=======
+    double galaxyRadius = maxRadius; // Radius der kugelförmigen Galaxie
+
+    double totalMass = Masse; // Gesamtmasse der Galaxie
+    double baryonicFraction = anteilBaryonischeMaterie; // Anteil der baryonischen Materie
+    double darkMatterFraction = anteilDunkleMaterie; // Anteil der dunklen Materie
+
+    double powNumber = powNumberNormal; // Verteilungsparameter für baryonische Materie
+    double darkPowNumber = powNumberNormal; // Verteilungsparameter für dunkle Materie
+>>>>>>> Stashed changes
 
     glm::mat4 transform = glm::mat4(1.0f); // Identity matrix
 
@@ -118,13 +133,18 @@ void EllipticalGalaxy::S0(int startIndex, int endIndex, glm::dvec3 position, glm
 }
 
 
-void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double size, std::vector<Particle>& particles)
+void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double anteilBaryonischeMaterie, double anteilDunkleMaterie, double powNumberNormal, double powNumberDark, std::vector<Particle>& particles)
 {
     Physics physics;
     int particleSize = endIndex + 1;
 
+<<<<<<< Updated upstream
     double galaxyRadius = 1e21 * size; // Radius der Galaxie
     double totalMass = 1e40; // Gesamtmasse der Galaxie
+=======
+    double galaxyRadius = maxRadius; // Radius der Galaxie
+    double totalMass = Masse; // Gesamtmasse der Galaxie
+>>>>>>> Stashed changes
     double mass = totalMass / particleSize; // Masse eines einzelnen Partikels
 
     int i = 0;
@@ -137,7 +157,11 @@ void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm
 
         //distribution
         double scaledI = i / (double)particleSize;
+<<<<<<< Updated upstream
         double faktor = 3;
+=======
+        double faktor = powNumberNormal;
+>>>>>>> Stashed changes
         double r = galaxyRadius * std::pow(scaledI, faktor) * (faktor * faktor);
 
         double x = r * std::sin(theta) * std::cos(phi);

@@ -47,6 +47,7 @@ void SpiralGalaxy::ellipticalOrbit(Particle& p, double m, double diskR, double r
 
 	// Setzen Sie die Position
 	p.position = glm::dvec3(x * std::cos(angle) - y * sin(angle), x * std::sin(angle) + y * cos(angle), z);
+<<<<<<< Updated upstream
 
 ///////////////////////// Velocity /////////////////////////
 	double e = 1;
@@ -62,13 +63,31 @@ void SpiralGalaxy::ellipticalOrbit(Particle& p, double m, double diskR, double r
 	}
 	// Berechnung der Geschwindigkeit
 	double v = (std::sqrt(physics.G * m / distanceToCenter) * e) * ellipticity;
+=======
+>>>>>>> Stashed changes
 
+///////////////////////// Velocity /////////////////////////
+	double e = 1;
+
+	//slwo down in bulge to cause caotic movement so its more realistic
+	if (distanceToCenter < bulgeR)
+	{
+		e = ((distanceToCenter * distanceToCenter) / bulgeR) / bulgeR * (bulgeR / distanceToCenter);
+		if (e > 1)
+		{
+			e = 1;
+		}
+	}
+	// Berechnung der Geschwindigkeit
+	//double v = (std::sqrt(physics.G * m / distanceToCenter) * e) * ellipticity;
+	double v = 0;
 	//velocity tangent to the orbit 
 	glm::dvec3 direction = glm::dvec3(-p.position.y, p.position.x, p.position.z);
 	direction = glm::normalize(direction);
 	p.velocity = direction * v;
 }
 
+<<<<<<< Updated upstream
 void SpiralGalaxy::Sa(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double size, std::vector<Particle>& particles)
 {
 	int particleSize = endIndex + 1 - startIndex;
@@ -81,6 +100,20 @@ void SpiralGalaxy::Sa(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 
 	double powNumber = 0.8; // Verteilungsparameter für baryonische Materie
 	double darkPowNumber = 1; // Verteilungsparameter für dunkle Materie
+=======
+void SpiralGalaxy::Sa(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double anteilBaryonischeMaterie, double anteilDunkleMaterie, double powNumberNormal, double powNumberDark, std::vector<Particle>& particles)
+{
+	int particleSize = endIndex + 1 - startIndex;
+
+	double galaxyRadius = maxRadius; // Radius der kugelförmigen Galaxie
+
+	double totalMass = Masse; // Gesamtmasse der Galaxie
+	double baryonicFraction = anteilBaryonischeMaterie; // Anteil der baryonischen Materie
+	double darkMatterFraction = anteilDunkleMaterie; // Anteil der dunklen Materie
+
+	double powNumber = powNumberNormal; // Verteilungsparameter für baryonische Materie
+	double darkPowNumber = powNumberDark; // Verteilungsparameter für dunkle Materie
+>>>>>>> Stashed changes
 
 	int i = 0;
 
@@ -142,6 +175,7 @@ void SpiralGalaxy::Sa(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 	}
 }
 
+<<<<<<< Updated upstream
 void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double size, std::vector<Particle>& particles)
 {
 	int particleSize = endIndex + 1 - startIndex;
@@ -154,6 +188,20 @@ void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 
 	double powNumber = 0.8; // Verteilungsparameter für baryonische Materie
 	double darkPowNumber = 1; // Verteilungsparameter für dunkle Materie
+=======
+void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double anteilBaryonischeMaterie, double anteilDunkleMaterie, double powNumberNormal, double powNumberDark, std::vector<Particle>& particles)
+{
+	int particleSize = endIndex + 1 - startIndex;
+
+	double galaxyRadius = maxRadius; // Radius der kugelförmigen Galaxie
+
+	double totalMass = Masse; // Gesamtmasse der Galaxie
+	double baryonicFraction = anteilBaryonischeMaterie; // Anteil der baryonischen Materie
+	double darkMatterFraction = anteilDunkleMaterie; // Anteil der dunklen Materie
+
+	double powNumber = powNumberNormal; // Verteilungsparameter für baryonische Materie
+	double darkPowNumber = powNumberDark; // Verteilungsparameter für dunkle Materie
+>>>>>>> Stashed changes
 
 	int i = 0;
 
@@ -184,7 +232,11 @@ void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 		particles[j].angle = sqrt(r) * 2.0 * 3.14;
 
 		//denisty wave angle with A and k
+<<<<<<< Updated upstream
 		double A = 1;
+=======
+		double A = 1.1;
+>>>>>>> Stashed changes
 		double alpha = (i / (double)particleSize) * 2 * 3.14 * A;
 
 		// Berechnung der Masse in der Kugel bis zum aktuellen Partikel
@@ -215,6 +267,7 @@ void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 	}
 }
 
+<<<<<<< Updated upstream
 void SpiralGalaxy::Sc(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double size, std::vector<Particle>& particles)
 {
 	int particleSize = endIndex + 1 - startIndex;
@@ -227,6 +280,20 @@ void SpiralGalaxy::Sc(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 
 	double powNumber = 0.8; // Verteilungsparameter für baryonische Materie
 	double darkPowNumber = 1; // Verteilungsparameter für dunkle Materie
+=======
+void SpiralGalaxy::Sc(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double anteilBaryonischeMaterie, double anteilDunkleMaterie, double powNumberNormal, double powNumberDark, std::vector<Particle>& particles)
+{
+	int particleSize = endIndex + 1 - startIndex;
+
+	double galaxyRadius = maxRadius; // Radius der kugelförmigen Galaxie
+
+	double totalMass = Masse; // Gesamtmasse der Galaxie
+	double baryonicFraction = anteilBaryonischeMaterie; // Anteil der baryonischen Materie
+	double darkMatterFraction = anteilDunkleMaterie; // Anteil der dunklen Materie
+
+	double powNumber = powNumberNormal; // Verteilungsparameter für baryonische Materie
+	double darkPowNumber = powNumberDark; // Verteilungsparameter für dunkle Materie
+>>>>>>> Stashed changes
 
 	int i = 0;
 

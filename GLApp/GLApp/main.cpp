@@ -13,10 +13,12 @@
 #ifdef WIN32
 #include <Windows.h>
 #include <debugapi.h>
+#endif
+/*
 #else
 #include <ncurses.h>
 #include <stdio.h>
-#endif
+*/
 
 #include "Physics.h"
 #include <iostream>
@@ -28,11 +30,19 @@
 int main()
 {
     std::string dataFolder = "Data";
+<<<<<<< Updated upstream
 
     Physics physics(dataFolder);
 
     physics.Calc();
     dataFolder = physics.dataFolder;
+=======
+
+    Physics* physics = new Physics(dataFolder);
+
+    physics->Calc();
+    dataFolder = physics->dataFolder;
+>>>>>>> Stashed changes
 
     std::cout << std::endl;
     std::cout << "Press enter to start" << std::endl;
@@ -43,12 +53,12 @@ int main()
     Engine engine(dataFolder);
     FileManager* fileManager = new FileManager(dataFolder);
 
-    if (!engine.init(physics.deltaTime)) {
+    if (!engine.init(physics->deltaTime)) {
         std::cerr << "Engine initialization failed." << std::endl;
         return -1;
     }
 
-    engine.start();
+    engine.start(physics);
 
     double lastFrameTime = glfwGetTime(); // Zeit des letzten Frames
     double frameTime; // Zeitdauer eines Frames
@@ -71,6 +81,7 @@ int main()
             OutputDebugString(L"ESC KEY\n");
             glfwSetWindowShouldClose(engine.window, true);
         }
+        /*
         #else
         if (getch() == 27) // ESC
         {
@@ -78,6 +89,7 @@ int main()
             //OutputDebugString(L"ESC KEY\n");
             glfwSetWindowShouldClose(engine.window, true);
         }
+        */
         #endif
 
         double currentFrameTime = glfwGetTime();
@@ -90,21 +102,25 @@ int main()
             std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>((1.0 / TARGET_FPS - frameTime) * 1000)));
         }
 
+<<<<<<< Updated upstream
         fileManager->loadParticles(counter, engine.positions, engine.colors, engine.densityColors);
+=======
+        fileManager->loadParticles(physics, counter, engine.positions, engine.colors, engine.densityColors);
+>>>>>>> Stashed changes
 
         // update particles
         engine.update(counter);
         // add time when engine is running
         if (engine.isRunning)
         {
-            if (counter >= 0 && counter <= physics.numTimeSteps - 1)
+            if (counter >= 0 && counter <= physics->numTimeSteps - 1)
             {
                 counter = counter + engine.playSpeed;
             }
         }
-        if (counter >= physics.numTimeSteps - 1)
+        if (counter >= physics->numTimeSteps - 1)
         {
-			counter = physics.numTimeSteps - 1;
+			counter = physics->numTimeSteps - 1;
             engine.playSpeed = 0;
 		}
         if (counter < 0)
@@ -120,12 +136,14 @@ int main()
 			counter = 0;
 			engine.playSpeed = 0;
 		}
+        /*
         #else
         if (getch() == 82)
         {
 			counter = 0;
 			engine.playSpeed = 0;
 		}
+        */
         #endif
 
         frameCount++;
@@ -157,17 +175,3 @@ int main()
     glfwTerminate();
     return 0;
 }
-
-/* #else
-
-int main()
-{
-    Physics physics;
-
-    physics.Calc();
-
-    std::cout << std::endl;
-    std::cout << "Press enter to start" << std::endl;
-}
-
-#endif */

@@ -17,7 +17,7 @@ public:
     std::string dataFolder;
 
     bool init(double physicsFaktor);
-    void start();
+    void start(Physics* p);
     void update(int index);
     bool clean();
 

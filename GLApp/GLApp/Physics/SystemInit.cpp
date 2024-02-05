@@ -10,9 +10,34 @@
 #include <string>
 #include <sstream>
 #include <map>
+<<<<<<< Updated upstream
+=======
+#include <iostream>
+#include <filesystem>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <unordered_map>
+namespace fs = std::filesystem;
+>>>>>>> Stashed changes
 
-void SystemInit::start(std::vector<Particle>& particles)
+using namespace std;
+
+// Hilfsfunktion zum Parsen von glm::vec3 aus einem String
+glm::vec3 parseVector3(const std::string& vecString) {
+	std::istringstream iss(vecString);
+	std::vector<double> values;
+	std::string s;
+	while (getline(iss, s, ',')) {
+		values.push_back(std::stod(s));
+	}
+	return glm::vec3(values[0], values[1], values[2]);
+}
+
+std::unordered_map<std::string, std::string> readTheConfig(const std::string& filename)
 {
+<<<<<<< Updated upstream
 	Physics p;
 	//Init nach Config File
 	if (p.configFile)
@@ -43,6 +68,54 @@ void SystemInit::start(std::vector<Particle>& particles)
 		//barredGalaxy.SBb(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
 		//barredGalaxy.SBc(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
 	}
+=======
+	std::unordered_map<std::string, std::string> config;
+	std::ifstream file(filename);
+	std::string line;
+	std::string currentSection;
+
+	if (file.is_open()) {
+		while (std::getline(file, line)) {
+			// Entfernen Sie Leerzeichen am Anfang der Zeile
+			line.erase(0, line.find_first_not_of(" \t"));
+
+			// Erkenne Abschnittsnamen
+			if (line[0] == '[') {
+				size_t endPos = line.find(']');
+				if (endPos != std::string::npos) {
+					currentSection = line.substr(1, endPos - 1) + ".";
+				}
+				continue;
+			}
+
+			// Entferne Kommentare am Ende der Zeile
+			size_t commentPos = line.find_first_of("#;");
+			if (commentPos != std::string::npos) {
+				line = line.substr(0, commentPos);
+			}
+
+			std::istringstream is_line(line);
+			std::string key;
+			if (std::getline(is_line, key, '=')) {
+				std::string value;
+				if (std::getline(is_line, value)) {
+					// Entfernen Sie Leerzeichen am Anfang und am Ende des Schlüssels und des Werts
+					key.erase(0, key.find_first_not_of(" \t"));
+					key.erase(key.find_last_not_of(" \t") + 1);
+					value.erase(0, value.find_first_not_of(" \t"));
+					value.erase(value.find_last_not_of(" \t") + 1);
+					config[currentSection + key] = value;
+				}
+			}
+		}
+		file.close();
+	}
+	else {
+		std::cerr << "Konnte Datei nicht öffnen: " << filename << std::endl;
+	}
+
+	return config;
+>>>>>>> Stashed changes
 }
 
 void SystemInit::createGalaxy(const std::map<std::string, std::string>& config, std::vector<Particle>& particles) {
@@ -61,6 +134,7 @@ void SystemInit::createGalaxy(const std::map<std::string, std::string>& config, 
 	std::istringstream velStream(config.at("Geschwindigkeit"));
 	std::istringstream rotStream(config.at("Rotation"));
 
+<<<<<<< Updated upstream
 	while (std::getline(posStream, token, ',')) {
 		posTokens.push_back(token);
 	}
@@ -74,6 +148,96 @@ void SystemInit::createGalaxy(const std::map<std::string, std::string>& config, 
 	glm::dvec3 position(std::stod(posTokens[0]), std::stod(posTokens[1]), std::stod(posTokens[2]));
 	glm::dvec3 geschwindigkeit(std::stod(velTokens[0]), std::stod(velTokens[1]), std::stod(velTokens[2]));
 	glm::dvec3 rotation(std::stod(rotTokens[0]), std::stod(rotTokens[1]), std::stod(rotTokens[2]));
+=======
+void SystemInit::start(std::vector<Particle>& particles)
+{
+	Physics p;
+	//Init nach Config File
+	if (p.configFile)
+	{
+		auto config = readTheConfig("config.ini");
+
+		// Verarbeiten der Galaxie-Konfigurationen
+		int galaxieNummer = 1;
+		std::string galaxieKey = "Galaxie" + std::to_string(galaxieNummer);
+		int startIndex = 1;
+
+		while (config.find(galaxieKey + ".Typ") != config.end())
+		{
+			string typ = config[galaxieKey + ".Typ"];
+			string hubbleklass = config[galaxieKey + ".HubbleKlassifikation"];
+			int particlesize = std::stoi(config[galaxieKey + ".ParticleSize"]);
+			double radius = std::stod(config[galaxieKey + ".Radius"]);
+			double Masse = std::stod(config[galaxieKey + ".GesammtMasse"]);
+			double anteilBaryonischeMaterie = std::stod(config[galaxieKey + ".AnteilBaryonischeMaterie"]);
+			double anteilDunkleMaterie = std::stod(config[galaxieKey + ".AnteilDunkleMaterie"]);
+			double powNumberNormal = std::stod(config[galaxieKey + ".VerteilungsExponentBaryonischeMaterie"]);
+			double powNumberDark = std::stod(config[galaxieKey + ".VerteilungsExponentDunkleMaterie"]);
+
+			// Position, Geschwindigkeit, Rotation
+			glm::vec3 position = parseVector3(config[galaxieKey + ".Position"]);
+			glm::vec3 velocity = parseVector3(config[galaxieKey + ".Geschwindigkeit"]);
+			glm::vec3 rotation = parseVector3(config[galaxieKey + ".Rotation"]);
+
+			int endIndex = startIndex + particlesize - 1;
+			
+			if (typ == "Spiral")
+			{
+				if (hubbleklass == "Sa")
+				{
+					//spiral galaxie with theese parameter:int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double anteilBaryonischeMaterie, double anteilDunkleMaterie, double powNumberNormal, double powNumberDark, std::vector<Particle>& particles
+					spiralGalaxy.Sa(startIndex, endIndex, position, rotation, velocity, radius, Masse, anteilBaryonischeMaterie, anteilDunkleMaterie, powNumberNormal, powNumberDark, particles);
+				}
+				if (hubbleklass == "Sb")
+				{
+					spiralGalaxy.Sb(startIndex, endIndex, position, rotation, velocity, radius, Masse, anteilBaryonischeMaterie, anteilDunkleMaterie, powNumberNormal, powNumberDark, particles);
+				}
+				if (hubbleklass == "Sc")
+				{
+					spiralGalaxy.Sc(startIndex, endIndex, position, rotation, velocity, radius, Masse, anteilBaryonischeMaterie, anteilDunkleMaterie, powNumberNormal, powNumberDark, particles);
+				}
+			}
+			if (typ == "Elliptisch")
+			{
+				if (hubbleklass == "E0")
+				{
+					ellipticalGalaxy.E0(startIndex, endIndex, position, rotation, velocity, radius, Masse, anteilBaryonischeMaterie, anteilDunkleMaterie, powNumberNormal, powNumberDark, particles);
+				}
+				if (hubbleklass == "S0")
+				{
+					ellipticalGalaxy.S0(startIndex, endIndex, position, rotation, velocity, radius, Masse, anteilBaryonischeMaterie, anteilDunkleMaterie, powNumberNormal, powNumberDark, particles);
+				}
+			}
+			startIndex = endIndex; // Aktualisieren des Startindex für die nächste Galaxie
+			galaxieNummer++;
+			galaxieKey = "Galaxie" + std::to_string(galaxieNummer);
+		}
+	}
+	//manuelles Initialisieren
+	else
+	{
+		//planet systemns without SPH
+		
+		//solarSystem(particles);
+		//ourSolarSystem(particles);
+
+		//galaxies
+		
+		//ellipticalGalaxy.E0(0, 19999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, 1e12, 0.5, 0.5, 0.5, 0.5, particles);
+		//ellipticalGalaxy.S0(1, 9999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
+
+
+		//Spiral galaxy like milky way
+		spiralGalaxy.Sa(1, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1e21, 1e42, 0.5, 0.5, 0.5, 0.5, particles);
+		//ellipticalGalaxy.S0(10000, 19999, { 1.065e21, 0.565e21,0 }, { 0, 0, 0 }, { 0,0,0 }, 0.3, particles);
+		//spiralGalaxy.Sc(20000, 29999, { 1e22,0,0 }, { 1,2,1 }, { 0,0,0 }, 0.5, particles);
+
+		//barredGalaxy.SBa(0, 9999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
+		//barredGalaxy.SBb(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
+		//barredGalaxy.SBc(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
+	}
+}
+>>>>>>> Stashed changes
 
 	// Hier erstellen Sie die Galaxie basierend auf dem Typ und den weiteren Parametern
 	if (type == "Spiral") {

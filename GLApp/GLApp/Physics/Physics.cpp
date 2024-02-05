@@ -2,17 +2,25 @@
 #include "Physics.h"
 #include <cstdlib>
 #include <ctime>
-#include <iostream>
 #include <cmath>
 #include <glm.hpp>
 #include <gtc/constants.hpp>
-#include <fstream>
 #include "SystemInit.h"
 #include <locale>
 #include <string.h>
 #include "FileManager.h"
 #include <random>
 #include <chrono>
+<<<<<<< Updated upstream
+=======
+#include <iostream>
+#include <filesystem>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <unordered_map>
+>>>>>>> Stashed changes
 namespace fs = std::filesystem;
 
 
@@ -27,6 +35,27 @@ Physics::Physics(std::string newDataFolder)
     if (configFile) config();
 }
 
+void createDataFolder(const std::string& dataFolder) {
+    std::string dataFile = "Data/" + dataFolder;
+
+    std::cout << dataFile << std::endl;
+
+    // Überprüfen Sie, ob das Verzeichnis bereits existiert
+    if (!fs::exists(dataFile)) {
+        try {
+            // Versucht, das Verzeichnis zu erstellen
+            fs::create_directories(dataFile);
+        }
+        catch (const fs::filesystem_error& e) {
+            std::cerr << "Fehler beim Erstellen des Verzeichnisses: " << e.what() << '\n';
+            // Weitere Fehlerbehandlung
+        }
+    }
+    else {
+        std::cout << "Das Verzeichnis existiert bereits." << std::endl;
+    }
+}
+
 bool Physics::Calc()
 {
     std::string input;
@@ -34,6 +63,7 @@ bool Physics::Calc()
 
     while(true)
     {
+<<<<<<< Updated upstream
         // Select Folder of Simulation
         //Display all folders in the Data folder
         std::cout << "Choose a old simulation or press ENTER to start a new one" << std::endl;
@@ -49,6 +79,26 @@ bool Physics::Calc()
         std::cout << std::endl;
         std::cout << "ENTER to start a new simulation" << std::endl;
         std::cout << std::endl;
+=======
+        std::string dataPath = "Data"; // Pfad zum Data-Ordner
+
+        std::cout << "Choose an old simulation or press ENTER to start a new one\n\n";
+        std::cout << "Available simulations: \n\n";
+
+        // Überprüfen, ob das Verzeichnis existiert und darauf zugegriffen werden kann
+        if (fs::exists(dataPath) && fs::is_directory(dataPath)) {
+            int i = 1;
+            for (const auto& entry : fs::directory_iterator(dataPath)) {
+                std::cout << "[" << i << "] " << entry.path().filename() << std::endl;
+                i++;
+            }
+        }
+        else {
+            std::cout << "No available simulations. The 'Data' folder is missing or inaccessible.\n";
+        }
+
+        std::cout << "\nPress ENTER to start a new simulation\n\n";
+>>>>>>> Stashed changes
 
         //check wich folder to use based on the i number from above
         std::string Input;
@@ -74,6 +124,11 @@ bool Physics::Calc()
 			break;
 		}
     }
+
+
+    fileManager = new FileManager(dataFolder);
+    //Initilize the parameters based of the configfile
+    if (configFile) config();
 
     // Select calculation method
     std::cout << "Enter the calculation method:        Press ENTER to use default from Code" << std::endl;
@@ -101,7 +156,10 @@ bool Physics::Calc()
 
     std::cout << dataFolder << std::endl;
     std::string dataFile = "Data/" + dataFolder;
+<<<<<<< Updated upstream
     std::filesystem::create_directory(dataFile);
+=======
+>>>>>>> Stashed changes
 
 
     totalEnergie.resize(numTimeSteps);
@@ -436,6 +494,7 @@ double Physics::gaussianRandom(double mean, double stddev)
 
 bool stringToBool(const std::string& str);
 
+<<<<<<< Updated upstream
 void Physics::config()
 {
     auto config = fileManager->parseIniFile("config.ini");
@@ -457,6 +516,155 @@ void Physics::config()
 	HubbleConstant = std::stoi(config["HubbleConstant"]);
 }
 
+=======
+std::unordered_map<std::string, std::string> readConfig(const std::string& filename) 
+{
+    std::unordered_map<std::string, std::string> config;
+    std::ifstream file(filename);
+    std::string line;
+
+    if (file.is_open()) {
+        while (std::getline(file, line)) {
+            // Ignoriere Kommentare und leere Zeilen
+            if (line.empty() || line[0] == '#' || line[0] == ';') continue;
+
+            std::istringstream is_line(line);
+            std::string key;
+            if (std::getline(is_line, key, '=')) {
+                std::string value;
+                if (std::getline(is_line, value)) {
+                    // Entfernen Sie Leerzeichen am Anfang und am Ende des Schlüssels und des Werts
+                    key.erase(0, key.find_first_not_of(" \t"));
+                    key.erase(key.find_last_not_of(" \t") + 1);
+                    value.erase(0, value.find_first_not_of(" \t"));
+                    value.erase(value.find_last_not_of(" \t") + 1);
+                    config[key] = value;
+                }
+            }
+        }
+        file.close();
+    }
+    else {
+        std::cerr << "Konnte Datei nicht öffnen: " << filename << std::endl;
+    }
+
+    return config;
+}
+
+void Physics::config() {
+    auto config = readConfig("config.ini");
+
+    std::cout << "Using config File..." << std::endl;
+
+    // Zeitschritte
+    if (config.find("Zeitschritte") != config.end()) {
+        numTimeSteps = std::stoi(config["Zeitschritte"]);
+    }
+    else {
+        std::cout << "Zeitschritte wurde nicht gefunden" << std::endl;
+    }
+
+    // DeltaT
+    if (config.find("DeltaT") != config.end()) {
+        deltaTime = std::stod(config["DeltaT"]);
+    }
+    else {
+        std::cout << "DeltaT wurde nicht gefunden" << std::endl;
+    }
+
+    // Partikelanzahl
+    if (config.find("Partikelanzahl") != config.end()) {
+        particlesSize = std::stoi(config["Partikelanzahl"]);
+    }
+    else {
+        std::cout << "Partikelanzahl wurde nicht gefunden" << std::endl;
+    }
+
+    // PlummerSoftening
+    if (config.find("PlummerSoftening") != config.end()) {
+        PlummerSoftening = config["PlummerSoftening"] == "true";
+    }
+    else {
+        std::cout << "PlummerSoftening wurde nicht gefunden" << std::endl;
+    }
+
+    // SofteningLenght
+    if (config.find("SofteningLenght") != config.end()) {
+        softening = std::stod(config["SofteningLenght"]);
+    }
+    else {
+        std::cout << "SofteningLenght wurde nicht gefunden" << std::endl;
+    }
+
+    // a
+    if (config.find("a") != config.end()) {
+        a = std::stod(config["a"]);
+    }
+    else {
+        std::cout << "a wurde nicht gefunden" << std::endl;
+    }
+
+    // Theta
+    if (config.find("Theta") != config.end()) {
+        theta = std::stod(config["Theta"]);
+    }
+    else {
+        std::cout << "Theta wurde nicht gefunden" << std::endl;
+    }
+
+    // SPH
+    if (config.find("SPH") != config.end()) {
+        SPH = config["SPH"] == "true";
+    }
+    else {
+        std::cout << "SPH wurde nicht gefunden" << std::endl;
+    }
+
+    // h
+    if (config.find("h") != config.end()) {
+        h = std::stod(config["h"]);
+    }
+    else {
+        std::cout << "h wurde nicht gefunden" << std::endl;
+    }
+
+    // k
+    if (config.find("k") != config.end()) {
+        k = std::stod(config["k"]);
+    }
+    else {
+        std::cout << "k wurde nicht gefunden" << std::endl;
+    }
+
+    // rho0
+    if (config.find("rho0") != config.end()) {
+        rh0 = std::stod(config["rho0"]);
+    }
+    else {
+        std::cout << "rho0 wurde nicht gefunden" << std::endl;
+    }
+
+    // mu
+    if (config.find("mu") != config.end()) {
+        mu = std::stod(config["mu"]);
+    }
+    else {
+        std::cout << "mu wurde nicht gefunden" << std::endl;
+    }
+
+    // HubbleConstant
+    if (config.find("HubbleConstant") != config.end()) {
+        HubbleConstant = std::stod(config["HubbleConstant"]);
+    }
+    else {
+        std::cout << "HubbleConstant wurde nicht gefunden" << std::endl;
+    }
+
+    std::cout << std::endl;
+}
+
+
+>>>>>>> Stashed changes
 bool stringToBool(const std::string& str) {
     if (str == "1" || str == "true" || str == "True" || str == "TRUE") {
         return true;
