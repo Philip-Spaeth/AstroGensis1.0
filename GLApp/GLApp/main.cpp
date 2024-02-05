@@ -34,8 +34,6 @@ int main()
 
     physics->Calc();
     dataFolder = physics->dataFolder;
-
-    std::cout << std::endl;
     std::cout << "Press enter to start" << std::endl;
 
     std::string input;

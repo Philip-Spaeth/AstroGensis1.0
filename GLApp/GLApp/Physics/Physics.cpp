@@ -90,10 +90,42 @@ bool Physics::Calc()
             {
                 if (i == j)
                 {
-					dataFolder = entry.path().filename().string();
+                    dataFolder = entry.path().filename().string();
+
+                    // Get the number of timesteps and the particlesize from the info.txt file, separated by ';'
+                    std::string infoFile = "Data/" + dataFolder + "/info.txt";
+                    std::ifstream file(infoFile);
+                    if (!file.is_open()) {
+                        std::cerr << "Error opening file: " << infoFile << std::endl;
+                        return false;
+                    }
+
+                    std::string line;
+                    if (std::getline(file, line)) {
+                        try {
+                            numTimeSteps = std::stoi(line);
+                        }
+                        catch (const std::invalid_argument& e) {
+                            std::cerr << "Invalid number format for time steps: " << line << std::endl;
+                            file.close();
+                            return false;
+                        }
+                    }
+
+                    if (std::getline(file, line)) {
+                        try {
+                            particlesSize = std::stoi(line);
+                        }
+                        catch (const std::invalid_argument& e) {
+                            std::cerr << "Invalid number format for particle size: " << line << std::endl;
+                            file.close();
+                            return false;
+                        }
+                    }
+
+                    file.close();
                     return false;
-					break;
-				}
+                }
 				j++;
 			}
 			break;
@@ -124,12 +156,18 @@ bool Physics::Calc()
     std::getline(std::cin, inputDataFolder);
     if(inputDataFolder == "") inputDataFolder = "Data";
     dataFolder = inputDataFolder;
+    //create a new info.txt file where numerOfTimeSteps and and ParticlesSize is saved
+    std::string infoFile = "Data/" + dataFolder + "/info.txt";
+    std::ofstream file(infoFile);
+    file << numTimeSteps <<";"<< std::endl;
+    file << particlesSize << std::endl;
+    file.close();
 
     auto current_time = std::chrono::system_clock::now();
 
     std::cout << "Starting the calculations..." << std::endl;
 
-    std::cout << dataFolder << std::endl;
+    std::cout <<"Folder: " << dataFolder << std::endl;
     std::string dataFile = "Data/" + dataFolder;
 
     totalEnergie.resize(numTimeSteps);

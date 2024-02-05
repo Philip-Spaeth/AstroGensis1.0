@@ -24,7 +24,7 @@ public:
 
     bool configFile = true;
 
-    int numTimeSteps = 2;
+    int numTimeSteps = 1;
     int particlesSize = 20000;
 
     //the time per frame
@@ -39,7 +39,7 @@ public:
     double a = 1e100;
 
     //barnes hut
-    double theta = 3.5;
+    double theta = 2.9;
     const double maxDepth = 100;
     const bool newDistanceCalc = false;
     double maxDistance = 0;
