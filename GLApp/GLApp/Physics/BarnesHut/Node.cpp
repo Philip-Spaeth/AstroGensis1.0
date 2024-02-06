@@ -164,9 +164,9 @@ void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softeni
 				{
 					glm::dvec3 velocityDiff = p.velocity - particle.velocity;
 					double distance = glm::length(p.position - massCenter);
-					glm::dvec3 laplaceKernelGrad = laplaceCubicSplineKernel(delta, h);
+					double laplaceKernelGrad = laplaceCubicSplineKernel(delta, h);
 
-					glm::dvec3 viscousForce = -mu * (mass / p.density) * (velocityDiff / (distance + softening)) * glm::dot(laplaceKernelGrad, laplaceKernelGrad);
+					glm::dvec3 viscousForce = -mu * (mass / p.density) * (velocityDiff / (distance + softening)) * laplaceKernelGrad;
 					glm::dvec3 ds = { 1,4,2 };
 					glm::dvec3 gh = {4, 3, 21};
 					glm::dvec3 ki = ds* gh;
@@ -287,11 +287,11 @@ void Node::calcDensity(Particle& p, double h, double& medium, int& n)
 	}
 }
 
-glm::dvec3 Node::laplaceCubicSplineKernel(const glm::dvec3& rVec, double h)
+double Node::laplaceCubicSplineKernel(const glm::dvec3& rVec, double h)
 {
 	double r = glm::length(rVec);
 	if (r > 2 * h) {
-		return glm::dvec3(0.0); // Außerhalb des Einflussbereichs
+		return 0;
 	}
 
 	double sigma = 45.0 / (glm::pi<double>() * std::pow(h, 6));
@@ -304,7 +304,7 @@ glm::dvec3 Node::laplaceCubicSplineKernel(const glm::dvec3& rVec, double h)
 		factor = sigma * 3.0 * std::pow(h - r, 2);
 	}
 
-	return factor * glm::normalize(rVec);
+	return factor;
 }
 
 void Node::insert(Particle& p)

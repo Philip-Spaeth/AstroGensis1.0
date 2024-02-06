@@ -58,7 +58,7 @@ public:
 
     //Color of the Particles (only for OpenGL) takes extra calculation time
     static const bool color = true;
-    double colorH = 2e19;
+    double colorH = 2e18;
 
     //Physikalische Konstanten
     const double G = 6.67430e-11;
