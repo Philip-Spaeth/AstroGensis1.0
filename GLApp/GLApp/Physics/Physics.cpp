@@ -367,10 +367,9 @@ bool Physics::Calc()
                     }
                 }
             }
-            if(false)//if (t == 100)
+            if(false)
             {
                 //rotation and masscurves
-                fileManager->saveRotationCurve(currentParticles, "");
                 fileManager->saveMassCurve(currentParticles, "");
             }
 
@@ -381,7 +380,7 @@ bool Physics::Calc()
     }
 
 
-    //fileManager->saveEnergieData(totalEnergie, "../Energie_Daten/1000sec/Euler_Data.txt");
+    fileManager->saveEnergieData(totalEnergie, "../Energie_Daten/1000sec/Euler_Data.txt");
 
     std::cout << std::endl;
     std::cout << "Total Calculations: " << calulations << std::endl;

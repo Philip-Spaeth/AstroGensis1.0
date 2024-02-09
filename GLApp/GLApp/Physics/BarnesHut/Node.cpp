@@ -254,6 +254,8 @@ void Node::calcDensity(Particle& p, double h, double& medium, int& n)
 	if (radius < h)
 	{
 		p.density = density;
+		p.darkMatterDensity = darkMatterDensity;
+		p.baryonicDensity = baryonicDensity;
 		n++;
 		medium += density;
 	}
@@ -281,6 +283,8 @@ void Node::calcDensity(Particle& p, double h, double& medium, int& n)
 		else
 		{
 			p.density = density;
+			p.darkMatterDensity = darkMatterDensity;
+			p.baryonicDensity = baryonicDensity;
 			n++;
 			medium += density;
 		}
@@ -391,6 +395,15 @@ void Node::insert(Particle& p)
 
 			mass += p.mass;
 			massCenter = (massCenter * (mass - p.mass) + p.position * p.mass) / mass;
+			//dark and baryonic matter mass
+			if (p.darkMatter)
+			{
+				darkMatterMass += p.mass;
+			}
+			else
+			{
+				baryonicMass += p.mass;
+			}
 
 			if (particlePushed == false) {
 				particlePushed = true;
@@ -405,10 +418,21 @@ void Node::insert(Particle& p)
 	{
 		mass += p.mass;
 		massCenter = (massCenter * (mass - p.mass) + p.position * p.mass) / mass;
+		//dark and baryonic matter mass
+		if (p.darkMatter)
+		{
+			darkMatterMass += p.mass;
+		}
+		else
+		{
+			baryonicMass += p.mass;
+		}
 		//std::cout << "max depth reached in index: " << index << std::endl;
 	}
 	//calc the density of the node
 	density = mass / (4.0 / 3.0 * 3.14159265359 * radius * radius * radius);
+	darkMatterDensity = darkMatterMass / (4.0 / 3.0 * 3.14159265359 * radius * radius * radius);
+	baryonicDensity = baryonicMass / (4.0 / 3.0 * 3.14159265359 * radius * radius * radius);
 
 	//std::cout << "inserted particle " << "in node " << index <<"  mass: " << mass << "radius: "<< radius << std::endl;
 }

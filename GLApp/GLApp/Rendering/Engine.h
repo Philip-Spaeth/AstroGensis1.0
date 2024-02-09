@@ -71,6 +71,7 @@ private:
     GLuint instanceVBO;
     GLuint framebuffer;
     GLuint textureColorbuffer;
+    GLuint blurSizeLocation;
     GLuint rbo;
     GLuint blurShaderProgram; // Shader-Programm f�r den Blur-Effekt
     GLuint quadVAO; // VAO f�r das Quad, auf das der Blur-Effekt angewendet wird

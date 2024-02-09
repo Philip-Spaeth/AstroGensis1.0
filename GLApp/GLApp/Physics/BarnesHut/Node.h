@@ -38,10 +38,15 @@ public:
 	glm::dvec3 center;
 	glm::dvec3 massCenter;
 	double mass = 0;
+	double baryonicMass = 0;
+	double darkMatterMass = 0;
 	double radius = 0;
 	double theta = 0;
+
 	//SPH
 	double density = 0;
+	double baryonicDensity = 0;
+	double darkMatterDensity = 0;
 	void calcDensity(Particle& p,double h, double& medium, int& n);
 
 	bool renderTree = false;

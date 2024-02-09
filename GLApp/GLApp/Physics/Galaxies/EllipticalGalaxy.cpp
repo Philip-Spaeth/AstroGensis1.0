@@ -51,7 +51,7 @@ void EllipticalGalaxy::S0(int startIndex, int endIndex, glm::dvec3 position, glm
 
         double bulgeScale = 0.05;
         double diskScale = 0.03;
-        double bulgeR = galaxyRadius / 10;
+        double bulgeR = 0;
         // Berechnen der Z-Koordinate basierend auf der Position im Bulge oder in der Disk
         z = physics.gaussianRandom() * 0.05 * galaxyRadius;
         double l = (galaxyRadius * 0.5) / r;

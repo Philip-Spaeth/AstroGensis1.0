@@ -19,6 +19,8 @@ public:
     double mass;
     //SPH variables
     double density = 0;
+    double darkMatterDensity = 0;
+    double baryonicDensity = 0;
 
     // RungeKuta variables
     glm::dvec3 YnVelocity = { 0,0,0 };

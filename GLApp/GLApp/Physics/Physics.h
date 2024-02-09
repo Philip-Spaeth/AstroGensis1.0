@@ -24,7 +24,7 @@ public:
 
     bool configFile = true;
 
-    int numTimeSteps = 10;
+    int numTimeSteps = 2;
     int particlesSize = 20000;
 
     //the time per frame
@@ -58,7 +58,7 @@ public:
 
     //Color of the Particles (only for OpenGL) takes extra calculation time
     static const bool color = true;
-    double colorH = 2e18;
+    double colorH = 1e19;
 
     //Physikalische Konstanten
     const double G = 6.67430e-11;

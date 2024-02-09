@@ -255,8 +255,9 @@ void FileManager::saveRotationCurve(std::vector<Particle>& particles, std::strin
 
 void FileManager::saveMassCurve(std::vector<Particle>& particles, std::string path)
 {
-    std::cout << "saving mass curve ..." << std::endl;
-    std::string filename = "../mass_Curve.txt";
+    std::cout << std::endl;
+    std::cout << "saving density curve ..." << std::endl;
+    std::string filename = "../density_Curve.txt";
     std::ofstream outputFile;
     outputFile.open(filename, std::ios::out);
 
@@ -268,49 +269,51 @@ void FileManager::saveMassCurve(std::vector<Particle>& particles, std::string pa
     std::locale germanLocale("de_DE.utf8");
     outputFile.imbue(germanLocale);
 
-    // Assuming you have a vector of radii
-    std::vector<double> radii;
+    double galaxySize = 1e21;
 
-    // Extract radii from particles
-    for (const auto& particle : particles) 
+    int numberOfSteps = 1000;
+    double binSize = galaxySize / numberOfSteps;
+
+    std::vector<Particle> steps;
+    steps.resize(numberOfSteps);
+
+    //choose the particles that the closest current step
+    //print out the velocity and the distance to the center of mass
+    for (int k = 0; k < steps.size(); k++)
     {
-        double distanceToCenter = glm::length(particle.position);
-        radii.push_back(distanceToCenter);
-    }
-
-    // Sort the radii
-    std::sort(radii.begin(), radii.end());
-
-    // Remove duplicate radii
-    radii.erase(std::unique(radii.begin(), radii.end()), radii.end());
-
-    // Write header
-    outputFile << "Radius\tTotalMass" << std::endl;
-
-    // Calculate and write total mass for each radius
-    for (const auto& radius : radii) 
-    {
-        double totalMass = 0.0;
-        double darkMatterMass = 0.0;
-
-        for (const auto& particle : particles) 
+        for (int i = 0; i < particles.size(); i++)
         {
-            double distanceToCenter = glm::length(particle.position);
+            //clac the current distance from the step[k] to the current step 
+            double distance = sqrt(pow(steps[k].position.x, 2) + pow(steps[k].position.y, 2) + pow(steps[k].position.z, 2));
+            double delta = abs(distance - k * binSize);
 
-            if (distanceToCenter <= radius && particle.darkMatter != true) 
+            //calc the distance from the particle to the current step
+            double particleDistance = sqrt(pow(particles[i].position.x, 2) + pow(particles[i].position.y, 2) + pow(particles[i].position.z, 2));
+            double particleDelta = abs(particleDistance - k * binSize);
+
+            //check if the particle is in the current step
+            if (particleDelta < delta)
             {
-                totalMass += particle.mass;
-            }
-            if (distanceToCenter <= radius && particle.darkMatter == true)
-            {
-                darkMatterMass += particle.mass;
+                steps[k].position.x = particles[i].position.x;
+                steps[k].position.y = particles[i].position.y;
+                steps[k].position.z = particles[i].position.z;
+
+                steps[k].density = particles[i].density;
+                steps[k].darkMatterDensity = particles[i].darkMatterDensity;
+                steps[k].baryonicDensity = particles[i].baryonicDensity;
             }
         }
-
-        // Write data to the file
-        //double p = totalMass / ((static_cast<double>(3) / 4) * 3.14 * (radius * radius * radius));
-        //print out the mass and the radius
-        outputFile << std::fixed << std::setprecision(2) << radius << ";" << totalMass << ";" << darkMatterMass << std::endl;
     }
+    //print out the velocity and the distance to the center of mass
+    for (int i = 0; i < steps.size(); i++)
+    {
+        double distance = sqrt(pow(steps[i].position.x, 2) + pow(steps[i].position.y, 2) + pow(steps[i].position.z, 2));
+        double density = steps[i].density;
+        double darkMatterDensity = steps[i].darkMatterDensity;
+        double baryonicDensity = steps[i].baryonicDensity;
+        //write the data to the file use , instead of . for the decimal point
+        outputFile << std::fixed << std::setprecision(20) << distance << ";" << density << ";" << darkMatterDensity << ";" << baryonicDensity << ";" << std::endl;
+    }
+
     outputFile.close();
 }

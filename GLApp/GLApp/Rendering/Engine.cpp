@@ -54,6 +54,7 @@ bool Engine::init(double physicsFaktor)
         std::cerr << "Failed to initialize GLEW" << std::endl;
         return false;
     }
+    // Blur-Shader-Quellcode
     const char* blurVertexShaderSource = R"glsl(
     #version 330 core
     layout (location = 0) in vec2 aPos;
@@ -66,47 +67,74 @@ bool Engine::init(double physicsFaktor)
         TexCoords = aTexCoords;
         gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);
     }
-    )glsl";
+)glsl";
 
-        const char* blurFragmentShaderSource = R"glsl(
+    const char* blurFragmentShaderSource = R"glsl(
     #version 330 core
     out vec4 FragColor;
 
     in vec2 TexCoords;
 
     uniform sampler2D screenTexture;
+    uniform float blurSize;
 
-    void main()
-    {             
-        float blurSize = 1.0 / 300.0; // Ändere die Größe des Blurs
-        vec4 color = vec4(0.0);
-        color += texture(screenTexture, TexCoords + vec2(-blurSize, -blurSize)) * 0.05;
-        color += texture(screenTexture, TexCoords + vec2( blurSize, -blurSize)) * 0.05;
-        color += texture(screenTexture, TexCoords + vec2(-blurSize,  blurSize)) * 0.05;
-        color += texture(screenTexture, TexCoords + vec2( blurSize,  blurSize)) * 0.05;
-        color += texture(screenTexture, TexCoords) * 0.8;
-        FragColor = color;
+    const float offset = 1.0 / 300.0;
+
+    void main() {             
+        vec2 offsets[9] = vec2[](
+            vec2(-offset,  offset),
+            vec2( 0.0f,    offset),
+            vec2( offset,  offset),
+            vec2(-offset,  0.0f),
+            vec2( 0.0f,    0.0f),
+            vec2( offset,  0.0f),
+            vec2(-offset, -offset),
+            vec2( 0.0f,   -offset),
+            vec2( offset, -offset)
+        );
+
+        float kernel[9] = float[](
+            1.0, 2.0, 1.0,
+            2.0, 4.0, 2.0,
+            1.0, 2.0, 1.0  
+        );
+
+        vec4 blurColor = vec4(0.0);
+        float total = 0.0;
+
+        for(int i = 0; i < 9; i++) {
+            blurColor += texture(screenTexture, TexCoords + blurSize * offsets[i]) * kernel[i];
+            total += kernel[i];
+        }
+        FragColor = blurColor / total;
     }
-    )glsl";
-        GLuint blurVertexShader, blurFragmentShader;
-        blurVertexShader = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(blurVertexShader, 1, &blurVertexShaderSource, NULL);
-        glCompileShader(blurVertexShader);
-        checkShaderCompileStatus(blurVertexShader, "BLUR VERTEX");
+)glsl";
 
-        blurFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(blurFragmentShader, 1, &blurFragmentShaderSource, NULL);
-        glCompileShader(blurFragmentShader);
-        checkShaderCompileStatus(blurFragmentShader, "BLUR FRAGMENT");
+    GLuint blurVertexShader, blurFragmentShader;
+    blurVertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(blurVertexShader, 1, &blurVertexShaderSource, NULL);
+    glCompileShader(blurVertexShader);
+    checkShaderCompileStatus(blurVertexShader, "BLUR VERTEX");
 
-        GLuint blurShaderProgram = glCreateProgram();
-        glAttachShader(blurShaderProgram, blurVertexShader);
-        glAttachShader(blurShaderProgram, blurFragmentShader);
-        glLinkProgram(blurShaderProgram);
-        checkShaderLinkStatus(blurShaderProgram);
+    blurFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(blurFragmentShader, 1, &blurFragmentShaderSource, NULL);
+    glCompileShader(blurFragmentShader);
+    checkShaderCompileStatus(blurFragmentShader, "BLUR FRAGMENT");
 
-        // Speichere blurShaderProgram in einem Klassenmitglied, um es später zu verwenden
-        this->blurShaderProgram = blurShaderProgram;
+    GLuint blurShaderProgram = glCreateProgram();
+    glAttachShader(blurShaderProgram, blurVertexShader);
+    glAttachShader(blurShaderProgram, blurFragmentShader);
+    glLinkProgram(blurShaderProgram);
+    checkShaderLinkStatus(blurShaderProgram);
+
+    // Speichere blurShaderProgram in einem Klassenmitglied, um es später zu verwenden
+    this->blurShaderProgram = blurShaderProgram;
+
+    // Abrufen der Location der Uniform-Variable für den Blur-Size
+    this->blurSizeLocation = glGetUniformLocation(blurShaderProgram, "blurSize");
+    glUseProgram(blurShaderProgram);
+    glUniform1f(blurSizeLocation, 0.005f); // Vergrößern des Blur-Effekts für Sichtbarkeit
+    glUseProgram(0);
 
     // Framebuffer erstellen
     glGenFramebuffers(1, &framebuffer);
@@ -245,6 +273,20 @@ void Engine::start(Physics* p)
     std::cout << "Data loaded" << std::endl;
 }
 
+void Engine::renderBlur() {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Stellen Sie sicher, dass Sie auf den Bildschirm rendern
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glUseProgram(blurShaderProgram);
+    glUniform1f(blurSizeLocation, 0.005f); // Vergrößern des Blur-Effekts für Sichtbarkeit
+    glBindVertexArray(quadVAO);
+    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+    glUseProgram(0);
+}
+
+
+
 void Engine::update(int index)
 {
     //calculate the time
@@ -332,15 +374,6 @@ void Engine::update(int index)
         densityColor = !densityColor;
     }
     oldIndex = index;
-}
-
-void Engine::renderBlur()
-{
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glUseProgram(blurShaderProgram);
-    glBindVertexArray(quadVAO);
-    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 void Engine::renderParticles()
