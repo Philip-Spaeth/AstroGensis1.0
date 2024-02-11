@@ -215,12 +215,18 @@ void Engine::start(Physics* p)
     // Erstellen des FileManagers
     fileManager = new FileManager(dataFolder);
 
-    fileManager->loadParticles(p, 0, positions, colors, densityColors);
+    fileManager->loadParticles(p, 0, positions, colors, densityColors, maxNumberOfParticles);
 
     // Hier VBO und VAO erstellen und konfigurieren
     GLuint VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    int particles = p->particlesSize;
+    if (p->particlesSize > maxNumberOfParticles)
+    {
+        particles = maxNumberOfParticles;
+        p->particlesSize = maxNumberOfParticles;
+    }
     glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * p->particlesSize, &positions[0], GL_STATIC_DRAW);
 
     // Erstellen des Vertex Array Objects (VAO)

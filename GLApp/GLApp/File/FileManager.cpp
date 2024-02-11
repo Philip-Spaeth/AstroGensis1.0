@@ -13,6 +13,7 @@
 #include <string>
 #include <iomanip>
 #include <unordered_map>
+#include <algorithm>
 
 #ifdef WIN32
 #include <windows.h>
@@ -184,33 +185,37 @@ void FileManager::saveParticles(int timestep, const std::vector<Particle>& parti
     }
 }
 
-void FileManager::loadParticles(Physics* p, int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec3>& color, std::vector<glm::vec3>& densitycolor)
+void FileManager::loadParticles(Physics* p, int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec3>& color, std::vector<glm::vec3>& densitycolor, int maxNumberOfParticles)
 {
-    std::string fileName = "Data/" + p->dataFolder + "/Time_" + std::to_string(timestep) + ".dat";       
+    std::string fileName = "Data/" + p->dataFolder + "/Time_" + std::to_string(timestep) + ".dat";
     std::ifstream file(fileName, std::ios::binary);
 
     if (file.is_open()) {
         size_t size;
         file.read(reinterpret_cast<char*>(&size), sizeof(size));
 
-        array.resize(p->particlesSize);
-        color.resize(p->particlesSize);
-        densitycolor.resize(p->particlesSize);
-        //load the positions and radius from the file
-        file.read(reinterpret_cast<char*>(array.data()), size * sizeof(glm::vec4));
-        //load the color and dark matter bool from file
-        file.read(reinterpret_cast<char*>(color.data()), size * sizeof(glm::vec3));
-        //load the color and dark matter bool from file
-        file.read(reinterpret_cast<char*>(densitycolor.data()), size * sizeof(glm::vec3));
+        size_t particlesToRead = (size > maxNumberOfParticles) ? maxNumberOfParticles : size;
 
+        array.resize(particlesToRead);
+        color.resize(particlesToRead);
+        densitycolor.resize(particlesToRead);
+
+        file.read(reinterpret_cast<char*>(array.data()), particlesToRead * sizeof(glm::vec4));
+        file.read(reinterpret_cast<char*>(color.data()), particlesToRead * sizeof(glm::vec3));
+        file.read(reinterpret_cast<char*>(densitycolor.data()), particlesToRead * sizeof(glm::vec3));
+
+        // Skip the remaining data in the file if necessary
+        if (size > maxNumberOfParticles) {
+            file.seekg((size - maxNumberOfParticles) * (sizeof(glm::vec4) + 2 * sizeof(glm::vec3)), std::ios::cur);
+        }
 
         file.close();
     }
-    else 
-    {
+    else {
         std::cerr << "Fehler beim Öffnen der Datei zum Laden." << std::endl;
     }
 }
+
 
 
 void FileManager::saveEnergieData(std::vector<std::vector<double>>& totalEnergie, std::string path) 

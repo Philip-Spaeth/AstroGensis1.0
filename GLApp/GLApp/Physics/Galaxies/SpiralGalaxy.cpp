@@ -120,15 +120,14 @@ void SpiralGalaxy::Sa(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 
 		ellipticalOrbit(particles[j], totalMassInSphere, galaxyRadius, r, alpha);
 
-		particles[j].position += position;
-		particles[j].velocity += velocity;
-
 		particles[j].mass = totalMass / particleSize;
 		particles[j].radius = 1;
 		particles[j].darkMatter = isDarkMatterParticle;
 		if (isDarkMatterParticle)particles[j].color = glm::vec3(0, 1000, 0);
 		else particles[j].color = glm::vec3(1, 1, 1);
 		i++;
+
+		particles[j].position += position;
 
 		glm::vec4 pos = glm::vec4(particles[j].position - position, 1.0);
 		glm::vec4 vel = glm::vec4(particles[j].velocity, 1.0);
@@ -137,7 +136,7 @@ void SpiralGalaxy::Sa(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 		vel = transform * vel;
 
 		particles[j].position = glm::dvec3(pos) + position;
-		particles[j].velocity = glm::dvec3(vel);
+		particles[j].velocity = glm::dvec3(vel) + velocity;
 	}
 }
 
@@ -195,15 +194,14 @@ void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 
 		ellipticalOrbit(particles[j], totalMassInSphere, galaxyRadius, r, alpha);
 
-		particles[j].position += position;
-		particles[j].velocity += velocity;
-
 		particles[j].mass = totalMass / particleSize;
 		particles[j].radius = 1;
 		particles[j].darkMatter = isDarkMatterParticle;
 		if (isDarkMatterParticle)particles[j].color = glm::vec3(0, 1000, 0);
 		else particles[j].color = glm::vec3(1, 1, 1);
 		i++;
+
+		particles[j].position += position;
 
 		glm::vec4 pos = glm::vec4(particles[j].position - position, 1.0);
 		glm::vec4 vel = glm::vec4(particles[j].velocity, 1.0);
@@ -212,7 +210,7 @@ void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 		vel = transform * vel;
 
 		particles[j].position = glm::dvec3(pos) + position;
-		particles[j].velocity = glm::dvec3(vel);
+		particles[j].velocity = glm::dvec3(vel) + velocity;
 	}
 }
 
@@ -269,7 +267,6 @@ void SpiralGalaxy::Sc(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 		ellipticalOrbit(particles[j], totalMassInSphere, galaxyRadius, r, alpha);
 
 		particles[j].position += position;
-		particles[j].velocity += velocity;
 
 		particles[j].mass = totalMass / particleSize;
 		particles[j].radius = 1;
@@ -285,6 +282,6 @@ void SpiralGalaxy::Sc(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 		vel = transform * vel;
 
 		particles[j].position = glm::dvec3(pos) + position;
-		particles[j].velocity = glm::dvec3(vel);
+		particles[j].velocity = glm::dvec3(vel) + velocity;
 	}
 }

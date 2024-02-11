@@ -101,7 +101,7 @@ void EllipticalGalaxy::S0(int startIndex, int endIndex, glm::dvec3 position, glm
         // Berechnung der Geschwindigkeit
         double v = (std::sqrt(physics.G * totalMassInSphere / distanceToCenter) * e);
 
-        particles[j].velocity = glm::dvec3(-v * std::sin(particles[j].angle), v * std::cos(particles[j].angle), 0) + velocity;
+        particles[j].velocity = glm::dvec3(-v * std::sin(particles[j].angle), v * std::cos(particles[j].angle), 0);
         particles[j].mass = totalMass / particleSize;
         particles[j].radius = 1;
         particles[j].darkMatter = isDarkMatterParticle;
@@ -115,7 +115,7 @@ void EllipticalGalaxy::S0(int startIndex, int endIndex, glm::dvec3 position, glm
         vel = transform * vel;
 
         particles[j].position = glm::dvec3(pos) + position;
-        particles[j].velocity = glm::dvec3(vel);
+        particles[j].velocity = glm::dvec3(vel) + velocity;
     }
 }
 

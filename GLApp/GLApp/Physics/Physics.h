@@ -67,8 +67,9 @@ public:
     bool Calc();
 
     std::vector<Particle> currentParticles;
-private:
+
     void config();
+private:
     Octree* octree;
     std::vector<std::vector<double>> totalEnergie;
     double calulations = 0;

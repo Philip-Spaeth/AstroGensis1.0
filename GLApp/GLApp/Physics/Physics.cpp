@@ -30,94 +30,35 @@ Physics::Physics(std::string newDataFolder)
 
 bool Physics::init()
 {
-    std::string input;
-    std::getline(std::cin, input);
-
-    while (true)
-    {
-        std::string dataPath = "Data"; // Pfad zum Data-Ordner
-
-        std::cout << "Choose an old simulation or press ENTER to start a new one\n\n";
-        std::cout << "Available simulations: \n\n";
-
-        // Überprüfen, ob das Verzeichnis existiert und darauf zugegriffen werden kann
-        if (fs::exists(dataPath) && fs::is_directory(dataPath)) {
-            int i = 1;
-            for (const auto& entry : fs::directory_iterator(dataPath)) {
-                std::cout << "[" << i << "] " << entry.path().filename() << std::endl;
-                i++;
-            }
-        }
-        else {
-            std::cout << "No available simulations. The 'Data' folder is missing or inaccessible.\n";
-        }
-
-        std::cout << "\nPress ENTER to start a new simulation\n\n";
-
-        //check wich folder to use based on the i number from above
-        std::string Input;
-        std::getline(std::cin, Input);
-        if (Input == "")
-        {
-            break;
-        }
-        else
-        {
-            int i = std::stoi(Input);
-            int j = 1;
-            for (const auto& entry : fs::directory_iterator("Data"))
-            {
-                if (i == j)
-                {
-                    dataFolder = entry.path().filename().string();
-
-                    // Get the number of timesteps and the particlesize from the info.txt file, separated by ';'
-                    std::string infoFile = "Data/" + dataFolder + "/info.txt";
-                    std::ifstream file(infoFile);
-                    if (!file.is_open()) {
-                        std::cerr << "Error opening file: " << infoFile << std::endl;
-                        return false;
-                    }
-
-                    std::string line;
-                    if (std::getline(file, line)) {
-                        try {
-                            numTimeSteps = std::stoi(line);
-                        }
-                        catch (const std::invalid_argument& e) {
-                            std::cerr << "Invalid number format for time steps: " << line << std::endl;
-                            file.close();
-                            return false;
-                        }
-                    }
-
-                    if (std::getline(file, line)) {
-                        try {
-                            particlesSize = std::stoi(line);
-                        }
-                        catch (const std::invalid_argument& e) {
-                            std::cerr << "Invalid number format for particle size: " << line << std::endl;
-                            file.close();
-                            return false;
-                        }
-                    }
-
-                    file.close();
-                    return false;
-                }
-                j++;
-            }
-            break;
-        }
-    }
-
-
     fileManager = new FileManager(dataFolder);
     //Initilize the parameters based of the configfile
     if (configFile) config();
+	std::cin.get();
+
+
+    // Select Folder save Data
+    std::cout << "Please ENTER the name of the folder where the data should be saved.         Press ENTER to use default\n" << std::endl;
+    std::string inputDataFolder;
+    std::getline(std::cin, inputDataFolder);
+    if (inputDataFolder != "") 
+    {
+        dataFolder = inputDataFolder;
+    }
+    else
+    {
+		dataFolder = "Data";
+	}
+
+    //create a new info.txt file where numerOfTimeSteps and and ParticlesSize is saved
+    std::string infoFile = "Data/" + dataFolder + "/info.txt";
+    std::ofstream file(infoFile);
+    file << numTimeSteps << ";" << std::endl;
+    file << particlesSize << ";" << std::endl;
+    file << deltaTime << std::endl;
+    file.close();
 
     // Select calculation method
-    std::cout << "Enter the calculation method:        Press ENTER to use default from Code" << std::endl;
+    std::cout << "\nEnter the numerical method:        Press ENTER to use default" << std::endl;
     std::cout << "0 = Runge-Kutta 4th order" << std::endl;
     std::cout << "1 = Semi-Implicit Euler" << std::endl;
     std::cout << "2 = Drift-Kick-Drift Leapfrog" << std::endl;
@@ -128,25 +69,9 @@ bool Physics::init()
         calculationMethod = std::stoi(inputCalculationMethod);
     }
 
-    // Select Folder save Data
-    std::cout << "Bitte geben Sie einen Namen ein, unter welchen die Simulation gespeichert werden soll." << std::endl;
-    std::cout << "ENTER standard: 'Data'." << std::endl;
-    std::string inputDataFolder;
-    std::getline(std::cin, inputDataFolder);
-    if (inputDataFolder == "") inputDataFolder = "Data";
-    dataFolder = inputDataFolder;
-    //create a new info.txt file where numerOfTimeSteps and and ParticlesSize is saved
-    std::string infoFile = "Data/" + dataFolder + "/info.txt";
-    std::ofstream file(infoFile);
-    file << numTimeSteps << ";" << std::endl;
-    file << particlesSize << std::endl;
-    file.close();
 
-    std::cout << "Starting the calculations..." << std::endl;
-
-    std::cout << "Folder: " << dataFolder << std::endl;
-    std::string dataFile = "Data/" + dataFolder;
-
+    std::cout << "\nStarting the calculations...\n" << std::endl;
+    return true;
 }
 
 bool Physics::Calc()
@@ -466,8 +391,6 @@ bool stringToBool(const std::string& str);
 
 void Physics::config() {
     auto config = fileManager->readConfig("config.ini");
-
-    std::cout << "Using config File..." << std::endl;
 
     // Zeitschritte
     if (config.find("Zeitschritte") != config.end()) {
