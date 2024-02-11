@@ -1,6 +1,7 @@
 #include "EllipticalGalaxy.h"
 #include <gtc/matrix_transform.hpp> 
 #include <gtx/transform.hpp>
+#include "MathFunctions.h"
 
 void EllipticalGalaxy::S0(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double anteilBaryonischeMaterie, double anteilDunkleMaterie, double powNumberNormal, double powNumberDark, std::vector<Particle>& particles)
 
@@ -27,10 +28,10 @@ void EllipticalGalaxy::S0(int startIndex, int endIndex, glm::dvec3 position, glm
 
     for (int j = startIndex; j != endIndex; j++)
     {
-        double theta = physics.random(0, glm::pi<double>());
-        particles[j].angle = physics.random(0, 2 * glm::pi<double>());
+        double theta = MathFunctions::random(0, glm::pi<double>());
+        particles[j].angle = MathFunctions::random(0, 2 * glm::pi<double>());
 
-        double random = physics.random(- baryonicFraction, darkMatterFraction);
+        double random = MathFunctions::random(- baryonicFraction, darkMatterFraction);
         bool isDarkMatterParticle;
         if (random > 0)
         {
@@ -51,9 +52,9 @@ void EllipticalGalaxy::S0(int startIndex, int endIndex, glm::dvec3 position, glm
 
         double bulgeScale = 0.05;
         double diskScale = 0.03;
-        double bulgeR = 0;
+        double bulgeR = galaxyRadius / 10;
         // Berechnen der Z-Koordinate basierend auf der Position im Bulge oder in der Disk
-        z = physics.gaussianRandom() * 0.05 * galaxyRadius;
+        z = MathFunctions::gaussianRandom() * 0.05 * galaxyRadius;
         double l = (galaxyRadius * 0.5) / r;
         if (l > 2)
         {
@@ -64,7 +65,7 @@ void EllipticalGalaxy::S0(int startIndex, int endIndex, glm::dvec3 position, glm
         //wenn in bulge rotier um die mitte der galaxie random
         if (r < bulgeR)
         {
-            double random = physics.random(0, 2 * 3.14);
+            double random = MathFunctions::random(0, 2 * 3.14);
             x = x * std::cos(random) - y * std::sin(random);
             y = x * std::sin(random) + y * std::cos(random);
             z = z * std::cos(random) - y * std::sin(random);
@@ -133,8 +134,8 @@ void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm
     // Erstellen einer elliptischen Galaxie
     for (int j = startIndex; j != endIndex; j++)
     {
-        double theta = physics.random(0, glm::pi<double>());
-        double phi = physics.random(0, 2 * glm::pi<double>());
+        double theta = MathFunctions::random(0, glm::pi<double>());
+        double phi = MathFunctions::random(0, 2 * glm::pi<double>());
 
         //distribution
         double scaledI = i / (double)particleSize;

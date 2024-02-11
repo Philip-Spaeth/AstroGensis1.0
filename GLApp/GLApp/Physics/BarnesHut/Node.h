@@ -21,12 +21,9 @@ public:
 
 	//SPH
 	void gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
-	double cubicSplineKernel(double r, double h); 
-	double laplaceCubicSplineKernel(const glm::dvec3& rVec, double h);
 
 	void gravity(Particle& p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
     void calcMass();
-	void setColor();
 	void color(glm::vec3 color);
 
 	Node* child[8] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };

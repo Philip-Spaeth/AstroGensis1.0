@@ -63,11 +63,8 @@ public:
     //Physikalische Konstanten
     const double G = 6.67430e-11;
 
+    bool init();
     bool Calc();
-
-    void setRandomSeed(unsigned int seed);
-    double random(double min, double max);
-    double gaussianRandom(double mean = 0.0, double stddev = 1.0);
 
     std::vector<Particle> currentParticles;
 private:

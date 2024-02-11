@@ -157,6 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Math\MathFunctions.cpp" />
     <ClCompile Include="Physics\Galaxies\BarredGalaxy.cpp" />
     <ClCompile Include="File\FileManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -170,6 +171,7 @@
     <ClCompile Include="Physics\Galaxies\SpiralGalaxy.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Math\MathFunctions.h" />
     <ClInclude Include="Physics\Galaxies\BarredGalaxy.h" />
     <ClInclude Include="File\FileManager.h" />
     <ClInclude Include="Physics\BarnesHut\Node.h" />

@@ -23,7 +23,6 @@ glm::dvec3 Octree::calculateForces(Particle& particle, double softening, double 
 
 void Octree::setColors()
 {
-	root->setColor();
 }
 void Octree::calcdensity(Particle& p, double h, double& medium, int& n)
 {

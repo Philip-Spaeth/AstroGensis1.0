@@ -48,6 +48,9 @@
     <ClCompile Include="Physics\Galaxies\BarredGalaxy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Math\MathFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Physics\Particle.h">
@@ -78,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Physics\Galaxies\SpiralGalaxy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\MathFunctions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

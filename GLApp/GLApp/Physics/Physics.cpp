@@ -28,33 +28,12 @@ Physics::Physics(std::string newDataFolder)
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
 }
 
-void createDataFolder(const std::string& dataFolder) {
-    std::string dataFile = "Data/" + dataFolder;
-
-    std::cout << dataFile << std::endl;
-
-    // Überprüfen Sie, ob das Verzeichnis bereits existiert
-    if (!fs::exists(dataFile)) {
-        try {
-            // Versucht, das Verzeichnis zu erstellen
-            fs::create_directories(dataFile);
-        }
-        catch (const fs::filesystem_error& e) {
-            std::cerr << "Fehler beim Erstellen des Verzeichnisses: " << e.what() << '\n';
-            // Weitere Fehlerbehandlung
-        }
-    }
-    else {
-        std::cout << "Das Verzeichnis existiert bereits." << std::endl;
-    }
-}
-
-bool Physics::Calc()
+bool Physics::init()
 {
     std::string input;
     std::getline(std::cin, input);
 
-    while(true)
+    while (true)
     {
         std::string dataPath = "Data"; // Pfad zum Data-Ordner
 
@@ -84,8 +63,8 @@ bool Physics::Calc()
         }
         else
         {
-			int i = std::stoi(Input);
-			int j = 1;
+            int i = std::stoi(Input);
+            int j = 1;
             for (const auto& entry : fs::directory_iterator("Data"))
             {
                 if (i == j)
@@ -126,10 +105,10 @@ bool Physics::Calc()
                     file.close();
                     return false;
                 }
-				j++;
-			}
-			break;
-		}
+                j++;
+            }
+            break;
+        }
     }
 
 
@@ -145,7 +124,7 @@ bool Physics::Calc()
     std::cout << "3 = Kick-Drift-Kick Leapfrog" << std::endl;
     std::string inputCalculationMethod;
     std::getline(std::cin, inputCalculationMethod);
-    if(inputCalculationMethod != ""){
+    if (inputCalculationMethod != "") {
         calculationMethod = std::stoi(inputCalculationMethod);
     }
 
@@ -154,21 +133,31 @@ bool Physics::Calc()
     std::cout << "ENTER standard: 'Data'." << std::endl;
     std::string inputDataFolder;
     std::getline(std::cin, inputDataFolder);
-    if(inputDataFolder == "") inputDataFolder = "Data";
+    if (inputDataFolder == "") inputDataFolder = "Data";
     dataFolder = inputDataFolder;
     //create a new info.txt file where numerOfTimeSteps and and ParticlesSize is saved
     std::string infoFile = "Data/" + dataFolder + "/info.txt";
     std::ofstream file(infoFile);
-    file << numTimeSteps <<";"<< std::endl;
+    file << numTimeSteps << ";" << std::endl;
     file << particlesSize << std::endl;
     file.close();
 
-    auto current_time = std::chrono::system_clock::now();
-
     std::cout << "Starting the calculations..." << std::endl;
 
-    std::cout <<"Folder: " << dataFolder << std::endl;
+    std::cout << "Folder: " << dataFolder << std::endl;
     std::string dataFile = "Data/" + dataFolder;
+
+}
+
+bool Physics::Calc()
+{
+    // Initialisieren des Systems
+    if (!init())
+    {
+		return false;
+    }
+
+    auto current_time = std::chrono::system_clock::now();
 
     totalEnergie.resize(numTimeSteps);
 
@@ -387,19 +376,6 @@ bool Physics::Calc()
     return true;
 }
 
-void Physics::setRandomSeed(unsigned int seed)
-{
-	// Setze den Zufallszahlengenerator auf einen bestimmten Wert
-    srand(seed);
-}
-
-double Physics::random(double min, double max)
-{
-    // Generiere eine zufällige Gleitkommazahl zwischen min und max
-    double randomFloat = min + static_cast<double>(rand()) / static_cast<double>(RAND_MAX) * (max - min);
-
-    return randomFloat;
-}
 
 void Physics::calcTime(int index, std::chrono::system_clock::time_point current_time)
 {
@@ -485,58 +461,11 @@ void Physics::calculateGravitation(int t, int start, int stop) {
     }
 }
 
-double Physics::gaussianRandom(double mean, double stddev) 
-{
-    // Erstellen eines Zufallszahlengenerators
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::default_random_engine generator(seed);
-
-    // Erstellen einer Normalverteilung
-    std::normal_distribution<double> distribution(mean, stddev);
-
-    // Generieren und Rückgabe einer Zahl aus dieser Verteilung
-    return distribution(generator);
-
-}
 
 bool stringToBool(const std::string& str);
 
-std::unordered_map<std::string, std::string> readConfig(const std::string& filename) 
-{
-    std::unordered_map<std::string, std::string> config;
-    std::ifstream file(filename);
-    std::string line;
-
-    if (file.is_open()) {
-        while (std::getline(file, line)) {
-            // Ignoriere Kommentare und leere Zeilen
-            if (line.empty() || line[0] == '#' || line[0] == ';') continue;
-
-            std::istringstream is_line(line);
-            std::string key;
-            if (std::getline(is_line, key, '=')) {
-                std::string value;
-                if (std::getline(is_line, value)) {
-                    // Entfernen Sie Leerzeichen am Anfang und am Ende des Schlüssels und des Werts
-                    key.erase(0, key.find_first_not_of(" \t"));
-                    key.erase(key.find_last_not_of(" \t") + 1);
-                    value.erase(0, value.find_first_not_of(" \t"));
-                    value.erase(value.find_last_not_of(" \t") + 1);
-                    config[key] = value;
-                }
-            }
-        }
-        file.close();
-    }
-    else {
-        std::cerr << "Konnte Datei nicht öffnen: " << filename << std::endl;
-    }
-
-    return config;
-}
-
 void Physics::config() {
-    auto config = readConfig("config.ini");
+    auto config = fileManager->readConfig("config.ini");
 
     std::cout << "Using config File..." << std::endl;
 

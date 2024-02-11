@@ -7,6 +7,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <unordered_map>
 #include "Physics.h"
 
 class Physics;
@@ -19,10 +20,10 @@ class FileManager
 	~FileManager();
 
 	std::string dataFolder = "Data";
+	std::unordered_map<std::string, std::string> FileManager::readConfig(const std::string& filename);
+	glm::vec3 FileManager::parseVector3(const std::string& vecString);
+	std::unordered_map<std::string, std::string> FileManager::readTheConfig(const std::string& filename);
 
-	std::vector<std::map<std::string, std::string>> parseIniFileBySection(const std::string& filename);
-	std::map<std::string, std::string> parseIniFile(const std::string& filename);
-	
 	void saveParticles(int timestep, const std::vector<Particle>& particles, const std::string& path);
 	void loadParticles(Physics* p, int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec3>& color, std::vector<glm::vec3>& densitycolor);
 

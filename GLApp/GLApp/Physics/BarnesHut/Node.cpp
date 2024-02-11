@@ -2,6 +2,7 @@
 #include <iostream> 
 #include "Physics.h"
 #include <cmath>
+#include "MathFunctions.h"
 
 Node::Node(glm::dvec3 center, double radius, double theta, int index, int maxdepth, bool renderTree, glm::vec3* newparticleColor)
 {
@@ -43,11 +44,6 @@ void Node::color(glm::vec3 color)
 		}
 	}
 }
-
-void Node::setColor()
-{
-}
-
 void Node::gravity(Particle& p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations)
 {
 	double G = 6.67408e-11;
@@ -146,7 +142,7 @@ void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softeni
 				// Druck berechnen
 				double pressure_i = k * (density_i - rho0);
 				// Gradient der Kernel-Funktion
-				glm::dvec3 gradKernel = glm::normalize(delta) * (cubicSplineKernel(r, h) / r);
+				glm::dvec3 gradKernel = glm::normalize(delta) * (MathFunctions::cubicSplineKernel(r, h) / r);
 
 				//(original)
 				double pressureForce = -particle.mass * (pressure_i / (density_i * density_i));
@@ -164,7 +160,7 @@ void Node::gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softeni
 				{
 					glm::dvec3 velocityDiff = p.velocity - particle.velocity;
 					double distance = glm::length(p.position - massCenter);
-					double laplaceKernelGrad = laplaceCubicSplineKernel(delta, h);
+					double laplaceKernelGrad = MathFunctions::laplaceCubicSplineKernel(delta, h);
 
 					glm::dvec3 viscousForce = -mu * (mass / p.density) * (velocityDiff / (distance + softening)) * laplaceKernelGrad;
 					glm::dvec3 ds = { 1,4,2 };
@@ -234,20 +230,6 @@ glm::dvec3 Node::calcForce(Particle& p, Node* root, double softening, double a, 
 	return force;
 }
 
-double Node::cubicSplineKernel(double r, double h)
-{
-	const double pi = 3.14159265359;
-	const double alpha_3d = 1.0 / (pi * h * h * h);
-	double q = r / h;
-	if (q < 1.0) {
-		return alpha_3d * (1 - 1.5 * q * q + 0.75 * q * q * q);
-	}
-	else if (q < 2.0) {
-		return alpha_3d * 0.25 * pow(2 - q, 3);
-	}
-	return 0.0;
-}
-
 void Node::calcDensity(Particle& p, double h, double& medium, int& n)
 {
 	//choose the node in wich the particle is in and the radius of the node is the closest to h and than save the density of the node in the particle
@@ -289,26 +271,6 @@ void Node::calcDensity(Particle& p, double h, double& medium, int& n)
 			medium += density;
 		}
 	}
-}
-
-double Node::laplaceCubicSplineKernel(const glm::dvec3& rVec, double h)
-{
-	double r = glm::length(rVec);
-	if (r > 2 * h) {
-		return 0;
-	}
-
-	double sigma = 45.0 / (glm::pi<double>() * std::pow(h, 6));
-	double factor;
-
-	if (r <= h) {
-		factor = sigma * (h - r) * (3.0 * h - 3.0 * r);
-	}
-	else {
-		factor = sigma * 3.0 * std::pow(h - r, 2);
-	}
-
-	return factor;
 }
 
 void Node::insert(Particle& p)

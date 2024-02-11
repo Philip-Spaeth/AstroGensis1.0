@@ -1,4 +1,3 @@
-
 #include "SystemInit.h"
 #include <iostream>
 #include <cmath>
@@ -17,87 +16,11 @@
 #include <sstream>
 #include <string>
 #include <unordered_map>
+#include "MathFunctions.h"
+#include "FileManager.h"
 namespace fs = std::filesystem;
 
 using namespace std;
-
-glm::vec3 parseVector3(const string& vecString) {
-	istringstream iss(vecString);
-	vector<double> values;
-	string s;
-
-	while (getline(iss, s, ',')) {
-		// Entferne Leerzeichen am Anfang und am Ende des Strings
-		s.erase(0, s.find_first_not_of(" \t"));
-		s.erase(s.find_last_not_of(" \t") + 1);
-
-		try {
-			values.push_back(stod(s));
-		}
-		catch (const std::invalid_argument& e) {
-			cerr << "Ungültiges Format für Vektor: " << vecString << endl;
-			throw;
-		}
-	}
-
-	if (values.size() != 3) {
-		cerr << "Ungültige Anzahl an Elementen für Vektor: " << vecString << endl;
-		throw std::runtime_error("Vector parsing error");
-	}
-
-	return glm::vec3(values[0], values[1], values[2]);
-}
-
-std::unordered_map<std::string, std::string> readTheConfig(const std::string& filename)
-{
-	
-	std::unordered_map<std::string, std::string> config;
-	std::ifstream file(filename);
-	std::string line;
-	std::string currentSection;
-
-	if (file.is_open()) {
-		while (std::getline(file, line)) {
-			// Entfernen Sie Leerzeichen am Anfang der Zeile
-			line.erase(0, line.find_first_not_of(" \t"));
-
-			// Erkenne Abschnittsnamen
-			if (line[0] == '[') {
-				size_t endPos = line.find(']');
-				if (endPos != std::string::npos) {
-					currentSection = line.substr(1, endPos - 1) + ".";
-				}
-				continue;
-			}
-
-			// Entferne Kommentare am Ende der Zeile
-			size_t commentPos = line.find_first_of("#;");
-			if (commentPos != std::string::npos) {
-				line = line.substr(0, commentPos);
-			}
-
-			std::istringstream is_line(line);
-			std::string key;
-			if (std::getline(is_line, key, '=')) {
-				std::string value;
-				if (std::getline(is_line, value)) {
-					// Entfernen Sie Leerzeichen am Anfang und am Ende des Schlüssels und des Werts
-					key.erase(0, key.find_first_not_of(" \t"));
-					key.erase(key.find_last_not_of(" \t") + 1);
-					value.erase(0, value.find_first_not_of(" \t"));
-					value.erase(value.find_last_not_of(" \t") + 1);
-					config[currentSection + key] = value;
-				}
-			}
-		}
-		file.close();
-	}
-	else {
-		std::cerr << "Konnte Datei nicht öffnen: " << filename << std::endl;
-	}
-
-	return config;
-}
 
 void SystemInit::start(std::vector<Particle>& particles)
 {
@@ -105,7 +28,9 @@ void SystemInit::start(std::vector<Particle>& particles)
 	//Init nach Config File
 	if (p.configFile)
 	{
-		auto config = readTheConfig("config.ini");
+		// Einlesen der Konfigurationen
+		FileManager* fileManager = new FileManager("config.ini");
+		auto config = fileManager->readTheConfig("config.ini");
 
 		// Verarbeiten der Galaxie-Konfigurationen
 		int galaxieNummer = 1;
@@ -125,9 +50,9 @@ void SystemInit::start(std::vector<Particle>& particles)
 			double powNumberDark = std::stod(config[galaxieKey + ".VerteilungsExponentDunkleMaterie"]);
 
 			// Position, Geschwindigkeit, Rotation
-			glm::vec3 position = parseVector3(config[galaxieKey + ".Position"]);
-			glm::vec3 velocity = parseVector3(config[galaxieKey + ".Geschwindigkeit"]);
-			glm::vec3 rotation = parseVector3(config[galaxieKey + ".Rotation"]);
+			glm::vec3 position = fileManager->parseVector3(config[galaxieKey + ".Position"]);
+			glm::vec3 velocity = fileManager->parseVector3(config[galaxieKey + ".Geschwindigkeit"]);
+			glm::vec3 rotation = fileManager->parseVector3(config[galaxieKey + ".Rotation"]);
 
 			int endIndex = startIndex + particlesize - 1;
 			
@@ -214,7 +139,7 @@ void SystemInit::solarSystem(std::vector<Particle>& particles)
 			particles[j].mass = 5.972e26;
 			std::cout << particles[j].velocity.y << std::endl;
 			particles[j].radius = 3;
-			particles[j].color = glm::vec3(physics.random(0,1), physics.random(0, 1), physics.random(0, 1));
+			particles[j].color = glm::vec3(MathFunctions::random(0,1), MathFunctions::random(0, 1), MathFunctions::random(0, 1));
 		}
 	}
 }

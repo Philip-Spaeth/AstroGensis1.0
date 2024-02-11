@@ -11,6 +11,8 @@
 #include <sstream>
 #include <map>
 #include <string>
+#include <iomanip>
+#include <unordered_map>
 
 #ifdef WIN32
 #include <windows.h>
@@ -19,58 +21,124 @@
 #include <thread>
 #include <algorithm>
 
+using namespace std;
+
 FileManager::FileManager(std::string newDataFolder){
     dataFolder = newDataFolder;
 }
 
 FileManager::~FileManager(){}
 
-std::map<std::string, std::string> FileManager::parseIniFile(const std::string& filename) 
+std::unordered_map<std::string, std::string> FileManager::readConfig(const std::string& filename)
 {
-    std::map<std::string, std::string> result;
+    std::unordered_map<std::string, std::string> config;
     std::ifstream file(filename);
-    std::string line, key, value;
+    std::string line;
 
-    while (std::getline(file, line)) {
-        std::istringstream is_line(line);
-        // Ignoriere Kommentarzeilen und leere Zeilen
-        if (line.empty() || line[0] == '#' || line[0] == ';') continue;
+    if (file.is_open()) {
+        while (std::getline(file, line)) {
+            // Ignoriere Kommentare und leere Zeilen
+            if (line.empty() || line[0] == '#' || line[0] == ';') continue;
 
-        if (std::getline(is_line, key, '=') && std::getline(is_line, value)) {
-            result[key] = value;
+            std::istringstream is_line(line);
+            std::string key;
+            if (std::getline(is_line, key, '=')) {
+                std::string value;
+                if (std::getline(is_line, value)) {
+                    // Entfernen Sie Leerzeichen am Anfang und am Ende des Schlüssels und des Werts
+                    key.erase(0, key.find_first_not_of(" \t"));
+                    key.erase(key.find_last_not_of(" \t") + 1);
+                    value.erase(0, value.find_first_not_of(" \t"));
+                    value.erase(value.find_last_not_of(" \t") + 1);
+                    config[key] = value;
+                }
+            }
         }
+        file.close();
     }
-    return result;
+    else {
+        std::cerr << "Konnte Datei nicht öffnen: " << filename << std::endl;
+    }
+
+    return config;
 }
 
-std::vector<std::map<std::string, std::string>> FileManager::parseIniFileBySection(const std::string& filename) {
-    std::vector<std::map<std::string, std::string>> sections;
+glm::vec3 FileManager::parseVector3(const std::string& vecString) {
+    istringstream iss(vecString);
+    vector<double> values;
+    string s;
+
+    while (getline(iss, s, ',')) {
+        // Entferne Leerzeichen am Anfang und am Ende des Strings
+        s.erase(0, s.find_first_not_of(" \t"));
+        s.erase(s.find_last_not_of(" \t") + 1);
+
+        try {
+            values.push_back(stod(s));
+        }
+        catch (const std::invalid_argument& e) {
+            cerr << "Ungültiges Format für Vektor: " << vecString << endl;
+            throw;
+        }
+    }
+
+    if (values.size() != 3) {
+        cerr << "Ungültige Anzahl an Elementen für Vektor: " << vecString << endl;
+        throw std::runtime_error("Vector parsing error");
+    }
+
+    return glm::vec3(values[0], values[1], values[2]);
+}
+
+std::unordered_map<std::string, std::string> FileManager::readTheConfig(const std::string& filename)
+{
+
+    std::unordered_map<std::string, std::string> config;
     std::ifstream file(filename);
-    std::string line, section, key, value;
-    std::map<std::string, std::string> currentSection;
+    std::string line;
+    std::string currentSection;
 
-    while (std::getline(file, line)) {
-        std::istringstream is_line(line);
-        if (line.empty() || line[0] == '#' || line[0] == ';') continue;
+    if (file.is_open()) {
+        while (std::getline(file, line)) {
+            // Entfernen Sie Leerzeichen am Anfang der Zeile
+            line.erase(0, line.find_first_not_of(" \t"));
 
-        if (line[0] == '[') {
-            if (!currentSection.empty()) {
-                sections.push_back(currentSection);
-                currentSection.clear();
+            // Erkenne Abschnittsnamen
+            if (line[0] == '[') {
+                size_t endPos = line.find(']');
+                if (endPos != std::string::npos) {
+                    currentSection = line.substr(1, endPos - 1) + ".";
+                }
+                continue;
             }
-            section = line.substr(1, line.find(']') - 1);
-            continue;
-        }
 
-        if (std::getline(is_line, key, '=') && std::getline(is_line, value)) {
-            currentSection[key] = value;
+            // Entferne Kommentare am Ende der Zeile
+            size_t commentPos = line.find_first_of("#;");
+            if (commentPos != std::string::npos) {
+                line = line.substr(0, commentPos);
+            }
+
+            std::istringstream is_line(line);
+            std::string key;
+            if (std::getline(is_line, key, '=')) {
+                std::string value;
+                if (std::getline(is_line, value)) {
+                    // Entfernen Sie Leerzeichen am Anfang und am Ende des Schlüssels und des Werts
+                    key.erase(0, key.find_first_not_of(" \t"));
+                    key.erase(key.find_last_not_of(" \t") + 1);
+                    value.erase(0, value.find_first_not_of(" \t"));
+                    value.erase(value.find_last_not_of(" \t") + 1);
+                    config[currentSection + key] = value;
+                }
+            }
         }
+        file.close();
     }
-    if (!currentSection.empty()) {
-        sections.push_back(currentSection);
+    else {
+        std::cerr << "Konnte Datei nicht öffnen: " << filename << std::endl;
     }
 
-    return sections;
+    return config;
 }
 
 void FileManager::saveParticles(int timestep, const std::vector<Particle>& particles, const std::string& path)

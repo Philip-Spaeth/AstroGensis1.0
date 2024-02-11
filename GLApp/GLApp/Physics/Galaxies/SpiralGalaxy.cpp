@@ -1,9 +1,8 @@
-
 #include "SpiralGalaxy.h"
 #include <omp.h>
 #include <iostream>
-
-using namespace std;
+#include <cmath>
+#include "MathFunctions.h"
 
 void SpiralGalaxy::ellipticalOrbit(Particle& p, double m, double diskR, double r, double angle)
 {
@@ -11,7 +10,7 @@ void SpiralGalaxy::ellipticalOrbit(Particle& p, double m, double diskR, double r
 	double mainAxis = r;
 	double minorAxis = r * (ellipticity + 1);
 
-	double a = physics.random(0, 2 * 3.14);
+	double a = MathFunctions::random(0, 2 * 3.14);
 	double x = mainAxis * std::cos(a);
 	double y = minorAxis * std::sin(a);
 	double z = 0;
@@ -20,7 +19,7 @@ void SpiralGalaxy::ellipticalOrbit(Particle& p, double m, double diskR, double r
 	double diskScale = 0.03;
 	double bulgeR = diskR / 10;
 	// Berechnen der Z-Koordinate basierend auf der Position im Bulge oder in der Disk
-	z = physics.gaussianRandom() * 0.05 * diskR;
+	z = MathFunctions::gaussianRandom() * 0.05 * diskR;
 	double l = (diskR * 0.5) / r;
 	if (l > 2)
 	{
@@ -31,7 +30,7 @@ void SpiralGalaxy::ellipticalOrbit(Particle& p, double m, double diskR, double r
 	//wenn in bulge rotier um die mitte der galaxie random
 	if (r < bulgeR)
 	{
-		double random = physics.random(0, 2 * 3.14);
+		double random = MathFunctions::random(0, 2 * 3.14);
 		x = x * std::cos(random) - y * std::sin(random);
 		y = x * std::sin(random) + y * std::cos(random);
 		z = z * std::cos(random) - y * std::sin(random);
@@ -94,7 +93,7 @@ void SpiralGalaxy::Sa(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 
 	for (int j = startIndex; j != endIndex; j++)
 	{
-		double random = physics.random(-baryonicFraction, darkMatterFraction);
+		double random = MathFunctions::random(-baryonicFraction, darkMatterFraction);
 		bool isDarkMatterParticle;
 		if (random > 0)
 		{
@@ -169,7 +168,7 @@ void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 
 	for (int j = startIndex; j != endIndex; j++)
 	{
-		double random = physics.random(-baryonicFraction, darkMatterFraction);
+		double random = MathFunctions::random(-baryonicFraction, darkMatterFraction);
 		bool isDarkMatterParticle;
 		if (random > 0)
 		{
@@ -242,7 +241,7 @@ void SpiralGalaxy::Sc(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 
 	for (int j = startIndex; j != endIndex; j++)
 	{
-		double random = physics.random(-baryonicFraction, darkMatterFraction);
+		double random = MathFunctions::random(-baryonicFraction, darkMatterFraction);
 		bool isDarkMatterParticle;
 		if (random > 0)
 		{
