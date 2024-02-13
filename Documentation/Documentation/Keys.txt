@@ -1,0 +1,22 @@
+ESC: Exit the program or close the current window.
+
+F11: Toggle fullscreen mode.
+
+SPACE: Pause or resume the simulation.
+
+RIGHT ARROW: Increase the playback speed of the simulation.
+LEFT ARROW: Decrease the playback speed of the simulation.
+
+1: Set the playback speed of the simulation to 1.
+
+Z: Toggle the visibility of dark matter in the simulation.
+U: Toggle between density color and standard color for particles.
+
+R: Restart the simulation from the beginning.
+
+L: Toggle the camera focus between the origin point and free movement mode.
+
+W: Move the camera forward.
+A: Move the camera to the left.
+S: Move the camera backward.
+D: Move the camera to the right.
