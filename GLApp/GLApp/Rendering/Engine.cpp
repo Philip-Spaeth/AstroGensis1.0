@@ -209,6 +209,18 @@ bool Engine::init(double physicsFaktor)
     
     return true;
 }
+void Engine::framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    // Stellen Sie sicher, dass die Ansichtsportgröße dem neuen Fenster entspricht
+    glViewport(0, 0, width, height);
+
+    // Aktualisieren Sie die Größe der Texturen und des Framebuffers
+    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+}
 
 void Engine::start(Physics* p)
 {
@@ -481,6 +493,34 @@ void Engine::renderParticles()
 
 void Engine::processInput()
 {
+    // Toggle zwischen Kameramodi mit "L"
+    static bool lKeyWasPressedLastFrame = false;
+
+    // Prüfen, ob die Taste "L" gerade gedrückt wurde
+    bool lKeyPressed =
+    #ifdef WIN32
+    (GetAsyncKeyState('L') & 0x8000) != 0;
+    #else
+        glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS;
+    #endif
+
+    // Umschalten des Kameramodus nur, wenn die Taste neu gedrückt wurde
+    if (lKeyPressed && !lKeyWasPressedLastFrame) 
+    {
+        focusedCamera = !focusedCamera;
+
+        
+    }
+    if (focusedCamera) {
+        // Richtet die Kamera auf den Ursprung aus
+        glm::dvec3 direction = glm::normalize(glm::dvec3(0, 0, 0) - cameraPosition);
+        cameraFront = direction;
+    }
+
+    // Aktualisieren des letzten Tastendruckzustands
+    lKeyWasPressedLastFrame = lKeyPressed;
+
+
     #ifdef WIN32
     if (GetAsyncKeyState(VK_CONTROL) < 0)
     #else
@@ -522,42 +562,44 @@ void Engine::processInput()
 // F�gen Sie diese Methode zur Engine-Klasse hinzu
 void Engine::processMouseInput()
 {
+    if (focusedCamera == false)
+    {
+        // Erfassen Sie die Mausbewegung
+        double mouseX, mouseY;
+        glfwGetCursorPos(window, &mouseX, &mouseY);
 
-    // Erfassen Sie die Mausbewegung
-    double mouseX, mouseY;
-    glfwGetCursorPos(window, &mouseX, &mouseY);
+        static double lastMouseX = mouseX;
+        static double lastMouseY = mouseY;
 
-    static double lastMouseX = mouseX;
-    static double lastMouseY = mouseY;
+        double xOffset = mouseX - lastMouseX;
+        double yOffset = lastMouseY - mouseY; // Umgekehrtes Vorzeichen f�r umgekehrte Mausrichtung
 
-    double xOffset = mouseX - lastMouseX;
-    double yOffset = lastMouseY - mouseY; // Umgekehrtes Vorzeichen f�r umgekehrte Mausrichtung
+        lastMouseX = mouseX;
+        lastMouseY = mouseY;
 
-    lastMouseX = mouseX;
-    lastMouseY = mouseY;
+        const float sensitivity = 0.05f;
+        xOffset *= sensitivity;
+        yOffset *= sensitivity;
 
-    const float sensitivity = 0.05f;
-    xOffset *= sensitivity;
-    yOffset *= sensitivity;
+        cameraYaw += xOffset;
+        cameraPitch += yOffset;
 
-    cameraYaw += xOffset;
-    cameraPitch += yOffset;
+        // Begrenzen Sie die Kamerapitch, um ein �berdrehen zu verhindern
+        if (cameraPitch > 89.0f)
+            cameraPitch = 89.0f;
+        if (cameraPitch < -89.0f)
+            cameraPitch = -89.0f;
 
-    // Begrenzen Sie die Kamerapitch, um ein �berdrehen zu verhindern
-    if (cameraPitch > 89.0f)
-        cameraPitch = 89.0f;
-    if (cameraPitch < -89.0f)
-        cameraPitch = -89.0f;
+        // Berechnen der neuen Kamerarichtung
+        glm::vec3 newFront;
+        newFront.x = cos(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
+        newFront.y = sin(glm::radians(cameraPitch));
+        newFront.z = sin(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
+        cameraFront = glm::normalize(newFront);
 
-    // Berechnen der neuen Kamerarichtung
-    glm::vec3 newFront;
-    newFront.x = cos(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
-    newFront.y = sin(glm::radians(cameraPitch));
-    newFront.z = sin(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
-    cameraFront = glm::normalize(newFront);
-
-    // Aktualisieren der Ansichtsmatrix
-    view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
+        // Aktualisieren der Ansichtsmatrix
+        view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
+    }
 }
 
 void Engine::checkShaderCompileStatus(GLuint shader, const char* shaderType)

@@ -168,7 +168,6 @@ void Menu::viewSimulation()
     }
     Physics* physics = new Physics(dataFolder);
     if (physics->configFile) physics->config();
-//// delta time noch niht richtig
     physics->deltaTime = deltaTime;
     physics->particlesSize = numParticle;
     physics->numTimeSteps = numTimeSteps;
@@ -287,6 +286,28 @@ void Menu::viewSimulation()
             //std::cout << "FPS: " << frameCount << std::endl;
             frameCount = 0;
             secondCounter = 0.0;
+        }
+
+        // Wenn F11 gedrückt wird fullstreen mit guter auflösung
+        // Wenn F11 gedrückt wird, schalten Sie in den Vollbildmodus um
+        if (glfwGetKey(engine.window, GLFW_KEY_F11) == GLFW_PRESS) 
+        {
+            // Speichern Sie die aktuelle Monitor-Information
+            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+            // Prüfen Sie den aktuellen Vollbild-Status des Fensters
+            if (glfwGetWindowMonitor(engine.window) == NULL) {
+                // Wenn das Fenster nicht im Vollbildmodus ist, schalten Sie in den Vollbildmodus
+                glfwSetWindowMonitor(engine.window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+                engine.framebuffer_size_callback(engine.window, mode->width, mode->height);
+            }
+            else {
+                // Wenn das Fenster bereits im Vollbildmodus ist, schalten Sie in den Fenstermodus
+                glfwSetWindowMonitor(engine.window, NULL, 100, 100, 1200, 800, mode->refreshRate);
+                engine.framebuffer_size_callback(engine.window, 1200, 800);
+            }
+
         }
     }
 

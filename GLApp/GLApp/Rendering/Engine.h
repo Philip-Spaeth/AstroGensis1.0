@@ -40,11 +40,14 @@ public:
     //double globalScale = 1e-18;
     void calculateGlobalScale();
 
+    bool focusedCamera = false;
+
     //render Tree
     const double theta = 0;
     std::vector<glm::vec4> positions;
     std::vector<glm::vec3> colors;
     std::vector<glm::vec3> densityColors;
+    void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 private:
     int oldIndex = 0;
     bool BGstars = true;

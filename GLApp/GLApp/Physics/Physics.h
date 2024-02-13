@@ -47,7 +47,7 @@ public:
     //SPH takes extra calculation time
     bool SPH = true;
     double h = 1e19;
-    double k = 1e46;
+    double k = 1e42;
     double rh0 = 0.5e-21;
     double mu = 1e47;
     //ok good for S0:      double h = 1e18;     double k = 3e46;    double rh0 = 1e-19;     double mu = 1e47;

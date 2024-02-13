@@ -5,8 +5,10 @@
 #include <glm.hpp>
 #include "Node.h"
 #include "Particle.h"
+#include "Physics.h"
 
 class Node;
+class Physics;
 
 class Octree {
 public:
@@ -18,7 +20,7 @@ public:
     double calculateTotalMassInSphere(glm::dvec3 targetPosition, double radius);
     double calculateTotalMassInSphere(Node* currentNode, glm::dvec3 targetPosition, double radius);
     void calcdensity(Particle& p,double h, double& medium, int& n);
-    glm::dvec3 calculateForces(Particle& particle, double softening, double a, double& potentialEngergy, double& calculations);
+    glm::dvec3 calculateForces(Physics* phy, Particle& particle, double softening, double a, double& potentialEngergy, double& calculations);
     void clearTree();
 private:
 

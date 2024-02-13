@@ -31,10 +31,9 @@ Physics::Physics(std::string newDataFolder)
 bool Physics::init()
 {
     fileManager = new FileManager(dataFolder);
+	std::cin.get();
     //Initilize the parameters based of the configfile
     if (configFile) config();
-	std::cin.get();
-
 
     // Select Folder save Data
     std::cout << "Please ENTER the name of the folder where the data should be saved.         Press ENTER to use default\n" << std::endl;
@@ -48,6 +47,19 @@ bool Physics::init()
     {
 		dataFolder = "Data";
 	}
+
+    //create the folder
+    std::string path = "Data/" + dataFolder;
+
+    // Erstellen des Ordners
+    // Überprüfen, ob der Ordner bereits existiert
+    if (!std::filesystem::exists(path)) {
+        // Erstellen des Ordners, wenn er nicht existiert
+        if (!std::filesystem::create_directory(path)) {
+            std::cerr << "Fehler beim Erstellen des Ordners: " << path << std::endl;
+            return 1; // Beendet das Programm mit einem Fehlercode
+        }
+    }
 
     //create a new info.txt file where numerOfTimeSteps and and ParticlesSize is saved
     std::string infoFile = "Data/" + dataFolder + "/info.txt";
@@ -288,7 +300,17 @@ bool Physics::Calc()
             }
 
             fileManager->saveParticles(t, currentParticles, dataFolder);
-
+            /*
+            //andromeda vorsimulation
+            double distanceBetween = 0;
+            distanceBetween = sqrt(pow(currentParticles[0].position.x - currentParticles[1].position.x, 2) + pow(currentParticles[0].position.y - currentParticles[1].position.y, 2) + pow(currentParticles[0].position.z - currentParticles[1].position.z, 2));
+            if (distanceBetween < 8e21)
+            {
+                double time = t * deltaTime;
+                double VelocityRelativeToPartile0 = sqrt(pow(currentParticles[1].velocity.x - currentParticles[0].velocity.x, 2) + pow(currentParticles[1].velocity.y - currentParticles[0].velocity.y, 2) + pow(currentParticles[1].velocity.z - currentParticles[0].velocity.z, 2));
+                std::cout << "currentTime: "<< time << "  Distance: " << distanceBetween <<"  Velocity: "<< VelocityRelativeToPartile0 << std::endl;
+            }
+            */
             calcTime(t, current_time);
         }
     }
@@ -376,7 +398,7 @@ void Physics::calculateGravitation(int t, int start, int stop) {
         // Berechne die Gesamtkraft auf das Partikel
         glm::dvec3 totalForce = { 0,0,0 };
         double potentialEngergy = 0;
-        totalForce = octree->calculateForces(currentParticles[p], softening,a, potentialEngergy, calulations);
+        totalForce = octree->calculateForces(this, currentParticles[p], softening,a, potentialEngergy, calulations);
         totalEnergie[t][p] += potentialEngergy;
         currentParticles[p].force = totalForce;
 
@@ -449,8 +471,10 @@ void Physics::config() {
     }
 
     // SPH
-    if (config.find("SPH") != config.end()) {
-        SPH = config["SPH"] == "true";
+    if (config.find("SPH") != config.end()) 
+    {
+        std::string l = config["SPH"];
+        SPH = stringToBool(config["SPH"]);
     }
     else {
         std::cout << "SPH wurde nicht gefunden" << std::endl;
@@ -500,10 +524,21 @@ void Physics::config() {
 }
 
 bool stringToBool(const std::string& str) {
-    if (str == "1" || str == "true" || str == "True" || str == "TRUE") {
+    // Trimmen des Strings und Entfernen von Kommentaren
+    size_t commentPos = str.find_first_of("#;");
+    std::string trimmedStr = (commentPos != std::string::npos) ? str.substr(0, commentPos) : str;
+    trimmedStr.erase(0, trimmedStr.find_first_not_of(" \t"));
+    trimmedStr.erase(trimmedStr.find_last_not_of(" \t") + 1);
+
+    // Konvertierung in Kleinbuchstaben für vereinfachte Vergleiche
+    std::string lowerStr = trimmedStr;
+    std::transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), ::tolower);
+
+    // Überprüfung auf bekannte Werte
+    if (lowerStr == "1" || lowerStr == "true") {
         return true;
     }
-    else if (str == "0" || str == "false" || str == "False" || str == "FALSE") {
+    else if (lowerStr == "0" || lowerStr == "false") {
         return false;
     }
     else {

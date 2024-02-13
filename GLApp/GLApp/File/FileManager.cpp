@@ -93,7 +93,6 @@ glm::vec3 FileManager::parseVector3(const std::string& vecString) {
 
 std::unordered_map<std::string, std::string> FileManager::readTheConfig(const std::string& filename)
 {
-
     std::unordered_map<std::string, std::string> config;
     std::ifstream file(filename);
     std::string line;
@@ -101,6 +100,13 @@ std::unordered_map<std::string, std::string> FileManager::readTheConfig(const st
 
     if (file.is_open()) {
         while (std::getline(file, line)) {
+            // Ignoriere Kommentare und leere Zeilen
+            size_t commentPos = line.find_first_of("#;");
+            if (commentPos != std::string::npos) {
+                line = line.substr(0, commentPos);
+            }
+            if (line.empty()) continue;
+
             // Entfernen Sie Leerzeichen am Anfang der Zeile
             line.erase(0, line.find_first_not_of(" \t"));
 
@@ -111,12 +117,6 @@ std::unordered_map<std::string, std::string> FileManager::readTheConfig(const st
                     currentSection = line.substr(1, endPos - 1) + ".";
                 }
                 continue;
-            }
-
-            // Entferne Kommentare am Ende der Zeile
-            size_t commentPos = line.find_first_of("#;");
-            if (commentPos != std::string::npos) {
-                line = line.substr(0, commentPos);
             }
 
             std::istringstream is_line(line);

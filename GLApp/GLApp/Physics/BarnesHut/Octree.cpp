@@ -16,9 +16,9 @@ Octree::Octree(glm::dvec3 center, double radius, double theta, int maxDepth)
 Octree::~Octree() {
 }
 
-glm::dvec3 Octree::calculateForces(Particle& particle, double softening, double a, double& potentialEngergy, double& calculations)
+glm::dvec3 Octree::calculateForces(Physics* phy, Particle& particle, double softening, double a, double& potentialEngergy, double& calculations)
 {
-	return root->calcForce(particle,root, softening,a, potentialEngergy, calculations);
+	return root->calcForce(phy,particle,root, softening,a, potentialEngergy, calculations);
 }
 
 void Octree::setColors()

@@ -27,6 +27,7 @@ void SpiralGalaxy::ellipticalOrbit(Particle& p, double m, double diskR, double r
 	}
 	z = z * l;
 
+	/*
 	//wenn in bulge rotier um die mitte der galaxie random
 	if (r < bulgeR)
 	{
@@ -35,6 +36,7 @@ void SpiralGalaxy::ellipticalOrbit(Particle& p, double m, double diskR, double r
 		y = x * std::sin(random) + y * std::cos(random);
 		z = z * std::cos(random) - y * std::sin(random);
 	}
+	*/
 
 	//distanz zum zetrum berechnen
 	double distanceToCenter = glm::abs(glm::length(glm::dvec3(x, y, 0)));
@@ -51,9 +53,9 @@ void SpiralGalaxy::ellipticalOrbit(Particle& p, double m, double diskR, double r
 	double e = 1;
 
 	//slwo down in bulge to cause caotic movement so its more realistic
-	if (distanceToCenter < bulgeR)
+	if (distanceToCenter < diskR)
 	{
-		e = ((distanceToCenter * distanceToCenter) / bulgeR) / bulgeR * (bulgeR / distanceToCenter);
+		e = ((distanceToCenter * distanceToCenter) / diskR) / diskR* (diskR / distanceToCenter);
 		if (e > 1)
 		{
 			e = 1;
@@ -178,7 +180,10 @@ void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dv
 			isDarkMatterParticle = false;
 		}
 
+		//exponetial
 		double scaledI = std::pow(static_cast<double>(j - startIndex) / particleSize, 1.0 / (isDarkMatterParticle ? darkPowNumber : powNumber));
+		//linear
+		//double scaledI = (particleSize / j);
 		double r = galaxyRadius * scaledI;
 
 		particles[j].angle = sqrt(r) * 2.0 * 3.14;

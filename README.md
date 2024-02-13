@@ -1,4 +1,12 @@
-# simulation
+#Welcome to our Software
+
+[![Example Milkyway Andromeda Collision]          // Title
+(https://i.ytimg.com/vi/Hc79sDi3f0U/maxresdefault.jpg)] // Thumbnail
+(https://www.youtube.com/watch?v=K3MwyhXIuEA "Now in Android: 55")    // Video Link
+
+For instructions on how to use this software open the getting started file under /Doku
+
+
 
 Setup Project on Linux:
 Cmake installieren:

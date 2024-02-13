@@ -7,6 +7,7 @@
 #include "Physics.h"
 
 class Particle;
+class Physics;
 
 class Node 
 {
@@ -17,10 +18,10 @@ public:
 	bool isInside(Particle& p);
 
 	void insert(Particle& p);
-	glm::dvec3 calcForce(Particle& p, Node* root, double softening, double a, double& potentialEngergy, double& calculations);
+	glm::dvec3 calcForce(Physics* phy, Particle& p, Node* root, double softening, double a, double& potentialEngergy, double& calculations);
 
 	//SPH
-	void gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
+	void gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
 
 	void gravity(Particle& p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
     void calcMass();
