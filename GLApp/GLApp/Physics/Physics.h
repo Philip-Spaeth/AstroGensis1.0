@@ -72,7 +72,6 @@ public:
 private:
     Octree* octree;
     std::vector<std::vector<double>> totalEnergie;
-    double calulations = 0;
     SystemInit* systemInit;
     FileManager* fileManager;
     void calcTime(int index, std::chrono::system_clock::time_point current_time);

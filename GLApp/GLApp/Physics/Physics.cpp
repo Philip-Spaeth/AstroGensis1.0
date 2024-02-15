@@ -264,7 +264,6 @@ bool Physics::Calc()
 				}
             }
 
-            // Aktualisiere den Octree basierend auf den neuen Partikelpositionen
             //Runge Kuta 
             if (calculationMethod == 0)
             {
@@ -282,7 +281,6 @@ bool Physics::Calc()
                                 glm::dvec3 force = currentParticles[p].calculateGravitationalForce(otherParticle, G, softening, deltaTime, k);
                                 totalForce += force;
                                 totalEnergie[t][p] += currentParticles[p].calcPotentialEnergie(otherParticle, G, 0, k);
-                                calulations++;
                             }
                         }
                         totalEnergie[t][p] += currentParticles[p].calcKineticEnergie();
@@ -319,7 +317,6 @@ bool Physics::Calc()
     fileManager->saveEnergieData(totalEnergie, "../Energie_Daten/1000sec/Euler_Data.txt");
 
     std::cout << std::endl;
-    std::cout << "Total Calculations: " << calulations << std::endl;
     return true;
 }
 
@@ -398,13 +395,12 @@ void Physics::calculateGravitation(int t, int start, int stop) {
         // Berechne die Gesamtkraft auf das Partikel
         glm::dvec3 totalForce = { 0,0,0 };
         double potentialEngergy = 0;
-        totalForce = octree->calculateForces(this, currentParticles[p], softening,a, potentialEngergy, calulations);
+        double l = 0;
+        totalForce = octree->calculateForces(this, currentParticles[p], softening,a, potentialEngergy, l);
         totalEnergie[t][p] += potentialEngergy;
         currentParticles[p].force = totalForce;
 
         totalEnergie[t][p] += currentParticles[p].calcKineticEnergie();
-
-        calulations++;
     }
 }
 
