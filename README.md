@@ -2,7 +2,7 @@
 ## Whats the Purpose of our simulation-software
 
 With our software it is possible to simulate Planetary and Solarsystems, Galaxys and even Galaxy Clusters.
-You can use Premade Galaxys like Elliptical E0 and S0 or Spiral Sa, Sb and Sc galaxys or whrite teh code for your own Galaxys.
+You can use Premade Galaxys like Elliptical E0 and S0 or Spiral Sa, Sb and Sc galaxys or write code for your own Galaxys.
 We are using a N-body simulation with a Octree(barnes Hut) and fixed timesteps. 
 For Galaxys and realistic gas simulation SPH is implemented and can be modified based on your requirements.
 As numerical integrators you can choose between Euler, Runge Kutta (slow), KDK leapfrog and DKD leapfrog. 
