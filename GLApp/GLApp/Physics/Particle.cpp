@@ -26,6 +26,12 @@ void Particle::eulerUpdatePosition(glm::dvec3 velocity, double deltaTime)
     position += velocity * deltaTime;
 }
 
+void Particle::eulerUpdateThermalEnergy(double deltaTime)
+{
+	thermalEnergy += thermalEnergyChange * deltaTime;
+}
+
+
 //Runge-Kutta 4th order
 void Particle::rungeKuttaUpdateVelocity(glm::dvec3 acceleration, double deltaTime, int rungeKutaStep)
 {
@@ -172,6 +178,7 @@ double Particle::calcPotentialEnergie(const Particle& other, double G, double so
 	double potentialEnergie = (0.5)*((- G * mass * other.mass) / (distance));
 	return potentialEnergie;
 }
+
 double Particle::calcPotentialEnergie(const Particle& other, double G, double softening, int k)
 {
     glm::dvec3 delta = other.position - position;
@@ -195,8 +202,13 @@ double Particle::calcPotentialEnergie(const Particle& other, double G, double so
     return potentialEnergie;
 }
 
+double Particle::calcThermalEnergy()
+{
+	return thermalEnergy;
+}
+
 //dark energy / hubblekosntant
-void Particle::hubbleExpansion() 
+void Particle::hubbleExpansion(double deltaTime)
 {
     glm::dvec3 delta = position;
     double distance = glm::length(delta);
@@ -209,8 +221,9 @@ void Particle::hubbleExpansion()
     double hubbleEffect = phy.HubbleConstant * 1e-3 / 3.0857e22; // Umrechnung von km/s/Mpc in SI-Einheiten
     glm::dvec3 hubbleVelocity = delta * hubbleEffect; // Relative Geschwindigkeit aufgrund der Expansion
 
+
     // Aktualisiere die Geschwindigkeit des Partikels
-    velocity += hubbleVelocity;
+    position += hubbleVelocity * deltaTime;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

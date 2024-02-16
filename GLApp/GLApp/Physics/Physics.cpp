@@ -209,15 +209,6 @@ bool Physics::Calc()
                 }
             }
 
-            //Dark Energy / hubbleconstant
-            if (HubbleConstant)
-            {
-                for (int p = 0; p < currentParticles.size(); p++)
-                {
-                    currentParticles[p].hubbleExpansion();
-                }
-            }
-
             //Other methods
             if (calculationMethod != 0 && calculationMethod != 3)
             {
@@ -232,6 +223,8 @@ bool Physics::Calc()
                     {
                         currentParticles[p].eulerUpdateVelocity(currentParticles[p].calcAcceleration(currentParticles[p].force), deltaTime);
                         currentParticles[p].eulerUpdatePosition(currentParticles[p].velocity, deltaTime);
+                        //Euler Thermal Energy
+                        currentParticles[p].eulerUpdateThermalEnergy(deltaTime);
                     }
 
                     //Drift-Kick-Drift leapfrog
@@ -240,9 +233,12 @@ bool Physics::Calc()
                         currentParticles[p].leapfrogUpdatePosition(currentParticles[p].velocity, deltaTime / 2);
                         currentParticles[p].leapfrogUpdateVelocity(currentParticles[p].calcAcceleration(currentParticles[p].force), deltaTime);
                         currentParticles[p].leapfrogUpdatePosition(currentParticles[p].velocity, deltaTime / 2);
+                        //Euler Thermal Energy
+                        currentParticles[p].eulerUpdateThermalEnergy(deltaTime);
                     }
                     //set the force to 0
                     currentParticles[p].force = { 0,0,0 };
+                    currentParticles[p].thermalEnergyChange = 0;
                 }
             }
 
@@ -253,6 +249,10 @@ bool Physics::Calc()
                 for (int p = 0; p < currentParticles.size(); p++) {
                     currentParticles[p].leapfrogUpdateVelocity(currentParticles[p].calcAcceleration(currentParticles[p].force), deltaTime / 2);
                     currentParticles[p].leapfrogUpdatePosition(currentParticles[p].velocity, deltaTime);
+
+                    //set the force to 0
+                    currentParticles[p].force = { 0,0,0 };
+                    currentParticles[p].thermalEnergyChange = 0;
                 }
 
                 octree->clearTree();
@@ -261,6 +261,12 @@ bool Physics::Calc()
                 for(int p = 0; p < currentParticles.size(); p++)
 				{
                     currentParticles[p].leapfrogUpdateVelocity(currentParticles[p].calcAcceleration(currentParticles[p].force), deltaTime / 2);
+                    //Euler Thermal Energy
+                    currentParticles[p].eulerUpdateThermalEnergy(deltaTime);
+
+                    //set the force to 0
+                    currentParticles[p].force = { 0,0,0 };
+                    currentParticles[p].thermalEnergyChange = 0;
 				}
             }
 
@@ -284,18 +290,34 @@ bool Physics::Calc()
                             }
                         }
                         totalEnergie[t][p] += currentParticles[p].calcKineticEnergie();
+                        currentParticles[p].thermalEnergyChange = 0;
 
                         //Runge-Kutta Schritte berechnen
                         currentParticles[p].rungeKuttaUpdateVelocity(currentParticles[p].calcAcceleration(totalForce), deltaTime, k);
                         currentParticles[p].rungeKuttaUpdatePosition(deltaTime, k);
+                        //Euler Thermal Energy
+                        currentParticles[p].eulerUpdateThermalEnergy(deltaTime);
                     }
                 }
             }
+
+            //Dark Energy / Hubbleconstant
+            if (HubbleConstant)
+            {
+                for (int p = 0; p < currentParticles.size(); p++)
+                {
+                    currentParticles[p].hubbleExpansion(deltaTime);
+                }
+            }
+
+
             if(false)
             {
                 //rotation and masscurves
                 fileManager->saveMassCurve(currentParticles, "");
             }
+
+            //std::cout <<currentParticles[485].thermalEnergy<< std::endl;
 
             fileManager->saveParticles(t, currentParticles, dataFolder);
             /*
@@ -507,6 +529,14 @@ void Physics::config() {
     else {
         std::cout << "mu wurde nicht gefunden" << std::endl;
     }
+    //thermal const
+    if (config.find("uConst") != config.end()) {
+		thermalConstant = std::stod(config["uConst"]);
+	}
+    else {
+		std::cout << "thermalConstant wurde nicht gefunden" << std::endl;
+	}
+
 
     // HubbleConstant
     if (config.find("HubbleConstant") != config.end()) {

@@ -41,6 +41,22 @@ double MathFunctions::laplaceCubicSplineKernel(const glm::dvec3& rVec, double h)
     return factor;
 }
 
+glm::dvec3 MathFunctions::gradientCubicSplineKernel(const glm::dvec3& r, double h) 
+{
+    double q = glm::length(r) / h;
+    double sigma = 10.0 / (7.0 * 3.14 * pow(h, 2));
+    glm::dvec3 gradW(0.0);
+
+    if (q > 0 && q <= 1.0) {
+        gradW = sigma * (-3 * q + 2.25 * q * q) * r / (glm::length(r) * h);
+    }
+    else if (q > 1.0 && q <= 2.0) {
+        gradW = sigma * -0.75 * pow(2 - q, 2) * r / (glm::length(r) * h);
+    }
+
+    return gradW;
+}
+
 //////////// Random Functions /////////////////////////////////////////////
 
 

@@ -21,6 +21,8 @@ public:
     double density = 0;
     double darkMatterDensity = 0;
     double baryonicDensity = 0;
+    double thermalEnergyChange = 0;
+    double thermalEnergy = 0;
 
     // RungeKuta variables
     glm::dvec3 YnVelocity = { 0,0,0 };
@@ -34,12 +36,11 @@ public:
     glm::dvec3 k4Position = { 0,0,0 };
 
 
-
     //dark matter or not
     bool darkMatter = false;
 
     //dark Energy / hubbleconstant
-    void hubbleExpansion();
+    void hubbleExpansion(double deltaTime);
 
 
     //variables for render
@@ -67,6 +68,7 @@ public:
     //semi-implicit Euler
     void eulerUpdateVelocity(glm::dvec3 acceleration, double deltaTime);
     void eulerUpdatePosition(glm::dvec3 velocity, double deltaTime);
+    void eulerUpdateThermalEnergy(double deltaTime);
 
     //Runge-Kutta order 4
     void rungeKuttaUpdateVelocity(glm::dvec3 acceleration, double deltaTime, int rungeKutaStep);
@@ -82,5 +84,5 @@ public:
     double calcKineticEnergie();
     double calcPotentialEnergie(const Particle& other, double G, double softening);
     double calcPotentialEnergie(const Particle& other, double G, double softening, int k);
-
+    double calcThermalEnergy();
 };

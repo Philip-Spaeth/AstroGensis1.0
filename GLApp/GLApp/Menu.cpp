@@ -318,5 +318,143 @@ void Menu::viewSimulation()
 
 void Menu::renderSimulation()
 {
+    //get the DataFolder
+    double deltaTime = 1;
+    int numParticle = 1;
+    int numTimeSteps = 1;
+
+    std::string input;
+    std::getline(std::cin, input);
+
+    while (true)
+    {
+        std::string dataPath = "Data"; // Pfad zum Data-Ordner
+        std::cout << endl;
+        std::cout << "Available simulations: \n\n";
+
+        // Überprüfen, ob das Verzeichnis existiert und darauf zugegriffen werden kann
+        if (fs::exists(dataPath) && fs::is_directory(dataPath)) {
+            int i = 1;
+            for (const auto& entry : fs::directory_iterator(dataPath)) {
+                std::cout << "[" << i << "] " << entry.path().filename() << std::endl;
+                i++;
+            }
+        }
+        else {
+            std::cout << "No available simulations. The 'Data' folder is missing or inaccessible.\n";
+        }
+
+
+        //check wich folder to use based on the i number from above
+        std::string Input;
+        std::getline(std::cin, Input);
+        if (Input == "")
+        {
+            break;
+        }
+        else
+        {
+            int i = std::stoi(Input);
+            int j = 1;
+            for (const auto& entry : fs::directory_iterator("Data"))
+            {
+                if (i == j)
+                {
+                    dataFolder = entry.path().filename().string();
+
+                    // Get the number of timesteps and the particlesize from the info.txt file, separated by ';'
+                    std::string infoFile = "Data/" + dataFolder + "/info.txt";
+                    std::ifstream file(infoFile);
+                    if (!file.is_open()) {
+                        std::cerr << "Error opening file: " << infoFile << std::endl;
+                        break;
+                    }
+
+                    std::string line;
+                    // read the first line
+                    if (std::getline(file, line)) {
+                        try {
+                            numTimeSteps = std::stoi(line);
+                        }
+                        catch (const std::invalid_argument& e) {
+                            std::cerr << "Invalid number format for time steps: " << line << std::endl;
+                            file.close();
+                            break;
+                        }
+                    }
+                    // read the second line
+                    if (std::getline(file, line)) {
+                        try {
+                            numParticle = std::stoi(line);
+                        }
+                        catch (const std::invalid_argument& e) {
+                            std::cerr << "Invalid number format for particle size: " << line << std::endl;
+                            file.close();
+                            break;
+                        }
+                    }
+                    //read the third line
+                    if (std::getline(file, line)) {
+                        try {
+                            deltaTime = std::stod(line);
+                        }
+                        catch (const std::invalid_argument& e) {
+                            std::cerr << "Invalid number format for delta time: " << line << std::endl;
+                            file.close();
+                            break;
+                        }
+                    }
+
+                    file.close();
+                    break;
+                }
+                j++;
+            }
+            break;
+        }
+    }
+    Physics* physics = new Physics(dataFolder);
+    if (physics->configFile) physics->config();
+    physics->deltaTime = deltaTime;
+    physics->particlesSize = numParticle;
+    physics->numTimeSteps = numTimeSteps;
+
+    //choose a Name for the video
+    std::string videoName;
+    std::cout << "\nPlease enter a name for the video: ";
+    std::getline(std::cin, videoName);
+        
+    //choose weather to rotate the camara around the center or not
+    bool rotate = false;
+    std::cout << "\nDo you want to rotate the camera around the center? (y/n): ";
+    std::string input2;
+    std::getline(std::cin, input2);
+    if (input2 == "y")
+    {
+		rotate = true;
+        //choose the speed of the rotation
+        double speed;
+        std::cout << "\nPlease enter the speed of the rotation(between 10-1000):  ";
+        std::getline(std::cin, input2);
+        speed = std::stod(input2);
+	}
+
+    //Choose one of the following Colormodes
+    int colorMode = 0;
+    std::cout << "\nPlease choose a color mode: \n";
+    std::cout << "[1] Visible ALl\n";
+    std::cout << "[2] Visible only Baryonic\n";
+    std::cout << "[3] Visible only DarkMatter\n\n";
+    std::cout << "[4] Thermal All\n";
+    std::cout << "[5] Thermal only Baryonic\n";
+    std::cout << "[6] Thermal only DarkMatter\n\n";
+    std::cout << "[7] Density All\n";
+    std::cout << "[8] Density only Baryonic\n";
+    std::cout << "[9] Density only DarkMatter\n\n";
+
+    std::string input3;
+    std::getline(std::cin, input3);
+    colorMode = std::stoi(input3);
+
 
 }
