@@ -19,6 +19,8 @@ public:
     double mass;
     //SPH variables
     double density = 0;
+    double pressure = 0;
+    double h = 0;
     double darkMatterDensity = 0;
     double baryonicDensity = 0;
     double thermalEnergyChange = 0;

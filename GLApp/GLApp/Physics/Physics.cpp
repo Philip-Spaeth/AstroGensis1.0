@@ -206,7 +206,16 @@ bool Physics::Calc()
                     currentParticles[p].density = 0;
                     //For color and SPH calculations
                     octree->calcdensity(currentParticles[p], h, mediumDensity, densityN);
+                    if (adaptiveSmoothingLength)
+                    {
+                        currentParticles[p].h = pow((3 * currentParticles[p].mass) / (4 * glm::pi<double>() * currentParticles[p].density), 1.0 / 3.0) * hFactor;
+                    }
                 }
+                //calc h for all nodes
+                if (adaptiveSmoothingLength)
+                {
+                    octree->calcH();
+				}
             }
 
             //Other methods
@@ -420,6 +429,7 @@ void Physics::calculateGravitation(int t, int start, int stop) {
         double l = 0;
         totalForce = octree->calculateForces(this, currentParticles[p], softening,a, potentialEngergy, l);
         totalEnergie[t][p] += potentialEngergy;
+        totalEnergie[t][p] += currentParticles[p].thermalEnergy;
         currentParticles[p].force = totalForce;
 
         totalEnergie[t][p] += currentParticles[p].calcKineticEnergie();

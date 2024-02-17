@@ -25,6 +25,7 @@ public:
 
 	void gravity(Particle& p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
     void calcMass();
+	void calcH();
 	void color(glm::vec3 color);
 
 	Node* child[8] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
@@ -45,6 +46,7 @@ public:
 	double density = 0;
 	double baryonicDensity = 0;
 	double darkMatterDensity = 0;
+	double smoothingLength = 0;
 	void calcDensity(Particle& p,double h, double& medium, int& n);
 
 	bool renderTree = false;

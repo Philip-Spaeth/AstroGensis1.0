@@ -23,7 +23,7 @@ double MathFunctions::cubicSplineKernel(double r, double h)
 
 double MathFunctions::laplaceCubicSplineKernel(const glm::dvec3& rVec, double h)
 {
-    double r = glm::length(rVec);
+    double r = sqrt(rVec.x * rVec.x + rVec.y * rVec.y + rVec.z * rVec.z);
     if (r > 2 * h) {
         return 0;
     }
@@ -43,7 +43,7 @@ double MathFunctions::laplaceCubicSplineKernel(const glm::dvec3& rVec, double h)
 
 glm::dvec3 MathFunctions::gradientCubicSplineKernel(const glm::dvec3& r, double h) 
 {
-    double q = glm::length(r) / h;
+    double q = sqrt(r.x * r.x + r.y * r.y + r.z * r.z) / h;
     double sigma = 10.0 / (7.0 * 3.14 * pow(h, 2));
     glm::dvec3 gradW(0.0);
 

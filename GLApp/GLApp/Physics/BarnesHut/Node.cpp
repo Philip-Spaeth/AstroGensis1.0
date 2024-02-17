@@ -102,9 +102,9 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 		double mu = phy->mu;
 		double uConst = phy->thermalConstant;
 
-		double alpha = 1.0; // Viskositätskoeffizient alpha
-		double beta = 2.0;  // Viskositätskoeffizient beta
-		double gamma = 5 / 3; // Spezifische Wärmekapazität
+		double alpha = phy->alpha; // Viskositätskoeffizient alpha
+		double beta = phy->beta;  // Viskositätskoeffizient beta
+		double gamma = phy->gamma; // Spezifische Wärmekapazität für ideales Gas
 
 		double r = glm::length(delta);
 
@@ -128,7 +128,6 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 			else
 			{
 				double distance = r * r + softening * softening;
-				//double distance = r * r;
 				//normal direct force
 				double forceMagnitude = (G * mass * p.mass) / std::pow(distance, 1);
 				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
@@ -143,30 +142,34 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 				//Druckkraft
 				// Dichte berechnen
 				double density_i = p.density;
+				//density of the node is already calculated
 				// Druck berechnen
 				double pressure_i = k * (density_i - rho0);
+				double pressure = k * (density - rho0);
 				// Gradient der Kernel-Funktion
-				glm::dvec3 gradKernel = glm::normalize(delta) * (MathFunctions::cubicSplineKernel(r, h));
+				if (phy->adaptiveSmoothingLength) h = p.h;
+				glm::dvec3 gradKernel = MathFunctions::gradientCubicSplineKernel(delta, h);
 
 				//(original)
-				double pressureForce = -mass * (pressure_i / (density_i * density_i));
+				double pressureForce = - mass * ((pressure_i / (density_i * density_i)) + (pressure / (density * density)));
 
 				glm::dvec3 vecPressureForce = pressureForce * gradKernel;
 				// Kraft auf Partikel i anwenden
-				force += vecPressureForce;
+				force -= vecPressureForce;
 
 				//Viskosen Kräfte
 				//if both velocities are a rational number
 				if (!std::isnan(glm::length(p.velocity)) && !std::isnan(glm::length(particle.velocity)))
 				
 					//vereinfachung der formel mit thermaler energie
-					if (false)
+					if (!phy->artificialViscosity)
 					{
+						if (phy->adaptiveSmoothingLength) h = p.h;
 						glm::dvec3 velocityDiff = p.velocity - particle.velocity;
 						double distance = glm::length(p.position - massCenter);
-						double cubicSplineKernel = MathFunctions::cubicSplineKernel(distance, h);
+						double cubicSplineKernel = MathFunctions::laplaceCubicSplineKernel(p.position - massCenter, h);
 
-						glm::dvec3 viscousForce = -mu * (mass / p.density) * (velocityDiff / (distance + softening)) * cubicSplineKernel;
+						glm::dvec3 viscousForce = - mu * (mass / density) * (velocityDiff / (distance + softening)) * cubicSplineKernel;
 						force += viscousForce;
 					}
 					//Springel Formular
@@ -174,29 +177,42 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 					{
 						// Mittlere Schallgeschwindigkeit
 						double ci = sqrt(gamma * pressure_i / p.density);
-						double cij = (ci + ci) / 2.0;
+						double cj = sqrt(gamma * pressure / density);
+						double cij = (ci + cj) / 2.0;
 
 						// Mittlere Dichte
-						double rhoij = (p.density + p.density) / 2.0;
+						double density1 = p.density;
+						double density2 = density;
+						double rhoij = (density1 + density2) / 2.0;
 
 						// Geschwindigkeitsdifferenz
 						glm::dvec3 velocityDiff = p.velocity - particle.velocity;
 						glm::dvec3 rij = p.position - massCenter;
+						if(phy->adaptiveSmoothingLength) h = p.h;
 						double mu_ij = h * glm::dot(velocityDiff, rij) / (glm::dot(rij, rij) + 0.01 * std::pow(h, 2));
 
 						// Viskositätstensor Πij
 						double Pi_ij = 0.0;
 						if (glm::dot(velocityDiff, rij) < 0) {
-							Pi_ij = (-alpha * cij * mu_ij + beta * mu_ij * mu_ij) / rhoij;
+							Pi_ij = (-alpha * cij * mu_ij + beta * (mu_ij * mu_ij)) / rhoij;
 						}
 
-						// Kernel-Funktion und deren Gradient
-						glm::dvec3 gradW = MathFunctions::gradientCubicSplineKernel(rij, h);
+						// Kernel-Funktion und deren Gradient (mittelwert)
+						double hi = h;
+						double hj = h;
+						if (phy->adaptiveSmoothingLength)
+						{
+							hi = p.h;
+							hj = smoothingLength;
+						}
+						glm::dvec3 gradWi = MathFunctions::gradientCubicSplineKernel(rij, hi);
+						glm::dvec3 gradWj = MathFunctions::gradientCubicSplineKernel(rij, hj);
+						glm::dvec3 mediumGradW = (gradWi + gradWj) / 2.0;
 
-						// Viskose Kraft
-						force -= p.mass * Pi_ij * gradW;
+						double viscousForce = - mass * Pi_ij;
+						glm::dvec3 vForce= viscousForce * mediumGradW;
+						force += vForce;
 					}
-				}
 
 				//Thermal Energy
 				glm::dvec3 velocityDiff = p.velocity - particle.velocity;
@@ -466,6 +482,24 @@ void Node::clear()
 			child[i]->clear();
 			delete child[i];
 			child[i] = nullptr;
+		}
+	}
+}
+
+void Node::calcH()
+{
+	if (isLeaf)
+	{
+		particle.h = 5e18;
+	}
+	else
+	{
+		for (Node* child : child)
+		{
+			if (child != nullptr)
+			{
+				child->calcH();
+			}
 		}
 	}
 }

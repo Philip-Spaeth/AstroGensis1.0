@@ -20,6 +20,11 @@ glm::dvec3 Octree::calculateForces(Physics* phy, Particle& particle, double soft
 {
 	return root->calcForce(phy,particle,root, softening,a, potentialEngergy, calculations);
 }
+void Octree::calcH()
+{
+	//calc h for all nodes not particles
+	root->calcH();
+}
 
 void Octree::setColors()
 {

@@ -28,7 +28,7 @@ public:
     int particlesSize = 20000;
 
     //the time per frame
-    //Optimal Value for ellipticalgalaxy : 1e13
+    //Optimal Value for ellipticalgalaxy : 1e12
     double deltaTime = 1e14;
     // calculation Method:
     int calculationMethod = 1;
@@ -52,6 +52,16 @@ public:
     double mu = 1e47;
     double thermalConstant = 1e-3;
     //ok good for S0:      double h = 1e18;     double k = 3e46;    double rh0 = 1e-19;     double mu = 1e47;
+
+    //SPH better functions (Extra Calculation Time)
+    bool simplifiedDensity = false; // simplyfied density calculation using the Octree
+    bool adaptiveSmoothingLength = false; // Takes extra calculation time
+    double hFactor = 0.001;
+    bool artificialViscosity = true; // Springel more accurate and complicated
+    double alpha = 2;
+    double beta = 1;
+    double gamma = 5 / 3;
+
 
     //dark Energy / Cosmological Constant
     bool darkEnergy = true;

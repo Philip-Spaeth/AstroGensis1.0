@@ -22,6 +22,7 @@ public:
     void calcdensity(Particle& p,double h, double& medium, int& n);
     glm::dvec3 calculateForces(Physics* phy, Particle& particle, double softening, double a, double& potentialEngergy, double& calculations);
     void clearTree();
+    void calcH();
 private:
 
 	Node* root;
