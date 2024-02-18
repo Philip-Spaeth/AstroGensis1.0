@@ -209,6 +209,7 @@ bool Physics::Calc()
                     if (adaptiveSmoothingLength)
                     {
                         currentParticles[p].h = pow((3 * currentParticles[p].mass) / (4 * glm::pi<double>() * currentParticles[p].density), 1.0 / 3.0) * hFactor;
+                        //std::cout << "h: " << currentParticles[p].h << std::endl;
                     }
                 }
                 //calc h for all nodes

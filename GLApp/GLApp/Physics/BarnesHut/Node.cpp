@@ -211,6 +211,8 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 
 						double viscousForce = - mass * Pi_ij;
 						glm::dvec3 vForce= viscousForce * mediumGradW;
+						double forcelenght = sqrt(vForce.x * vForce.x + vForce.y * vForce.y + vForce.z * vForce.z);
+						//std::cout << forcelenght << std::endl;
 						force += vForce;
 					}
 

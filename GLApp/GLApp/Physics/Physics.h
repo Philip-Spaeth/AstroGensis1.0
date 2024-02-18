@@ -56,10 +56,10 @@ public:
     //SPH better functions (Extra Calculation Time)
     bool simplifiedDensity = false; // simplyfied density calculation using the Octree
     bool adaptiveSmoothingLength = false; // Takes extra calculation time
-    double hFactor = 0.001;
+    double hFactor = 1e1;
     bool artificialViscosity = true; // Springel more accurate and complicated
-    double alpha = 2;
-    double beta = 1;
+    double alpha = 2e11;
+    double beta = 1e22;
     double gamma = 5 / 3;
 
 
