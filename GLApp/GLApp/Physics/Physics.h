@@ -24,7 +24,7 @@ public:
 
     bool configFile = true;
 
-    int numTimeSteps = 2;
+    int numTimeSteps = 100;
     int particlesSize = 20000;
 
     //the time per frame
@@ -59,7 +59,7 @@ public:
     double hFactor = 1e1;
     bool artificialViscosity = true; // Springel more accurate and complicated
     double alpha = 2e11;
-    double beta = 1e22;
+    double beta = 1e20;
     double gamma = 5 / 3;
 
 
