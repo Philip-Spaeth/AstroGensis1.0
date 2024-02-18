@@ -106,7 +106,7 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 		double beta = phy->beta;  // Viskositätskoeffizient beta
 		double gamma = phy->gamma; // Spezifische Wärmekapazität für ideales Gas
 
-		double r = glm::length(delta);
+		double r = sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
 
 		if (r > 0)
 		{
@@ -120,6 +120,7 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 
 				//normal direct force
 				double forceMagnitude = (G * mass * p.mass) / std::pow(distance, double(3 / 2));
+				//std::cout << forceMagnitude << std::endl;
 				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
 				Particle p2 = Particle(massCenter, mass);
 				potentialEngergy += p.calcPotentialEnergie(p2, G, epsilon0, 0);
@@ -130,6 +131,7 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 				double distance = r * r + softening * softening;
 				//normal direct force
 				double forceMagnitude = G*((mass * p.mass) / std::pow(distance, 2));
+				//std::cout << forceMagnitude << std::endl;
 				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
 				Particle p2 = Particle(massCenter, mass);
 				potentialEngergy += p.calcPotentialEnergie(p2, G, softening, 0);
@@ -148,15 +150,30 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 				double pressure = k * (density - rho0);
 				// Gradient der Kernel-Funktion
 				if (phy->adaptiveSmoothingLength) h = p.h;
-				glm::dvec3 gradKernel = MathFunctions::gradientCubicSplineKernel(delta, h);
 
-				//(original)
-				double pressureForce = - mass * ((pressure_i / (density_i * density_i)) + (pressure / (density * density)));
+				if (phy->normilizedPressureForce)
+				{
+					glm::dvec3 gradKernel = glm::normalize(delta) * MathFunctions::cubicSplineKernel(r, h);
 
-				glm::dvec3 vecPressureForce = pressureForce * gradKernel;
-				// Kraft auf Partikel i anwenden
-				force -= vecPressureForce;
+					//(original)
+					double pressureForce = - mass * (pressure_i / (density_i * density_i));
 
+					glm::dvec3 vecPressureForce = pressureForce * gradKernel;
+					// Kraft auf Partikel i anwenden
+					force += vecPressureForce;
+				}
+				else
+				{
+					glm::dvec3 gradKernel = MathFunctions::gradientCubicSplineKernel(delta, h);
+
+					//(original)
+					double pressureForce = -mass * ((pressure_i / (density_i * density_i)) + (pressure / (density * density)));
+
+					glm::dvec3 vecPressureForce = pressureForce * gradKernel;
+					// Kraft auf Partikel i anwenden
+					force -= vecPressureForce;
+				}
+				/*
 				//Viskosen Kräfte
 				//if both velocities are a rational number
 				if (!std::isnan(glm::length(p.velocity)) && !std::isnan(glm::length(particle.velocity)))
@@ -215,13 +232,14 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 						//std::cout << forcelenght << std::endl;
 						force += vForce;
 					}
-
+					*/
 				//Thermal Energy
 				glm::dvec3 velocityDiff = p.velocity - particle.velocity;
 				double distance = glm::length(p.position - massCenter);
 				glm::dvec3 cubicSplineKernel = glm::normalize(delta) * MathFunctions::cubicSplineKernel(distance, h);
 				double thermalEnergyChange = uConst * (pressure_i / p.density)* mass * glm::dot(velocityDiff,cubicSplineKernel);
 				p.thermalEnergyChange += thermalEnergyChange;
+				
 			}
 
 			calculations++;
@@ -254,7 +272,7 @@ glm::dvec3 Node::calcForce(Physics* phy, Particle& p, Node* root, double softeni
 		// Calculate height of the node
 		double d = radius * 2;
 
-		if (d / r > theta)
+		if (d / r < theta)
 		{
 			if (phy->SPH)
 			{

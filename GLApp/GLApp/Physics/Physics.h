@@ -39,7 +39,7 @@ public:
     double a = 1e100;
 
     //barnes hut
-    double theta = 2.9;
+    double theta = 1;
     const double maxDepth = 100;
     const bool newDistanceCalc = false;
     double maxDistance = 0;
@@ -53,13 +53,14 @@ public:
     double thermalConstant = 1e-3;
     //ok good for S0:      double h = 1e18;     double k = 3e46;    double rh0 = 1e-19;     double mu = 1e47;
 
-    //SPH better functions (Extra Calculation Time)
+    //SPH better functions (Extra Calculation Time
+    bool normilizedPressureForce = true; // takes the direction of the other particles into account
     bool simplifiedDensity = false; // simplyfied density calculation using the Octree
     bool adaptiveSmoothingLength = false; // Takes extra calculation time
     double hFactor = 1e1;
-    bool artificialViscosity = true; // Springel more accurate and complicated
-    double alpha = 2e11;
-    double beta = 1e20;
+    bool artificialViscosity = false; // Springel more accurate and complicated
+    double alpha = 2e9;
+    double beta = 1e18;
     double gamma = 5 / 3;
 
 

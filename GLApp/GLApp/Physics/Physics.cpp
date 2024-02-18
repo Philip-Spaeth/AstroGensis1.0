@@ -467,9 +467,10 @@ void Physics::config() {
         std::cout << "Partikelanzahl wurde nicht gefunden" << std::endl;
     }
 
-    // PlummerSoftening
-    if (config.find("PlummerSoftening") != config.end()) {
-        PlummerSoftening = config["PlummerSoftening"] == "true";
+    if (config.find("PlummerSoftening") != config.end())
+    {
+        std::string l = config["PlummerSoftening"];
+        PlummerSoftening = stringToBool(config["PlummerSoftening"]);
     }
     else {
         std::cout << "PlummerSoftening wurde nicht gefunden" << std::endl;
