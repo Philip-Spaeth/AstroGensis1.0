@@ -1,232 +1,292 @@
 #include "SpiralGalaxy.h"
 #include <omp.h>
 #include <iostream>
+#include <cmath>
+#include "MathFunctions.h"
 
-using namespace std;
-
-void SpiralGalaxy::ellipticalOrbit(Particle& p, double r, double angle)
+void SpiralGalaxy::ellipticalOrbit(Particle& p, double m, double diskR, double r, double angle)
 {
 	double ellipticity = 0.1;
 	double mainAxis = r;
 	double minorAxis = r * (ellipticity + 1);
 
-	double a = physics.random(0, 2 * 3.14);
+	double a = MathFunctions::random(0, 2 * 3.14);
 	double x = mainAxis * std::cos(a);
 	double y = minorAxis * std::sin(a);
+	double z = 0;
 
-	p.position = glm::dvec3(x * std::cos(angle) - y * sin(angle), x * std::sin(angle) + y * cos(angle), 0);
+	double bulgeScale = 0.05;
+	double diskScale = 0.03;
+	double bulgeR = diskR / 10;
+	// Berechnen der Z-Koordinate basierend auf der Position im Bulge oder in der Disk
+	z = MathFunctions::gaussianRandom() * 0.05 * diskR;
+	double l = (diskR * 0.5) / r;
+	if (l > 2)
+	{
+		l = 2;
+	}
+	z = z * l;
 
-	double distanceToCenter = glm::abs(glm::length(p.position));
+	/*
+	//wenn in bulge rotier um die mitte der galaxie random
+	if (r < bulgeR)
+	{
+		double random = MathFunctions::random(0, 2 * 3.14);
+		x = x * std::cos(random) - y * std::sin(random);
+		y = x * std::sin(random) + y * std::cos(random);
+		z = z * std::cos(random) - y * std::sin(random);
+	}
+	*/
+
+	//distanz zum zetrum berechnen
+	double distanceToCenter = glm::abs(glm::length(glm::dvec3(x, y, 0)));
+	//null ausschließen um division durch null zu vehindern
 	if (distanceToCenter == 0)
 	{
 		distanceToCenter = 1;
 	}
 
-	double v = 0;
-	v = std::sqrt(physics.G * 1e40 / distanceToCenter);
+	// Setzen Sie die Position
+	p.position = glm::dvec3(x * std::cos(angle) - y * sin(angle), x * std::sin(angle) + y * cos(angle), z);
+
+///////////////////////// Velocity /////////////////////////
+	double e = 1;
+
+	//slwo down in bulge to cause caotic movement so its more realistic
+	if (distanceToCenter < diskR)
+	{
+		e = ((distanceToCenter * distanceToCenter) / diskR) / diskR* (diskR / distanceToCenter);
+		if (e > 1)
+		{
+			e = 1;
+		}
+	}
+	// Berechnung der Geschwindigkeit
+	double v = (std::sqrt(6.67430e-11 * m / distanceToCenter) * e) *(1 + ellipticity);
 
 	//velocity tangent to the orbit 
-	glm::dvec3 direction = glm::dvec3(-p.position.y, p.position.x, 0);
+	glm::dvec3 direction = glm::dvec3(-p.position.y, p.position.x, p.position.z);
 	direction = glm::normalize(direction);
 	p.velocity = direction * v;
 }
 
-void SpiralGalaxy::densityWaveSb(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double size, std::vector<Particle>& particles)
+void SpiralGalaxy::Sa(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double anteilBaryonischeMaterie, double anteilDunkleMaterie, double powNumberNormal, double powNumberDark, std::vector<Particle>& particles)
 {
-	int particleSize = endIndex + 1;
+	int particleSize = endIndex + 1 - startIndex;
 
-	double galaxyRadius = 1e21; // Radius der kugelförmigen Galaxie
+	double galaxyRadius = maxRadius; // Radius der kugelförmigen Galaxie
 
-	double totalMass = 1e40; // Gesamtmasse der Galaxie
-	double mass = totalMass / particleSize; // Masse eines einzelnen Partikels
+	double totalMass = Masse; // Gesamtmasse der Galaxie
+	double baryonicFraction = anteilBaryonischeMaterie; // Anteil der baryonischen Materie
+	double darkMatterFraction = anteilDunkleMaterie; // Anteil der dunklen Materie
+
+	double powNumber = powNumberNormal; // Verteilungsparameter für baryonische Materie
+	double darkPowNumber = powNumberDark; // Verteilungsparameter für dunkle Materie
 
 	int i = 0;
 
-	// Erstellen einer kugelförmigen Galaxie
+	glm::mat4 transform = glm::mat4(1.0f); // Identity matrix
+
+	// Apply rotations
+	transform = glm::rotate(transform, (float)rotation.x, glm::vec3(1, 0, 0));
+	transform = glm::rotate(transform, (float)rotation.y, glm::vec3(0, 1, 0));
+	transform = glm::rotate(transform, (float)rotation.z, glm::vec3(0, 0, 1));
+
+
 	for (int j = startIndex; j != endIndex; j++)
 	{
-		// Mass Sagittarius A
-		if (j == startIndex)
+		double random = MathFunctions::random(-baryonicFraction, darkMatterFraction);
+		bool isDarkMatterParticle;
+		if (random > 0)
 		{
-			particles[j].position = position;
-			particles[j].velocity = velocity;
-			particles[j].mass = 1e40;
-			particles[j].radius = 1;
-			particles[j].color = glm::vec3(1, 1, 1);
+			isDarkMatterParticle = true;
 		}
 		else
 		{
-			double r = galaxyRadius * std::pow(i / (double)particleSize, 1.0);
-			particles[j].angle = sqrt(r) * 2.0 * 3.14;
-
-			//denisty wave angle with A and k
-			double A = 1;
-			double alpha = (i / (double)particleSize) * 2 * 3.14 * A;
-
-			ellipticalOrbit(particles[j], r, alpha);
-
-			particles[j].mass = 1e36;
-			particles[j].radius = 1;
-			particles[j].darkMatter = false;
-			particles[j].color = glm::vec3(1,1,1);
+			isDarkMatterParticle = false;
 		}
+
+		double scaledI = std::pow(static_cast<double>(j - startIndex) / particleSize, 1.0 / (isDarkMatterParticle ? darkPowNumber : powNumber));
+		double r = galaxyRadius * scaledI;
+
+		particles[j].angle = sqrt(r) * 2.0 * 3.14;
+
+		//denisty wave angle with A and k
+		double A = 1.8;
+		double alpha = (i / (double)particleSize) * 2 * 3.14 * A;
+
+		// Berechnung der Masse in der Kugel bis zum aktuellen Partikel
+		double baryonicMassInSphere = baryonicFraction * totalMass * std::pow(r / galaxyRadius, powNumber);
+		double darkMassInSphere = darkMatterFraction * totalMass * std::pow(r / galaxyRadius, darkPowNumber);
+		double totalMassInSphere = baryonicMassInSphere + darkMassInSphere;
+
+		ellipticalOrbit(particles[j], totalMassInSphere, galaxyRadius, r, alpha);
+
+		particles[j].mass = totalMass / particleSize;
+		particles[j].radius = 1;
+		particles[j].darkMatter = isDarkMatterParticle;
+		if (isDarkMatterParticle)particles[j].color = glm::vec3(0, 1000, 0);
+		else particles[j].color = glm::vec3(1, 1, 1);
 		i++;
+
+		particles[j].position += position;
+
+		glm::vec4 pos = glm::vec4(particles[j].position - position, 1.0);
+		glm::vec4 vel = glm::vec4(particles[j].velocity, 1.0);
+
+		pos = transform * pos;
+		vel = transform * vel;
+
+		particles[j].position = glm::dvec3(pos) + position;
+		particles[j].velocity = glm::dvec3(vel) + velocity;
 	}
 }
 
 
-void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double size, std::vector<Particle>& particles)
-{
-	std::cout << std::endl;
-	std::cout << "Calculating Spiral Galaxy start Positions and Velocity ..." << std::endl;
 
+void SpiralGalaxy::Sb(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double anteilBaryonischeMaterie, double anteilDunkleMaterie, double powNumberNormal, double powNumberDark, std::vector<Particle>& particles)
+{
 	int particleSize = endIndex + 1 - startIndex;
 
-	double BulgeRadius = 4.019e20;
-	double diskRadius = 8.02e20;
-	double haloRadius = 1.89e21;
+	double galaxyRadius = maxRadius; // Radius der kugelförmigen Galaxie
 
-	int numArms = 2;
+	double totalMass = Masse; // Gesamtmasse der Galaxie
+	double baryonicFraction = anteilBaryonischeMaterie; // Anteil der baryonischen Materie
+	double darkMatterFraction = anteilDunkleMaterie; // Anteil der dunklen Materie
+
+	double powNumber = powNumberNormal; // Verteilungsparameter für baryonische Materie
+	double darkPowNumber = powNumberDark; // Verteilungsparameter für dunkle Materie
+
 	int i = 0;
 
-	//verteillung der masse 
-	double totalMass = 2.5641e42;
+	glm::mat4 transform = glm::mat4(1.0f); // Identity matrix
 
-	double percentBulge = 0.05;
-	double bulgeMass = percentBulge * totalMass;
-	double bulgeMassPerParticle = bulgeMass / (particleSize * percentBulge);
-
-	double percentDisk = 0.05;
-	double diskMass = percentDisk * totalMass;
-	double diskMassPerParticle = diskMass / (particleSize * percentDisk);
-
-	double percentDarkMatter = 0.90;
-	double darkMatterMass = percentDarkMatter * totalMass;
-	double darkMatterMassPerParticle = darkMatterMass / (particleSize * percentDarkMatter);
+	// Apply rotations
+	transform = glm::rotate(transform, (float)rotation.x, glm::vec3(1, 0, 0));
+	transform = glm::rotate(transform, (float)rotation.y, glm::vec3(0, 1, 0));
+	transform = glm::rotate(transform, (float)rotation.z, glm::vec3(0, 0, 1));
 
 
-	//split the size of the galaxy in 3 parts
-	int bulgeSize = particleSize * percentBulge;
-	int diskSize = particleSize * percentDisk;
-	int darkMatterSize = particleSize * percentDarkMatter;
-
-	int bulgeStart = startIndex;
-	int bulgeEnd = bulgeStart + bulgeSize;
-
-	int diskStart = bulgeEnd;
-	int diskEnd = diskStart + diskSize;
-
-	int darkMatterStart = diskEnd;
-	int darkMatterEnd = darkMatterStart + darkMatterSize;
-
-	// Erstellen einer Spiralgalaxie
 	for (int j = startIndex; j != endIndex; j++)
 	{
-		//Dense bulge in the center
-		if (j >= bulgeStart && j < bulgeEnd)
+		double random = MathFunctions::random(-baryonicFraction, darkMatterFraction);
+		bool isDarkMatterParticle;
+		if (random > 0)
 		{
-			// Schwarzes Loch in der Mitte
-			if (j == startIndex)
-			{
-				particles[j].position = position;
-				particles[j].velocity = velocity;
-				particles[j].mass = bulgeMassPerParticle;
-				particles[j].radius = 1;
-				particles[j].color = glm::vec3(1, 1, 1);
-			}
-			else
-			{
-				//random radius and depth
-				//double r = physics.random(0, physics.random(0, BulgeRadius));
-				//double depth = physics.random(0, physics.random(0, physics.random(0, BulgeRadius)));
-				//particles[j].angle = physics.random(0, 2 * 3.14);
-				//not random radius and depth
-				double r = physics.random(0, physics.random(0, BulgeRadius));
-				double depth = physics.random(0, physics.random(0, physics.random(0, BulgeRadius)));
-				particles[j].angle = j * (-2 * 3.14) / bulgeSize;
-				particles[j].angle = physics.random(0, 2 * 3.14);
-				particles[j].position = glm::dvec3(r * std::cos(particles[j].angle), r * std::sin(particles[j].angle), physics.random(-depth, depth)) + position;
-				particles[j].mass = bulgeMassPerParticle;
-				particles[j].radius = physics.random(0.1, 2);
-				particles[j].color = glm::vec3(1, 1, 1);
-			}
+			isDarkMatterParticle = true;
 		}
-		//disk 
-		else if (j >= diskStart && j < diskEnd)
+		else
 		{
-			double r = physics.random(0, physics.random(0, diskRadius));
-			double depth = physics.random(0, physics.random(0, physics.random(0, BulgeRadius))) / 3;
-			particles[j].angle = 2 * 3.14 * ((j - startIndex)) / numArms;
-			particles[j].position = glm::dvec3(r * std::cos(particles[j].angle), r * std::sin(particles[j].angle), physics.random(-depth,depth)) + position;
-			particles[j].mass = diskMassPerParticle;
-			particles[j].radius = physics.random(0.1, 2);
-			particles[j].color = glm::vec3(1, 1, 1);
+			isDarkMatterParticle = false;
 		}
 
-		//dark matter in the outer regions
-		else if (j >= darkMatterStart && j < darkMatterEnd)
-		{
-			double r = physics.random(physics.random(0, physics.random(0, physics.random(0, physics.random(0, physics.random(0, physics.random(0, haloRadius)))))), haloRadius);
-			double depth = physics.random(0, physics.random(0, physics.random(0, BulgeRadius))) / 3;
+		//exponetial
+		double scaledI = std::pow(static_cast<double>(j - startIndex) / particleSize, 1.0 / (isDarkMatterParticle ? darkPowNumber : powNumber));
+		//linear
+		//double scaledI = (particleSize / j);
+		double r = galaxyRadius * scaledI;
 
-			particles[j].angle = physics.random(0, 2 * 3.14);
-			particles[j].position = glm::dvec3(r * std::cos(particles[j].angle), r * std::sin(particles[j].angle), physics.random(-depth, depth)) + position;
-			particles[j].mass = darkMatterMassPerParticle;
-			particles[j].radius = physics.random(0.1, 2);
-			particles[j].color = glm::vec3(1, 1, 1);
-			particles[j].darkMatter = true;
-		}
+		particles[j].angle = sqrt(r) * 2.0 * 3.14;
+
+		//denisty wave angle with A and k
+		double A = 1.1;
+		double alpha = (i / (double)particleSize) * 2 * 3.14 * A;
+
+		// Berechnung der Masse in der Kugel bis zum aktuellen Partikel
+		double baryonicMassInSphere = baryonicFraction * totalMass * std::pow(r / galaxyRadius, powNumber);
+		double darkMassInSphere = darkMatterFraction * totalMass * std::pow(r / galaxyRadius, darkPowNumber);
+		double totalMassInSphere = baryonicMassInSphere + darkMassInSphere;
+
+		ellipticalOrbit(particles[j], totalMassInSphere, galaxyRadius, r, alpha);
+
+		particles[j].mass = totalMass / particleSize;
+		particles[j].radius = 1;
+		particles[j].darkMatter = isDarkMatterParticle;
+		if (isDarkMatterParticle)particles[j].color = glm::vec3(0, 1000, 0);
+		else particles[j].color = glm::vec3(1, 1, 1);
 		i++;
-	}
 
-	//calc the center of mass of the galaxy
-	glm::dvec3 centerOfMass = glm::dvec3(0, 0, 0);
-	double totalMassGalaxy = 0;
-	for (int j = startIndex; j != endIndex; j++)
-	{
-		centerOfMass += particles[j].position * particles[j].mass;
-		totalMassGalaxy += particles[j].mass;
-	}
-	centerOfMass /= totalMassGalaxy;
+		particles[j].position += position;
 
-	// Calculate velocity
-	for (int j = startIndex; j < endIndex; j++)
-	{
-		double distanceToCenter = glm::length(particles[j].position - centerOfMass);
-		if (distanceToCenter != 0)
-		{
-			double v = 0;
-			v = std::sqrt(physics.G * calcMassInRadius(startIndex,endIndex,position,rotation,particles,distanceToCenter) / distanceToCenter);
+		glm::vec4 pos = glm::vec4(particles[j].position - position, 1.0);
+		glm::vec4 vel = glm::vec4(particles[j].velocity, 1.0);
 
-			// No need for critical section here
-			particles[j].velocity = glm::dvec3(-v * std::sin(particles[j].angle), v * std::cos(particles[j].angle), 0) + velocity;
-		}
+		pos = transform * pos;
+		vel = transform * vel;
+
+		particles[j].position = glm::dvec3(pos) + position;
+		particles[j].velocity = glm::dvec3(vel) + velocity;
 	}
 }
 
-double SpiralGalaxy::calcMassInRadius(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, std::vector<Particle>& particles, double r)
+void SpiralGalaxy::Sc(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double anteilBaryonischeMaterie, double anteilDunkleMaterie, double powNumberNormal, double powNumberDark, std::vector<Particle>& particles)
 {
-	//calc mass
-	double mass = 0;
+	int particleSize = endIndex + 1 - startIndex;
 
-	for (int i = startIndex; i < endIndex; i++)
+	double galaxyRadius = maxRadius; // Radius der kugelförmigen Galaxie
+
+	double totalMass = Masse; // Gesamtmasse der Galaxie
+	double baryonicFraction = anteilBaryonischeMaterie; // Anteil der baryonischen Materie
+	double darkMatterFraction = anteilDunkleMaterie; // Anteil der dunklen Materie
+
+	double powNumber = powNumberNormal; // Verteilungsparameter für baryonische Materie
+	double darkPowNumber = powNumberDark; // Verteilungsparameter für dunkle Materie
+
+	int i = 0;
+
+	glm::mat4 transform = glm::mat4(1.0f); // Identity matrix
+
+	// Apply rotations
+	transform = glm::rotate(transform, (float)rotation.x, glm::vec3(1, 0, 0));
+	transform = glm::rotate(transform, (float)rotation.y, glm::vec3(0, 1, 0));
+	transform = glm::rotate(transform, (float)rotation.z, glm::vec3(0, 0, 1));
+
+
+	for (int j = startIndex; j != endIndex; j++)
 	{
-		double distanceToCenter = glm::length(particles[i].position - position);
-
-		// Check if the particle is within the specified radius
-		if (distanceToCenter <= r)
+		double random = MathFunctions::random(-baryonicFraction, darkMatterFraction);
+		bool isDarkMatterParticle;
+		if (random > 0)
 		{
-			mass += particles[i].mass;
+			isDarkMatterParticle = true;
 		}
+		else
+		{
+			isDarkMatterParticle = false;
+		}
+
+		double scaledI = std::pow(static_cast<double>(j - startIndex) / particleSize, 1.0 / (isDarkMatterParticle ? darkPowNumber : powNumber));
+		double r = galaxyRadius * scaledI;
+
+		particles[j].angle = sqrt(r) * 2.0 * 3.14;
+
+		//denisty wave angle with A and k
+		double A = 0.8;
+		double alpha = (i / (double)particleSize) * 2 * 3.14 * A;
+
+		// Berechnung der Masse in der Kugel bis zum aktuellen Partikel
+		double baryonicMassInSphere = baryonicFraction * totalMass * std::pow(r / galaxyRadius, powNumber);
+		double darkMassInSphere = darkMatterFraction * totalMass * std::pow(r / galaxyRadius, darkPowNumber);
+		double totalMassInSphere = baryonicMassInSphere + darkMassInSphere;
+
+		ellipticalOrbit(particles[j], totalMassInSphere, galaxyRadius, r, alpha);
+
+		particles[j].position += position;
+
+		particles[j].mass = totalMass / particleSize;
+		particles[j].radius = 1;
+		particles[j].darkMatter = isDarkMatterParticle;
+		if (isDarkMatterParticle)particles[j].color = glm::vec3(0, 1000, 0);
+		else particles[j].color = glm::vec3(1, 1, 1);
+		i++;
+
+		glm::vec4 pos = glm::vec4(particles[j].position - position, 1.0);
+		glm::vec4 vel = glm::vec4(particles[j].velocity, 1.0);
+
+		pos = transform * pos;
+		vel = transform * vel;
+
+		particles[j].position = glm::dvec3(pos) + position;
+		particles[j].velocity = glm::dvec3(vel) + velocity;
 	}
-
-
-	//calc p for v = sqrt(G*(4/3*pi*r^2*p))
-	//p = m / V
-	double V = (static_cast<double>(3) / 4) * 3.14 * (r * r * r);
-	double p = mass / V;
-
-	//print out p
-	//std::cout << p << std::endl;
-	return mass;
 }

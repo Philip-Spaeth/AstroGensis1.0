@@ -19,59 +19,70 @@ class Octree;
 
 class Physics {
 public:
-    Physics();
+    Physics(std::string dataFolder = "Data");
+    std::string dataFolder = "Data";
 
-    bool Calc();
+    bool configFile = true;
 
-    void setRandomSeed(unsigned int seed);
-    double random(double min, double max);
-
-    static const bool SPH = true;
-    static const bool PlummerSoftening = false;
-
-    static const bool darkEnergy = false;
-    static const int HubbleConstant = 70;
-
-    static const int numTimeSteps = 1000;
-    static const int particlesSize = 1000;
-
-    // calculation Method:
-    int calculationMethod = 0;
-    
-    // one hour = 3600
-    // one day = 8ss6400
-    // one year = 31536000
-    // big galaxy = 1e16
-    // galaxy = 1e13
+    int numTimeSteps = 100;
+    int particlesSize = 20000;
 
     //the time per frame
-    const double deltaTime = 1e13;
+    //Optimal Value for ellipticalgalaxy : 1e12
+    double deltaTime = 1e14;
+    // calculation Method:
+    int calculationMethod = 1;
+
+    //Softening
+    bool PlummerSoftening = true;
+    double softening = 1e18;
+    double a = 1e100;
 
     //barnes hut
-    const double theta = 1;
-    const double maxDepth = 30;
-    //Color 
-    static const bool color = false;
-    static const int colorDepth = 5;
-    const double minMass = 0;
-    const double maxMass = 1e38;
-    
-    //Plummer Softening 
-    const double softening = 1e18;
-    const double a = 1e100;
-
-
+    double theta = 2.9;
+    const double maxDepth = 100;
+    const bool newDistanceCalc = false;
     double maxDistance = 0;
+
+    //SPH takes extra calculation time
+    bool SPH = true;
+    double h = 1e19;
+    double k = 1e42;
+    double rh0 = 0.5e-21;
+    double mu = 1e47;
+    double thermalConstant = 1e-3;
+    //ok good for S0:      double h = 1e18;     double k = 3e46;    double rh0 = 1e-19;     double mu = 1e47;
+
+    //SPH better functions (Extra Calculation Time)
+    bool simplifiedDensity = false; // simplyfied density calculation using the Octree
+    bool adaptiveSmoothingLength = false; // Takes extra calculation time
+    double hFactor = 1e1;
+    bool artificialViscosity = true; // Springel more accurate and complicated
+    double alpha = 2e11;
+    double beta = 1e20;
+    double gamma = 5 / 3;
+
+
+    //dark Energy / Cosmological Constant
+    bool darkEnergy = true;
+    int HubbleConstant = 70;
+
+    //Color of the Particles (only for OpenGL) takes extra calculation time
+    static const bool color = true;
+    double colorH = 1e19;
 
     //Physikalische Konstanten
     const double G = 6.67430e-11;
 
+    bool init();
+    bool Calc();
 
     std::vector<Particle> currentParticles;
+
+    void config();
 private:
     Octree* octree;
     std::vector<std::vector<double>> totalEnergie;
-    double calulations = 0;
     SystemInit* systemInit;
     FileManager* fileManager;
     void calcTime(int index, std::chrono::system_clock::time_point current_time);
@@ -80,4 +91,4 @@ private:
     void calculateGravitation(int timeStap, int start, int stop);
 };
 
-#endif // PHYSICS_H
+#endif

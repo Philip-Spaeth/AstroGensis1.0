@@ -1,0 +1,37 @@
+//////////////// Using ConfigFile without IDE and programming ////////////////////////////////
+
+1. Find the Folder Named Debug under: N-Body-Galaxy-Simulation\GLApp\Debug
+
+2. Open the config.ini with a texteditor and configurate based on your goals or choose a premade Configfile from the scenarios Folder
+
+3. Execute the GLApp.exe file and follow the instructions
+
+//////////////// Windows VisualStudio ////////////////////////////////
+
+//////////////// Windows VsCode ////////////////////////////////
+
+//////////////// Linux /////////////////////////////////
+
+Cmake installieren:
+	sudo apt-get update
+	sudo apt-get install cmake g++ # Beispiel für Ubuntu
+
+openGL bibs installieren:
+	sudo apt-get install libglm-dev
+	sudo apt-get install libglu1-mesa-dev
+
+sudo apt-get install libncurses5-dev
+
+CmakeLists.txt    in main Order:
+	cmake_minimum_required(VERSION 3.10)
+	project(MeinProjekt)
+
+	add_executable(MeinProgramm main.cpp) # Hier main.cpp durch 	die richtigen Quellcode-Dateien ersetzen
+
+
+mkdir build
+cd build
+cmake ..
+
+ausführen:
+./MeinProgramm

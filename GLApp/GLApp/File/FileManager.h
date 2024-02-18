@@ -6,17 +6,26 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <map>
+#include <unordered_map>
 #include "Physics.h"
+
+class Physics;
 
 
 class FileManager
 {
 	public:
-	FileManager();
+	FileManager(std::string dataFolder);
 	~FileManager();
-	
+
+	std::string dataFolder = "Data";
+	std::unordered_map<std::string, std::string> FileManager::readConfig(const std::string& filename);
+	glm::vec3 FileManager::parseVector3(const std::string& vecString);
+	std::unordered_map<std::string, std::string> FileManager::readTheConfig(const std::string& filename);
+
 	void saveParticles(int timestep, const std::vector<Particle>& particles, const std::string& path);
-	void loadParticles(int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec4>& color);
+	void loadParticles(Physics* p, int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec3>& color, std::vector<glm::vec3>& densitycolor, int maxNumberOfParticles);
 
 	void saveEnergieData(std::vector<std::vector<double>>& totalEnergie, std::string path);
 
@@ -25,6 +34,4 @@ class FileManager
 
 	//massCurve in galaxy, dark and visible matter
 	void saveMassCurve(std::vector<Particle>& particles, std::string path);
-
-	private:
 };

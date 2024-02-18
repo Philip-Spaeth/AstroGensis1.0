@@ -6,6 +6,14 @@
 #include "Particle.h"
 #include <cmath>
 #include <future>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <map>
+#include <string>
+#include <iomanip>
+#include <unordered_map>
+#include <algorithm>
 
 #ifdef WIN32
 #include <windows.h>
@@ -14,37 +22,151 @@
 #include <thread>
 #include <algorithm>
 
-FileManager::FileManager(){}
+using namespace std;
+
+FileManager::FileManager(std::string newDataFolder){
+    dataFolder = newDataFolder;
+}
 
 FileManager::~FileManager(){}
 
+std::unordered_map<std::string, std::string> FileManager::readConfig(const std::string& filename)
+{
+    std::unordered_map<std::string, std::string> config;
+    std::ifstream file(filename);
+    std::string line;
+
+    if (file.is_open()) {
+        while (std::getline(file, line)) {
+            // Ignoriere Kommentare und leere Zeilen
+            if (line.empty() || line[0] == '#' || line[0] == ';') continue;
+
+            std::istringstream is_line(line);
+            std::string key;
+            if (std::getline(is_line, key, '=')) {
+                std::string value;
+                if (std::getline(is_line, value)) {
+                    // Entfernen Sie Leerzeichen am Anfang und am Ende des Schlüssels und des Werts
+                    key.erase(0, key.find_first_not_of(" \t"));
+                    key.erase(key.find_last_not_of(" \t") + 1);
+                    value.erase(0, value.find_first_not_of(" \t"));
+                    value.erase(value.find_last_not_of(" \t") + 1);
+                    config[key] = value;
+                }
+            }
+        }
+        file.close();
+    }
+    else {
+        std::cerr << "Konnte Datei nicht öffnen: " << filename << std::endl;
+    }
+
+    return config;
+}
+
+glm::vec3 FileManager::parseVector3(const std::string& vecString) {
+    istringstream iss(vecString);
+    vector<double> values;
+    string s;
+
+    while (getline(iss, s, ',')) {
+        // Entferne Leerzeichen am Anfang und am Ende des Strings
+        s.erase(0, s.find_first_not_of(" \t"));
+        s.erase(s.find_last_not_of(" \t") + 1);
+
+        try {
+            values.push_back(stod(s));
+        }
+        catch (const std::invalid_argument& e) {
+            cerr << "Ungültiges Format für Vektor: " << vecString << endl;
+            throw;
+        }
+    }
+
+    if (values.size() != 3) {
+        cerr << "Ungültige Anzahl an Elementen für Vektor: " << vecString << endl;
+        throw std::runtime_error("Vector parsing error");
+    }
+
+    return glm::vec3(values[0], values[1], values[2]);
+}
+
+std::unordered_map<std::string, std::string> FileManager::readTheConfig(const std::string& filename)
+{
+    std::unordered_map<std::string, std::string> config;
+    std::ifstream file(filename);
+    std::string line;
+    std::string currentSection;
+
+    if (file.is_open()) {
+        while (std::getline(file, line)) {
+            // Ignoriere Kommentare und leere Zeilen
+            size_t commentPos = line.find_first_of("#;");
+            if (commentPos != std::string::npos) {
+                line = line.substr(0, commentPos);
+            }
+            if (line.empty()) continue;
+
+            // Entfernen Sie Leerzeichen am Anfang der Zeile
+            line.erase(0, line.find_first_not_of(" \t"));
+
+            // Erkenne Abschnittsnamen
+            if (line[0] == '[') {
+                size_t endPos = line.find(']');
+                if (endPos != std::string::npos) {
+                    currentSection = line.substr(1, endPos - 1) + ".";
+                }
+                continue;
+            }
+
+            std::istringstream is_line(line);
+            std::string key;
+            if (std::getline(is_line, key, '=')) {
+                std::string value;
+                if (std::getline(is_line, value)) {
+                    // Entfernen Sie Leerzeichen am Anfang und am Ende des Schlüssels und des Werts
+                    key.erase(0, key.find_first_not_of(" \t"));
+                    key.erase(key.find_last_not_of(" \t") + 1);
+                    value.erase(0, value.find_first_not_of(" \t"));
+                    value.erase(value.find_last_not_of(" \t") + 1);
+                    config[currentSection + key] = value;
+                }
+            }
+        }
+        file.close();
+    }
+    else {
+        std::cerr << "Konnte Datei nicht öffnen: " << filename << std::endl;
+    }
+
+    return config;
+}
+
 void FileManager::saveParticles(int timestep, const std::vector<Particle>& particles, const std::string& path)
 {
-    std::string dataFolder = "Data";
-    std::filesystem::create_directory(dataFolder);
+
+    Physics physics;
+
+    dataFolder = path;
+    std::filesystem::create_directory("Data/" + dataFolder);
 
     // Save data to a file for this time step
-    std::string fileName = "Data/Time_" + std::to_string(timestep) + ".dat";
+    std::string fileName = "Data/" + dataFolder + "/Time_" + std::to_string(timestep) + ".dat";
     std::ofstream file(fileName, std::ios::binary);
 
     //put the particle positions and radius in a the array
     std::vector<glm::vec4> array;
     array.resize(particles.size());
+    //put the particle color and dark matter bool in a the array
+    std::vector<glm::vec3> color;
+    std::vector<glm::vec3> densitycolor;
+    color.resize(particles.size());
+    densitycolor.resize(particles.size());
     for (int i = 0; i < particles.size(); i++)
     {
         array[i] = glm::vec4(particles[i].position, particles[i].radius);
-    }
-    //put the particle color and dark matter bool in a the array
-    std::vector<glm::vec4> color;
-    color.resize(particles.size());
-    for (int i = 0; i < particles.size(); i++)
-    {
-        int darkMatter = 0;
-        if (particles[i].darkMatter)
-        {
-            darkMatter = 1;
-        }
-        color[i] = glm::vec4(particles[i].color, darkMatter);
+        color[i] = glm::vec3(particles[i].color);
+        densitycolor[i] = glm::vec3(particles[i].densityColor);
     }
 
     if (file.is_open()) 
@@ -53,7 +175,8 @@ void FileManager::saveParticles(int timestep, const std::vector<Particle>& parti
         file.write(reinterpret_cast<char*>(&size), sizeof(size));
 
         file.write(reinterpret_cast<const char*>(array.data()), size * sizeof(glm::vec4));
-        file.write(reinterpret_cast<const char*>(color.data()), size * sizeof(glm::vec4));
+        file.write(reinterpret_cast<const char*>(color.data()), size * sizeof(glm::vec3));
+        file.write(reinterpret_cast<const char*>(densitycolor.data()), size * sizeof(glm::vec3));
 
         file.close();
     }
@@ -62,29 +185,37 @@ void FileManager::saveParticles(int timestep, const std::vector<Particle>& parti
     }
 }
 
-void FileManager::loadParticles(int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec4>& color)
+void FileManager::loadParticles(Physics* p, int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec3>& color, std::vector<glm::vec3>& densitycolor, int maxNumberOfParticles)
 {
-    std::string fileName = "Data/Time_" + std::to_string(timestep) + ".dat";
+    std::string fileName = "Data/" + p->dataFolder + "/Time_" + std::to_string(timestep) + ".dat";
     std::ifstream file(fileName, std::ios::binary);
 
     if (file.is_open()) {
         size_t size;
         file.read(reinterpret_cast<char*>(&size), sizeof(size));
 
-        array.resize(Physics::particlesSize);
-        color.resize(Physics::particlesSize);
-        //load the positions and radius from the file
-        file.read(reinterpret_cast<char*>(array.data()), size * sizeof(glm::vec4));
-        //load the color and dark matter bool from file
-        file.read(reinterpret_cast<char*>(color.data()), size * sizeof(glm::vec4));
+        size_t particlesToRead = (size > maxNumberOfParticles) ? maxNumberOfParticles : size;
+
+        array.resize(particlesToRead);
+        color.resize(particlesToRead);
+        densitycolor.resize(particlesToRead);
+
+        file.read(reinterpret_cast<char*>(array.data()), particlesToRead * sizeof(glm::vec4));
+        file.read(reinterpret_cast<char*>(color.data()), particlesToRead * sizeof(glm::vec3));
+        file.read(reinterpret_cast<char*>(densitycolor.data()), particlesToRead * sizeof(glm::vec3));
+
+        // Skip the remaining data in the file if necessary
+        if (size > maxNumberOfParticles) {
+            file.seekg((size - maxNumberOfParticles) * (sizeof(glm::vec4) + 2 * sizeof(glm::vec3)), std::ios::cur);
+        }
 
         file.close();
     }
-    else 
-    {
+    else {
         std::cerr << "Fehler beim Öffnen der Datei zum Laden." << std::endl;
     }
 }
+
 
 
 void FileManager::saveEnergieData(std::vector<std::vector<double>>& totalEnergie, std::string path) 
@@ -183,23 +314,6 @@ void FileManager::saveRotationCurve(std::vector<Particle>& particles, std::strin
 			}
         }
     }
-    if(true)
-    {
-        for (int k = 0; k < steps.size(); k++)
-        {
-            if (k < 20)
-            {
-                continue;
-            }
-            double myVelocity = sqrt(pow(steps[k].velocity.x, 2) + pow(steps[k].velocity.y, 2) + pow(steps[k].velocity.z, 2));
-            double otherVelocity = sqrt(pow(steps[k - 1].velocity.x, 2) + pow(steps[k - 1].velocity.y, 2) + pow(steps[k - 1].velocity.z, 2));
-            if (myVelocity > otherVelocity * 2)
-            {
-                //steps[k].velocity = steps[k - 1].velocity;
-		    }
-        }
-    }
-
     //print out the velocity and the distance to the center of mass
 	for (int i = 0; i < steps.size(); i++)
 	{
@@ -214,8 +328,9 @@ void FileManager::saveRotationCurve(std::vector<Particle>& particles, std::strin
 
 void FileManager::saveMassCurve(std::vector<Particle>& particles, std::string path)
 {
-    std::cout << "saving mass curve ..." << std::endl;
-    std::string filename = "../mass_Curve.txt";
+    std::cout << std::endl;
+    std::cout << "saving density curve ..." << std::endl;
+    std::string filename = "../density_Curve.txt";
     std::ofstream outputFile;
     outputFile.open(filename, std::ios::out);
 
@@ -227,49 +342,51 @@ void FileManager::saveMassCurve(std::vector<Particle>& particles, std::string pa
     std::locale germanLocale("de_DE.utf8");
     outputFile.imbue(germanLocale);
 
-    // Assuming you have a vector of radii
-    std::vector<double> radii;
+    double galaxySize = 1e21;
 
-    // Extract radii from particles
-    for (const auto& particle : particles) 
+    int numberOfSteps = 1000;
+    double binSize = galaxySize / numberOfSteps;
+
+    std::vector<Particle> steps;
+    steps.resize(numberOfSteps);
+
+    //choose the particles that the closest current step
+    //print out the velocity and the distance to the center of mass
+    for (int k = 0; k < steps.size(); k++)
     {
-        double distanceToCenter = glm::length(particle.position);
-        radii.push_back(distanceToCenter);
-    }
-
-    // Sort the radii
-    std::sort(radii.begin(), radii.end());
-
-    // Remove duplicate radii
-    radii.erase(std::unique(radii.begin(), radii.end()), radii.end());
-
-    // Write header
-    outputFile << "Radius\tTotalMass" << std::endl;
-
-    // Calculate and write total mass for each radius
-    for (const auto& radius : radii) 
-    {
-        double totalMass = 0.0;
-        double darkMatterMass = 0.0;
-
-        for (const auto& particle : particles) 
+        for (int i = 0; i < particles.size(); i++)
         {
-            double distanceToCenter = glm::length(particle.position);
+            //clac the current distance from the step[k] to the current step 
+            double distance = sqrt(pow(steps[k].position.x, 2) + pow(steps[k].position.y, 2) + pow(steps[k].position.z, 2));
+            double delta = abs(distance - k * binSize);
 
-            if (distanceToCenter <= radius && particle.darkMatter != true) 
+            //calc the distance from the particle to the current step
+            double particleDistance = sqrt(pow(particles[i].position.x, 2) + pow(particles[i].position.y, 2) + pow(particles[i].position.z, 2));
+            double particleDelta = abs(particleDistance - k * binSize);
+
+            //check if the particle is in the current step
+            if (particleDelta < delta)
             {
-                totalMass += particle.mass;
-            }
-            if (distanceToCenter <= radius && particle.darkMatter == true)
-            {
-                darkMatterMass += particle.mass;
+                steps[k].position.x = particles[i].position.x;
+                steps[k].position.y = particles[i].position.y;
+                steps[k].position.z = particles[i].position.z;
+
+                steps[k].density = particles[i].density;
+                steps[k].darkMatterDensity = particles[i].darkMatterDensity;
+                steps[k].baryonicDensity = particles[i].baryonicDensity;
             }
         }
-
-        // Write data to the file
-        //double p = totalMass / ((static_cast<double>(3) / 4) * 3.14 * (radius * radius * radius));
-        //print out the mass and the radius
-        outputFile << std::fixed << std::setprecision(2) << radius << ";" << totalMass << ";" << darkMatterMass << std::endl;
     }
+    //print out the velocity and the distance to the center of mass
+    for (int i = 0; i < steps.size(); i++)
+    {
+        double distance = sqrt(pow(steps[i].position.x, 2) + pow(steps[i].position.y, 2) + pow(steps[i].position.z, 2));
+        double density = steps[i].density;
+        double darkMatterDensity = steps[i].darkMatterDensity;
+        double baryonicDensity = steps[i].baryonicDensity;
+        //write the data to the file use , instead of . for the decimal point
+        outputFile << std::fixed << std::setprecision(20) << distance << ";" << density << ";" << darkMatterDensity << ";" << baryonicDensity << ";" << std::endl;
+    }
+
     outputFile.close();
 }

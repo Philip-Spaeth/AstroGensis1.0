@@ -14,8 +14,9 @@
 #include <string>
 
 
- Engine::Engine() : window(nullptr), shaderProgram(0), VAO(0)
+ Engine::Engine(std::string NewDataFolder) : window(nullptr), shaderProgram(0), VAO(0)
 {
+    dataFolder = NewDataFolder;
      // start kamera position
      cameraPosition = glm::vec3(0.0f, 0.0f, 1000.0f);                     
      cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -53,6 +54,115 @@ bool Engine::init(double physicsFaktor)
         std::cerr << "Failed to initialize GLEW" << std::endl;
         return false;
     }
+    // Blur-Shader-Quellcode
+    const char* blurVertexShaderSource = R"glsl(
+    #version 330 core
+    layout (location = 0) in vec2 aPos;
+    layout (location = 1) in vec2 aTexCoords;
+
+    out vec2 TexCoords;
+
+    void main()
+    {
+        TexCoords = aTexCoords;
+        gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);
+    }
+)glsl";
+
+    const char* blurFragmentShaderSource = R"glsl(
+    #version 330 core
+    out vec4 FragColor;
+
+    in vec2 TexCoords;
+
+    uniform sampler2D screenTexture;
+    uniform float blurSize;
+
+    const float offset = 1.0 / 300.0;
+
+    void main() {             
+        vec2 offsets[9] = vec2[](
+            vec2(-offset,  offset),
+            vec2( 0.0f,    offset),
+            vec2( offset,  offset),
+            vec2(-offset,  0.0f),
+            vec2( 0.0f,    0.0f),
+            vec2( offset,  0.0f),
+            vec2(-offset, -offset),
+            vec2( 0.0f,   -offset),
+            vec2( offset, -offset)
+        );
+
+        float kernel[9] = float[](
+            1.0, 2.0, 1.0,
+            2.0, 4.0, 2.0,
+            1.0, 2.0, 1.0  
+        );
+
+        vec4 blurColor = vec4(0.0);
+        float total = 0.0;
+
+        for(int i = 0; i < 9; i++) {
+            blurColor += texture(screenTexture, TexCoords + blurSize * offsets[i]) * kernel[i];
+            total += kernel[i];
+        }
+        FragColor = blurColor / total;
+    }
+)glsl";
+
+    GLuint blurVertexShader, blurFragmentShader;
+    blurVertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(blurVertexShader, 1, &blurVertexShaderSource, NULL);
+    glCompileShader(blurVertexShader);
+    checkShaderCompileStatus(blurVertexShader, "BLUR VERTEX");
+
+    blurFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(blurFragmentShader, 1, &blurFragmentShaderSource, NULL);
+    glCompileShader(blurFragmentShader);
+    checkShaderCompileStatus(blurFragmentShader, "BLUR FRAGMENT");
+
+    GLuint blurShaderProgram = glCreateProgram();
+    glAttachShader(blurShaderProgram, blurVertexShader);
+    glAttachShader(blurShaderProgram, blurFragmentShader);
+    glLinkProgram(blurShaderProgram);
+    checkShaderLinkStatus(blurShaderProgram);
+
+    // Speichere blurShaderProgram in einem Klassenmitglied, um es später zu verwenden
+    this->blurShaderProgram = blurShaderProgram;
+
+    // Abrufen der Location der Uniform-Variable für den Blur-Size
+    this->blurSizeLocation = glGetUniformLocation(blurShaderProgram, "blurSize");
+    glUseProgram(blurShaderProgram);
+    glUniform1f(blurSizeLocation, 0.005f); // Vergrößern des Blur-Effekts für Sichtbarkeit
+    glUseProgram(0);
+
+    // Framebuffer erstellen
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+    // Textur erstellen
+    glGenTextures(1, &textureColorbuffer);
+    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1200, 800, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // Textur an Framebuffer binden
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+
+    // Renderbuffer-Objekt für Tiefen- und Stencil-Test erstellen
+    glGenRenderbuffers(1, &rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1200, 800);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+    // Renderbuffer an Framebuffer binden
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // Shader-Programm kompilieren und verlinken
     const char* vertexShaderSource = "#version 330 core\n"
@@ -94,22 +204,42 @@ bool Engine::init(double physicsFaktor)
     checkShaderLinkStatus(shaderProgram);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+
     
     return true;
 }
+void Engine::framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    // Stellen Sie sicher, dass die Ansichtsportgröße dem neuen Fenster entspricht
+    glViewport(0, 0, width, height);
 
-void Engine::start()
+    // Aktualisieren Sie die Größe der Texturen und des Framebuffers
+    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+}
+
+void Engine::start(Physics* p)
 {
     // Erstellen des FileManagers
-    fileManager = new FileManager();
+    fileManager = new FileManager(dataFolder);
 
-    fileManager->loadParticles(0, positions, colors);
+    fileManager->loadParticles(p, 0, positions, colors, densityColors, maxNumberOfParticles);
 
     // Hier VBO und VAO erstellen und konfigurieren
     GLuint VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * Physics::particlesSize, &positions[0], GL_STATIC_DRAW);
+    int particles = p->particlesSize;
+    if (p->particlesSize > maxNumberOfParticles)
+    {
+        particles = maxNumberOfParticles;
+        p->particlesSize = maxNumberOfParticles;
+    }
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * p->particlesSize, &positions[0], GL_STATIC_DRAW);
 
     // Erstellen des Vertex Array Objects (VAO)
     glGenVertexArrays(1, &VAO);
@@ -118,6 +248,31 @@ void Engine::start()
     // Konfigurieren des VAO f�r das VBO
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    GLuint quadVAO, quadVBO;
+    float quadVertices[] = {
+        // Positionen   // Texturen
+        -1.0f,  1.0f,  0.0f, 1.0f,
+        -1.0f, -1.0f,  0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+
+        -1.0f,  1.0f,  0.0f, 1.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+         1.0f,  1.0f,  1.0f, 1.0f
+    };
+
+    glGenVertexArrays(1, &quadVAO);
+    glGenBuffers(1, &quadVBO);
+    glBindVertexArray(quadVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+    // Speichere quadVAO in einem Klassenmitglied, um es später zu verwenden
+    this->quadVAO = quadVAO;
+
 
     //place the BGstars in the background
     if (BGstars)
@@ -136,12 +291,26 @@ void Engine::start()
     std::cout << "Data loaded" << std::endl;
 }
 
+void Engine::renderBlur() {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Stellen Sie sicher, dass Sie auf den Bildschirm rendern
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glUseProgram(blurShaderProgram);
+    glUniform1f(blurSizeLocation, 0.005f); // Vergrößern des Blur-Effekts für Sichtbarkeit
+    glBindVertexArray(quadVAO);
+    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+    glUseProgram(0);
+}
+
+
+
 void Engine::update(int index)
 {
     //calculate the time
-    if (isRunning) 
+    if (isRunning && index != oldIndex) 
     {
-        //calcTime(index);
+        calcTime(index);
     }
 
     processMouseInput();
@@ -154,6 +323,7 @@ void Engine::update(int index)
     }
 
     renderParticles();
+    renderBlur();
 
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -210,11 +380,24 @@ void Engine::update(int index)
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
 		showDarkMatter = !showDarkMatter;
 	}
+
+    //disable / enable dark matter with U
+    #ifdef WIN32
+    if (GetAsyncKeyState(85) & 0x8000)
+    #else
+    if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
+    #endif
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        densityColor = !densityColor;
+    }
+    oldIndex = index;
 }
 
 void Engine::renderParticles()
 {
-    // L�schen des Bildschirms
+    // Binden des Framebuffers
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Deaktivieren Sie den Tiefentest und das Z-Buffering
@@ -260,20 +443,31 @@ void Engine::renderParticles()
     {
         for (int p = 0; p < positions.size(); p++)
         {
-            if(showDarkMatter == false && colors[p].w == 1)
+            if(showDarkMatter == false && colors[p].x == 0 && colors[p].y == 1000 && colors[p].z == 0)
 			{
                 continue;
 			}
-            if (showDarkMatter == true && colors[p].w == 1)
+            if (showDarkMatter == true && colors[p].r == 0 && colors[p].g == 1000 && colors[p].b == 0)
             {
-                // Setzen Sie die Farbe auf blau für dunkle Materie
-                glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(glm::vec3(0,0,1)));
+                if (densityColor)
+                {
+                    glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr((densityColors[p])));
+                }
+                else
+                {
+                    glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr((colors[p])));
+                }
             }
             else
 			{
-				// Setzen Sie die Farbe im Shader
-                glm::vec3 color = glm::vec3(colors[p].x, colors[p].y, colors[p].z);
-				glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(color));
+                if (densityColor)
+                {
+                    glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr((densityColors[p])));
+                }
+                else
+                {
+                    glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr((colors[p])));
+                }
 			}
 
             glm::vec3 scaledPosition = glm::vec3(
@@ -293,10 +487,40 @@ void Engine::renderParticles()
     }
     // VAO l�sen
     glBindVertexArray(0);
+    // Lösen des Framebuffers
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Engine::processInput()
 {
+    // Toggle zwischen Kameramodi mit "L"
+    static bool lKeyWasPressedLastFrame = false;
+
+    // Prüfen, ob die Taste "L" gerade gedrückt wurde
+    bool lKeyPressed =
+    #ifdef WIN32
+    (GetAsyncKeyState('L') & 0x8000) != 0;
+    #else
+        glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS;
+    #endif
+
+    // Umschalten des Kameramodus nur, wenn die Taste neu gedrückt wurde
+    if (lKeyPressed && !lKeyWasPressedLastFrame) 
+    {
+        focusedCamera = !focusedCamera;
+
+        
+    }
+    if (focusedCamera) {
+        // Richtet die Kamera auf den Ursprung aus
+        glm::dvec3 direction = glm::normalize(glm::dvec3(0, 0, 0) - cameraPosition);
+        cameraFront = direction;
+    }
+
+    // Aktualisieren des letzten Tastendruckzustands
+    lKeyWasPressedLastFrame = lKeyPressed;
+
+
     #ifdef WIN32
     if (GetAsyncKeyState(VK_CONTROL) < 0)
     #else
@@ -338,42 +562,44 @@ void Engine::processInput()
 // F�gen Sie diese Methode zur Engine-Klasse hinzu
 void Engine::processMouseInput()
 {
+    if (focusedCamera == false)
+    {
+        // Erfassen Sie die Mausbewegung
+        double mouseX, mouseY;
+        glfwGetCursorPos(window, &mouseX, &mouseY);
 
-    // Erfassen Sie die Mausbewegung
-    double mouseX, mouseY;
-    glfwGetCursorPos(window, &mouseX, &mouseY);
+        static double lastMouseX = mouseX;
+        static double lastMouseY = mouseY;
 
-    static double lastMouseX = mouseX;
-    static double lastMouseY = mouseY;
+        double xOffset = mouseX - lastMouseX;
+        double yOffset = lastMouseY - mouseY; // Umgekehrtes Vorzeichen f�r umgekehrte Mausrichtung
 
-    double xOffset = mouseX - lastMouseX;
-    double yOffset = lastMouseY - mouseY; // Umgekehrtes Vorzeichen f�r umgekehrte Mausrichtung
+        lastMouseX = mouseX;
+        lastMouseY = mouseY;
 
-    lastMouseX = mouseX;
-    lastMouseY = mouseY;
+        const float sensitivity = 0.05f;
+        xOffset *= sensitivity;
+        yOffset *= sensitivity;
 
-    const float sensitivity = 0.05f;
-    xOffset *= sensitivity;
-    yOffset *= sensitivity;
+        cameraYaw += xOffset;
+        cameraPitch += yOffset;
 
-    cameraYaw += xOffset;
-    cameraPitch += yOffset;
+        // Begrenzen Sie die Kamerapitch, um ein �berdrehen zu verhindern
+        if (cameraPitch > 89.0f)
+            cameraPitch = 89.0f;
+        if (cameraPitch < -89.0f)
+            cameraPitch = -89.0f;
 
-    // Begrenzen Sie die Kamerapitch, um ein �berdrehen zu verhindern
-    if (cameraPitch > 89.0f)
-        cameraPitch = 89.0f;
-    if (cameraPitch < -89.0f)
-        cameraPitch = -89.0f;
+        // Berechnen der neuen Kamerarichtung
+        glm::vec3 newFront;
+        newFront.x = cos(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
+        newFront.y = sin(glm::radians(cameraPitch));
+        newFront.z = sin(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
+        cameraFront = glm::normalize(newFront);
 
-    // Berechnen der neuen Kamerarichtung
-    glm::vec3 newFront;
-    newFront.x = cos(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
-    newFront.y = sin(glm::radians(cameraPitch));
-    newFront.z = sin(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
-    cameraFront = glm::normalize(newFront);
-
-    // Aktualisieren der Ansichtsmatrix
-    view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
+        // Aktualisieren der Ansichtsmatrix
+        view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
+    }
 }
 
 void Engine::checkShaderCompileStatus(GLuint shader, const char* shaderType)
@@ -426,6 +652,19 @@ void Engine::calcTime(glm::dvec3 position, int index)
     else if (passedTime < 31536000) { passedTime /= 86400; Unit = " days"; }
     else { passedTime /= 31536000; Unit = " years"; }
 
+
+    std::string time; 
+    //set the time to like millions, billions, trillions, ...
+    if (passedTime < 1000) { time = std::to_string((int)passedTime); }
+	else if (passedTime < 1000000) { passedTime /= 1000; time = std::to_string((int)passedTime) + " thousand"; }
+	else if (passedTime < 1000000000) { passedTime /= 1000000; time = std::to_string((int)passedTime) + " million"; }
+	else if (passedTime < 1000000000000) { passedTime /= 1000000000; time = std::to_string((int)passedTime) + " billion"; }
+	else if (passedTime < 1000000000000000) { passedTime /= 1000000000000; time = std::to_string((int)passedTime) + " trillion"; }
+	else { passedTime /= 1000000000000000; time = std::to_string((int)passedTime) + " quadrillion"; }
+    
+    //print out the past time in the right unit
+    std::cout << std::scientific << std::setprecision(0) << "passed time: " << time << Unit << std::endl;
+    /*
     // Berechne das Enddatum basierend auf der "passedTime"
     int startYear = 2020;
     int startMonth = 01;
@@ -520,6 +759,7 @@ void Engine::calcTime(glm::dvec3 position, int index)
         //print out the past time in the right unit
         std::cout << std::scientific << std::setprecision(0) << "passed time: " << passedTime << Unit << "    date: " << currentYear << "." << month << "." << day << std::endl;
     }
+    */
 }
 double Engine::random(double min, double max)
 {

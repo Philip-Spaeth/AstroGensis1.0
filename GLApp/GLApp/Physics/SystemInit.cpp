@@ -4,25 +4,139 @@
 #include <random>
 #include <gtc/quaternion.hpp>
 #include <gtx/quaternion.hpp>
+#include "FileManager.h"
+#include <vector>
+#include <string>
+#include <sstream>
+#include <map>
+#include <iostream>
+#include <filesystem>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <unordered_map>
+#include "MathFunctions.h"
+#include "FileManager.h"
+namespace fs = std::filesystem;
+
+using namespace std;
 
 void SystemInit::start(std::vector<Particle>& particles)
 {
-	//solarSystem(particles);
-	//ourSolarSystem(particles);
+	//manuelle Initialisierung
+	//andromeda vorsimulation with 2 particles 
+	if (false)
+	{
+		Particle particle1;
+		particle1.position = glm::vec3(0, 0, 0);
+		particle1.velocity = glm::vec3(0, 0, 0);
+		particle1.mass = 2.9833800017169e42;
+		particle1.radius = 10;
+		particle1.color = glm::vec3(1, 1, 0);
+		particle1.darkMatter = false;
+		particles[0] = particle1;
 
-	ellipticalGalaxy.E0(0, 999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
-	//ellipticalGalaxy.E0(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
-	
-	//spiralGalaxy.densityWaveSb(0, 999, { 0,0,0 }, { 0, 0, 0}, { 0,0,0 }, 1, particles);
-	//spiralGalaxy.Sb(10000, 19999, { 1e22,0,0 }, { 0, 0, 0 }, { 0,0,0 }, 1, particles);
+		Particle particle2;
+		particle2.position = glm::vec3(2.3841041e22, 0, 0);
+		particle2.velocity = glm::vec3(-300000, 0, 0);
+		particle2.mass = 2.7844880016024e42;
+		particle2.radius = 10;
+		particle2.color = glm::vec3(1, 1, 0);
+		particle2.darkMatter = false;
+		particles[1] = particle2;
+	}
+	else
+	{
+		Physics p;
+		//Init nach Config File
+		if (p.configFile)
+		{
+			// Einlesen der Konfigurationen
+			FileManager* fileManager = new FileManager("config.ini");
+			auto config = fileManager->readTheConfig("config.ini");
 
-	//barredGalaxy.SBc(0, 9999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
+			// Verarbeiten der Galaxie-Konfigurationen
+			int galaxieNummer = 1;
+			std::string galaxieKey = "Galaxie" + std::to_string(galaxieNummer);
+			int startIndex = 1;
+
+			while (config.find(galaxieKey + ".Typ") != config.end())
+			{
+				string typ = config[galaxieKey + ".Typ"];
+				string hubbleklass = config[galaxieKey + ".HubbleKlassifikation"];
+				int particlesize = std::stoi(config[galaxieKey + ".ParticleSize"]);
+				double radius = std::stod(config[galaxieKey + ".Radius"]);
+				double Masse = std::stod(config[galaxieKey + ".GesammtMasse"]);
+				double anteilBaryonischeMaterie = std::stod(config[galaxieKey + ".AnteilBaryonischeMaterie"]);
+				double anteilDunkleMaterie = std::stod(config[galaxieKey + ".AnteilDunkleMaterie"]);
+				double powNumberNormal = std::stod(config[galaxieKey + ".VerteilungsExponentBaryonischeMaterie"]);
+				double powNumberDark = std::stod(config[galaxieKey + ".VerteilungsExponentDunkleMaterie"]);
+
+				// Position, Geschwindigkeit, Rotation
+				glm::vec3 position = fileManager->parseVector3(config[galaxieKey + ".Position"]);
+				glm::vec3 velocity = fileManager->parseVector3(config[galaxieKey + ".Geschwindigkeit"]);
+				glm::vec3 rotation = fileManager->parseVector3(config[galaxieKey + ".Rotation"]);
+
+				int endIndex = startIndex + particlesize - 1;
+
+				if (typ == "Spiral")
+				{
+					if (hubbleklass == "Sa")
+					{
+						//spiral galaxie with theese parameter:int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double anteilBaryonischeMaterie, double anteilDunkleMaterie, double powNumberNormal, double powNumberDark, std::vector<Particle>& particles
+						spiralGalaxy.Sa(startIndex, endIndex, position, rotation, velocity, radius, Masse, anteilBaryonischeMaterie, anteilDunkleMaterie, powNumberNormal, powNumberDark, particles);
+					}
+					if (hubbleklass == "Sb")
+					{
+						spiralGalaxy.Sb(startIndex, endIndex, position, rotation, velocity, radius, Masse, anteilBaryonischeMaterie, anteilDunkleMaterie, powNumberNormal, powNumberDark, particles);
+					}
+					if (hubbleklass == "Sc")
+					{
+						spiralGalaxy.Sc(startIndex, endIndex, position, rotation, velocity, radius, Masse, anteilBaryonischeMaterie, anteilDunkleMaterie, powNumberNormal, powNumberDark, particles);
+					}
+				}
+				if (typ == "Elliptisch")
+				{
+					if (hubbleklass == "E0")
+					{
+						ellipticalGalaxy.E0(startIndex, endIndex, position, rotation, velocity, radius, Masse, anteilBaryonischeMaterie, anteilDunkleMaterie, powNumberNormal, powNumberDark, particles);
+					}
+					if (hubbleklass == "S0")
+					{
+						ellipticalGalaxy.S0(startIndex, endIndex, position, rotation, velocity, radius, Masse, anteilBaryonischeMaterie, anteilDunkleMaterie, powNumberNormal, powNumberDark, particles);
+					}
+				}
+				startIndex = endIndex; // Aktualisieren des Startindex für die nächste Galaxie
+				galaxieNummer++;
+				galaxieKey = "Galaxie" + std::to_string(galaxieNummer);
+			}
+		}
+		//manuelles Initialisieren
+		else
+		{
+			//planet systemns without SPH
+
+			//solarSystem(particles);
+			//ourSolarSystem(particles);
+
+			//galaxies
+
+			//ellipticalGalaxy.E0(0, 19999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, 1e12, 0.5, 0.5, 0.5, 0.5, particles);
+			//ellipticalGalaxy.S0(1, 9999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
+
+
+			//Spiral galaxy like milky way
+			spiralGalaxy.Sa(1, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1e21, 1e42, 0.5, 0.5, 0.5, 0.5, particles);
+			//ellipticalGalaxy.S0(10000, 19999, { 1.065e21, 0.565e21,0 }, { 0, 0, 0 }, { 0,0,0 }, 0.3, particles);
+			//spiralGalaxy.Sc(20000, 29999, { 1e22,0,0 }, { 1,2,1 }, { 0,0,0 }, 0.5, particles);
+
+			//barredGalaxy.SBa(0, 9999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
+			//barredGalaxy.SBb(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
+			//barredGalaxy.SBc(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
+		}
+	}
 }
-
-
-
-
-
 
 // solar system stuff 
 
@@ -50,7 +164,7 @@ void SystemInit::solarSystem(std::vector<Particle>& particles)
 			particles[j].mass = 5.972e26;
 			std::cout << particles[j].velocity.y << std::endl;
 			particles[j].radius = 3;
-			particles[j].color = glm::vec3(physics.random(0,1), physics.random(0, 1), physics.random(0, 1));
+			particles[j].color = glm::vec3(MathFunctions::random(0,1), MathFunctions::random(0, 1), MathFunctions::random(0, 1));
 		}
 	}
 }

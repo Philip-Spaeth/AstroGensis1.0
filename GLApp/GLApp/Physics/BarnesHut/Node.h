@@ -4,8 +4,10 @@
 #include <vector>
 #include <glm.hpp>
 #include "Particle.h"
+#include "Physics.h"
 
 class Particle;
+class Physics;
 
 class Node 
 {
@@ -16,15 +18,14 @@ public:
 	bool isInside(Particle& p);
 
 	void insert(Particle& p);
-	glm::dvec3 calcForce(Particle& p, Node* root, double softening, double a, double& potentialEngergy, double& calculations);
+	glm::dvec3 calcForce(Physics* phy, Particle& p, Node* root, double softening, double a, double& potentialEngergy, double& calculations);
+
 	//SPH
-	void gravitySPH(Particle& p, Node* root, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
-	double cubicSplineKernel(double r, double h);
-	double computeDensity(Particle& p, double h);
+	void gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
 
 	void gravity(Particle& p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
     void calcMass();
-	void setColor();
+	void calcH();
 	void color(glm::vec3 color);
 
 	Node* child[8] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
@@ -36,8 +37,17 @@ public:
 	glm::dvec3 center;
 	glm::dvec3 massCenter;
 	double mass = 0;
+	double baryonicMass = 0;
+	double darkMatterMass = 0;
 	double radius = 0;
 	double theta = 0;
+
+	//SPH
+	double density = 0;
+	double baryonicDensity = 0;
+	double darkMatterDensity = 0;
+	double smoothingLength = 0;
+	void calcDensity(Particle& p,double h, double& medium, int& n);
 
 	bool renderTree = false;
 

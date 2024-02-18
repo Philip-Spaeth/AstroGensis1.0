@@ -109,12 +109,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\Git-Repos\simulation\External Libraries\GLEW\include;D:\Git-Repos\simulation\External Libraries\GLM\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\3 Schule\Next\External Libraries\GLEW\include;C:\3 Schule\Next\External Libraries\GLFW\include;C:\3 Schule\Next\GLApp\GLApp\Physics;C:\3 Schule\Next\GLApp\GLApp\File;C:\3 Schule\Next\GLApp\GLApp\Rendering;C:\3 Schule\Next\GLApp\GLApp\Physics\Galaxies;C:\3 Schule\Next\GLApp\GLApp\Physics\BarnesHut;C:\3 Schule\Next\External Libraries\GLM\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>D:\Git-Repos\simulation\External Libraries\GLFW\lib-vc2015\glfw3dll.lib;D:\Git-Repos\simulation\External Libraries\GLFW\lib-vc2015\glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\3 Schule\Next\External Libraries\GLEW;C:\3 Schule\Next\External Libraries\GLFW\lib-mingw-w64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -156,6 +157,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Math\MathFunctions.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Physics\Galaxies\BarredGalaxy.cpp" />
     <ClCompile Include="File\FileManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -169,6 +172,8 @@
     <ClCompile Include="Physics\Galaxies\SpiralGalaxy.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Math\MathFunctions.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Physics\Galaxies\BarredGalaxy.h" />
     <ClInclude Include="File\FileManager.h" />
     <ClInclude Include="Physics\BarnesHut\Node.h" />
@@ -179,6 +184,9 @@
     <ClInclude Include="Physics\Physics.h" />
     <ClInclude Include="Physics\SystemInit.h" />
     <ClInclude Include="Rendering\Engine.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config.ini" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

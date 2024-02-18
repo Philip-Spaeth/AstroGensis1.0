@@ -1,5 +1,5 @@
 #include "Particle.h"
-
+#include "Physics.h"
 Particle::Particle(double x, double y, double z)  : position(x, y, z), velocity(0.0f, 0.0f, 0.0f), mass(0), radius(1.0f), color(glm::dvec3(1.0f, 1.0f, 1.0f))
 {}
  
@@ -25,6 +25,12 @@ void Particle::eulerUpdatePosition(glm::dvec3 velocity, double deltaTime)
 {
     position += velocity * deltaTime;
 }
+
+void Particle::eulerUpdateThermalEnergy(double deltaTime)
+{
+	thermalEnergy += thermalEnergyChange * deltaTime;
+}
+
 
 //Runge-Kutta 4th order
 void Particle::rungeKuttaUpdateVelocity(glm::dvec3 acceleration, double deltaTime, int rungeKutaStep)
@@ -172,6 +178,7 @@ double Particle::calcPotentialEnergie(const Particle& other, double G, double so
 	double potentialEnergie = (0.5)*((- G * mass * other.mass) / (distance));
 	return potentialEnergie;
 }
+
 double Particle::calcPotentialEnergie(const Particle& other, double G, double softening, int k)
 {
     glm::dvec3 delta = other.position - position;
@@ -195,6 +202,30 @@ double Particle::calcPotentialEnergie(const Particle& other, double G, double so
     return potentialEnergie;
 }
 
+double Particle::calcThermalEnergy()
+{
+	return thermalEnergy;
+}
+
+//dark energy / hubblekosntant
+void Particle::hubbleExpansion(double deltaTime)
+{
+    glm::dvec3 delta = position;
+    double distance = glm::length(delta);
+
+    if (distance == 0) {
+        return; // Verhindere eine Division durch Null.
+    }
+    Physics phy;
+    // Hubble-Effekt
+    double hubbleEffect = phy.HubbleConstant * 1e-3 / 3.0857e22; // Umrechnung von km/s/Mpc in SI-Einheiten
+    glm::dvec3 hubbleVelocity = delta * hubbleEffect; // Relative Geschwindigkeit aufgrund der Expansion
+
+
+    // Aktualisiere die Geschwindigkeit des Partikels
+    position += hubbleVelocity * deltaTime;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //help functions
@@ -202,4 +233,21 @@ double Particle::calcPotentialEnergie(const Particle& other, double G, double so
 double Particle::CalculateDistance(const Particle& other) const {
     glm::dvec3 delta = other.position - position;
     return glm::length(delta);
+}
+
+void Particle::setColor(double mediumDensity)
+{
+    double maxDensity = mediumDensity;
+    double midDensity = mediumDensity;
+    //set the color based on the density
+    double r = density / midDensity;
+    double g = 0;
+    double b = (midDensity / 2) / density;
+    
+    double soft = 3;
+    r = r + (density / (maxDensity * soft));
+    g = g + (density / (maxDensity * soft));
+    b = b + (density / (maxDensity * soft)) / 3;
+
+    densityColor = { r, g, b };
 }

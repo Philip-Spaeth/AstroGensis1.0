@@ -13,10 +13,11 @@ class FileManager;
 
 class Engine {
 public:
-    Engine();
+    Engine(std::string dataFolder);
+    std::string dataFolder;
 
     bool init(double physicsFaktor);
-    void start();
+    void start(Physics* p);
     void update(int index);
     bool clean();
 
@@ -25,10 +26,13 @@ public:
 
     bool isRunning = false;
 
+    int maxNumberOfParticles = 100000;
+
     double playSpeed = 1;
     double changeSpeed = 1;
 
     bool showDarkMatter = true;
+    bool densityColor = true;
 
     double passedTime = 0;
 
@@ -36,12 +40,16 @@ public:
     //double globalScale = 1e-18;
     void calculateGlobalScale();
 
+    bool focusedCamera = false;
+
     //render Tree
     const double theta = 0;
     std::vector<glm::vec4> positions;
-    std::vector<glm::vec4> colors;
+    std::vector<glm::vec3> colors;
+    std::vector<glm::vec3> densityColors;
+    void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 private:
-
+    int oldIndex = 0;
     bool BGstars = true;
     int amountOfStars = 1000;
     std::vector<glm::vec4> bgStars;
@@ -58,7 +66,7 @@ private:
     double cameraViewDistance = 1e15;
     glm::mat4 view;
 
-    // Funktionen für Kamerasteuerung 
+    // Funktionen fï¿½r Kamerasteuerung 
     void processMouseInput();
     void processInput();
 
@@ -66,6 +74,13 @@ private:
     bool shouldClose = false;
     GLuint VAO;
     GLuint instanceVBO;
+    GLuint framebuffer;
+    GLuint textureColorbuffer;
+    GLuint blurSizeLocation;
+    GLuint rbo;
+    GLuint blurShaderProgram; // Shader-Programm fï¿½r den Blur-Effekt
+    GLuint quadVAO; // VAO fï¿½r das Quad, auf das der Blur-Effekt angewendet wird
+    void renderBlur();
     void renderParticles();
     void checkShaderCompileStatus(GLuint shader, const char* shaderType);
     void checkShaderLinkStatus(GLuint program);

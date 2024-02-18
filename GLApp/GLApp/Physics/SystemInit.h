@@ -23,7 +23,6 @@ private:
 	SpiralGalaxy spiralGalaxy;
 	EllipticalGalaxy ellipticalGalaxy;
 
-
 	//solar system
 	void solarSystem(std::vector<Particle>& particles);
 	void ourSolarSystem(std::vector<Particle>& particles);
