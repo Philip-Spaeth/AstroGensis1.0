@@ -655,21 +655,69 @@ void Engine::calcTime(glm::dvec3 position, int index)
 
     std::string time; 
     //set the time to like millions, billions, trillions, ...
-    if (passedTime < 1000) { time = std::to_string((int)passedTime); }
-	else if (passedTime < 1000000) { passedTime /= 1000; time = std::to_string((int)passedTime) + " thousand"; }
-	else if (passedTime < 1000000000) { passedTime /= 1000000; time = std::to_string((int)passedTime) + " million"; }
-	else if (passedTime < 1000000000000) { passedTime /= 1000000000; time = std::to_string((int)passedTime) + " billion"; }
-	else if (passedTime < 1000000000000000) { passedTime /= 1000000000000; time = std::to_string((int)passedTime) + " trillion"; }
-	else { passedTime /= 1000000000000000; time = std::to_string((int)passedTime) + " quadrillion"; }
+    if (passedTime < 1000) 
+    { 
+        //passed time to string with 1 decimal after the point
+        std::string newTime = std::to_string(passedTime);
+        newTime = newTime.substr(0, newTime.find(".") + 2);
+        time = newTime; 
+    }
+	else if (passedTime < 1000000) 
+    { 
+        passedTime /= 1000; 
+        //passed time to string with 1 decimal after the point
+        std::string newTime = std::to_string(passedTime);
+        newTime = newTime.substr(0, newTime.find(".") + 2);
+        time = newTime + " thousand"; 
+    }
+	else if (passedTime < 1000000000) 
+    { 
+        passedTime /= 1000000; 
+		//passed time to string with 1 decimal after the point
+		std::string newTime = std::to_string(passedTime);
+		newTime = newTime.substr(0, newTime.find(".") + 2);
+		time = newTime + " million";
+    }
+	else if (passedTime < 1000000000000) 
+    {
+        passedTime /= 1000000000;
+        //passed time to string with 1 decimal after the point
+        std::string newTime = std::to_string(passedTime);
+        newTime = newTime.substr(0, newTime.find(".") + 2);
+        time = newTime + " billion";
+    }
+	else if (passedTime < 1000000000000000) 
+    { 
+        passedTime /= 1000000000000; 
+		//passed time to string with 1 decimal after the point
+		std::string newTime = std::to_string(passedTime);
+		newTime = newTime.substr(0, newTime.find(".") + 2);
+		time = newTime + " trillion";
+    }
+	else 
+    { 
+        passedTime /= 1000000000000000;
+        //passed time to string with 1 decimal after the point
+        std::string newTime = std::to_string(passedTime);
+        newTime = newTime.substr(0, newTime.find(".") + 2);
+        time = newTime + " quadrillion";
+    }
     
-    //print out the past time in the right unit
-    std::cout << std::scientific << std::setprecision(0) << "passed time: " << time << Unit << std::endl;
-    /*
-    // Berechne das Enddatum basierend auf der "passedTime"
-    int startYear = 2020;
-    int startMonth = 01;
-    int startDay = 01;
 
+    Physics physics;
+    //print out the past time in the right unit
+    if (!physics.showDate)
+    {
+        std::cout << std::scientific << std::setprecision(2) << "passed time: " << time << Unit << std::endl;
+        return;
+    }
+    // Berechne das Enddatum basierend auf der "passedTime"
+
+    int startYear = physics.year;
+    int startMonth = physics.month;
+    int startDay = physics.day;
+    
+    
     // Berechnen Sie das aktuellen datums basierend auf der "passedTimeInSec"
     int currentYear = startYear;
     int currentMonth = startMonth;
@@ -742,14 +790,6 @@ void Engine::calcTime(glm::dvec3 position, int index)
 		month = "0" + month;
 	}
     
-    if (month == "01")
-    {
-        if (day == "01")
-        {
-            std::cout << position.x << " " << position.y << " " << position.z << std::endl;
-		}
-    }
-    
     if (passedTime < 1000000)
     {
         std::cout << "passed time: " << (int)passedTime << Unit << "    date: " << currentYear << "." << month << "." << day << std::endl;
@@ -759,7 +799,8 @@ void Engine::calcTime(glm::dvec3 position, int index)
         //print out the past time in the right unit
         std::cout << std::scientific << std::setprecision(0) << "passed time: " << passedTime << Unit << "    date: " << currentYear << "." << month << "." << day << std::endl;
     }
-    */
+    
+    
 }
 double Engine::random(double min, double max)
 {

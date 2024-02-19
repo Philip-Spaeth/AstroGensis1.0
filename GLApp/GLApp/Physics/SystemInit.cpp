@@ -50,7 +50,7 @@ void SystemInit::start(std::vector<Particle>& particles)
 	{
 		Physics p;
 		//Init nach Config File
-		if (p.configFile)
+		if (false)
 		{
 			// Einlesen der Konfigurationen
 			FileManager* fileManager = new FileManager("config.ini");
@@ -118,7 +118,7 @@ void SystemInit::start(std::vector<Particle>& particles)
 			//planet systemns without SPH
 
 			//solarSystem(particles);
-			//ourSolarSystem(particles);
+			ourSolarSystem(particles);
 
 			//galaxies
 
@@ -127,7 +127,7 @@ void SystemInit::start(std::vector<Particle>& particles)
 
 
 			//Spiral galaxy like milky way
-			spiralGalaxy.Sa(1, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1e21, 1e42, 0.5, 0.5, 0.5, 0.5, particles);
+			//spiralGalaxy.Sa(1, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1e21, 1e42, 0.5, 0.5, 0.5, 0.5, particles);
 			//ellipticalGalaxy.S0(10000, 19999, { 1.065e21, 0.565e21,0 }, { 0, 0, 0 }, { 0,0,0 }, 0.3, particles);
 			//spiralGalaxy.Sc(20000, 29999, { 1e22,0,0 }, { 1,2,1 }, { 0,0,0 }, 0.5, particles);
 

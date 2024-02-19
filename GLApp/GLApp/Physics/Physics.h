@@ -75,6 +75,12 @@ public:
     //Physikalische Konstanten
     const double G = 6.67430e-11;
 
+    //Date for short calculation
+    bool showDate = false; // does not word on larger time scales like galaxys
+    int year = 2020;
+    int month = 1;
+    int day = 1;
+
     bool init();
     bool Calc();
 
