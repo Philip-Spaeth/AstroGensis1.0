@@ -50,7 +50,7 @@ void SystemInit::start(std::vector<Particle>& particles)
 	{
 		Physics p;
 		//Init nach Config File
-		if (false)
+		if (true)
 		{
 			// Einlesen der Konfigurationen
 			FileManager* fileManager = new FileManager("config.ini");
@@ -118,7 +118,7 @@ void SystemInit::start(std::vector<Particle>& particles)
 			//planet systemns without SPH
 
 			//solarSystem(particles);
-			ourSolarSystem(particles);
+			//ourSolarSystem(particles);
 
 			//galaxies
 
@@ -145,13 +145,13 @@ void SystemInit::solarSystem(std::vector<Particle>& particles)
 	Physics physics;
 	double distanceFaktor = 1.4848e11;
 
-	for (int j = 0; j < physics.particlesSize; j++)
+	for (int j = 0; j < particles.size(); j++)
 	{
 		if (j == 0)
 		{
-			particles[j].position = glm::vec3(0, -1.4848e11, 0);
+			particles[j].position = glm::vec3(0, 0, 0);
 			particles[j].velocity = glm::vec3(0, 0, 0);
-			particles[j].mass = 5.972e26;
+			particles[j].mass = 5.972e30;
 			particles[j].radius = 6;
 			particles[j].color = glm::vec3(1, 1, 0);
 		}
@@ -161,7 +161,7 @@ void SystemInit::solarSystem(std::vector<Particle>& particles)
 			double v = std::sqrt((physics.G * particles[0].mass) / (x));
 			particles[j].position = glm::dvec3(x, 0, 0);
 			particles[j].velocity = glm::vec3(0, 0, 0);
-			particles[j].mass = 5.972e26;
+			particles[j].mass = 5.972e25;
 			std::cout << particles[j].velocity.y << std::endl;
 			particles[j].radius = 3;
 			particles[j].color = glm::vec3(MathFunctions::random(0,1), MathFunctions::random(0, 1), MathFunctions::random(0, 1));
