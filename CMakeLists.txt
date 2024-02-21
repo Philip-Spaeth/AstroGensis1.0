@@ -34,6 +34,7 @@ include_directories(${CMAKE_SOURCE_DIR}/GLApp/GLApp/File/)
 include_directories(${CMAKE_SOURCE_DIR}/GLApp/GLApp/Physics/BarnesHut/)
 include_directories(${CMAKE_SOURCE_DIR}/GLApp/GLApp/Physics/Galaxies/)
 include_directories(${CMAKE_SOURCE_DIR}/GLApp/GLApp/Rendering/)
+include_directories(${CMAKE_SOURCE_DIR}/GLApp/GLApp/Math/)
 
 include_directories(${CMAKE_SOURCE_DIR})
 add_executable(MeinProgramm ${MAIN_SOURCE} ${HEADER_FILES} ${SOURCE_FILES})

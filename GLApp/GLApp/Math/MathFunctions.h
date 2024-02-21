@@ -2,7 +2,11 @@
 #define MATHFUNCTIONS_H
 
 #include <glm.hpp>
+#ifdef WIN32
 #include <gtc\constants.hpp>
+#else
+#include <gtc/constants.hpp>
+#endif
 
 class MathFunctions
 {
