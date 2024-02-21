@@ -292,7 +292,7 @@ void Engine::start(Physics* p)
 }
 
 void Engine::renderBlur() {
-    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Stellen Sie sicher, dass Sie auf den Bildschirm rendern
+    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Bildschirm rendern
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(blurShaderProgram);
     glUniform1f(blurSizeLocation, 0.005f); // Vergrößern des Blur-Effekts für Sichtbarkeit
@@ -427,15 +427,15 @@ void Engine::renderParticles()
         {
             glPointSize(bgStars[i].w);
 
-            // Setzen Sie die Position im Shader
+            // Setzen der Position im Shader
             glm::vec3 pos = glm::vec3(bgStars[i].x, bgStars[i].y, bgStars[i].z);
             glUniform3fv(glGetUniformLocation(shaderProgram, "particlePosition"), 1, glm::value_ptr(pos));
 
-            // Setzen Sie die Farbe im Shader
+            // Setzen der Farbe im Shader
             glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
             glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr(color));
 
-            // Zeichnen Sie den Punkt
+            // Zeichnen des Punktes
             glDrawArrays(GL_POINTS, 0, 1);
         }
     }
@@ -476,12 +476,12 @@ void Engine::renderParticles()
                 positions[p].z * globalScale
             ); 
 
-            // Setzen Sie die Position im Shader
+            // Setzen Position im Shader
             glUniform3fv(glGetUniformLocation(shaderProgram, "particlePosition"), 1, glm::value_ptr(scaledPosition));
 
             glPointSize(positions[p].w);
 
-            // Zeichnen Sie den Punkt
+            // Zeichnen Punkt
             glDrawArrays(GL_POINTS, 0, 1);
         }
     }

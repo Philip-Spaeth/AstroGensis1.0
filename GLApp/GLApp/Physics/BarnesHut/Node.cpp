@@ -179,7 +179,7 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 				if (!std::isnan(glm::length(p.velocity)) && !std::isnan(glm::length(particle.velocity)))
 				
 					//vereinfachung der formel mit thermaler energie
-					if (!phy->artificialViscosity)
+					if (phy->artificialViscosity)
 					{
 						if (phy->adaptiveSmoothingLength) h = p.h;
 						glm::dvec3 velocityDiff = p.velocity - particle.velocity;

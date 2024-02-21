@@ -164,7 +164,7 @@ bool Physics::Calc()
         {
             if(newDistanceCalc)
             { 
-                //mayby problem when particles fly far away
+                //mayby problem when particles fly far away besause of the treesize
                 for (int i = 0; i < currentParticles.size(); i++) {
                     double distance = sqrt(pow(currentParticles[i].position.x, 2) + pow(currentParticles[i].position.y, 2) + pow(currentParticles[i].position.z, 2));
                     if (distance > maxDistance) {
@@ -371,7 +371,7 @@ void Physics::calcTime(int index, std::chrono::system_clock::time_point current_
     // Sekunden in einen double-Wert umrechnen
     double time_seconds = time_diff.count();
 
-    // Dann können Sie time_seconds mit index multiplizieren
+    // time_seconds mit index multiplizieren
     double newtime = time_seconds * (numTimeSteps - index) / index; */
     double newtime = time * (numTimeSteps - index) / index;
 

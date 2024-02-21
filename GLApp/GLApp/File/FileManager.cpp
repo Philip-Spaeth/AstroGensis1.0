@@ -46,7 +46,7 @@ std::unordered_map<std::string, std::string> FileManager::readConfig(const std::
             if (std::getline(is_line, key, '=')) {
                 std::string value;
                 if (std::getline(is_line, value)) {
-                    // Entfernen Sie Leerzeichen am Anfang und am Ende des Schlüssels und des Werts
+                    // delete leading and trailing whitespaces from key and value
                     key.erase(0, key.find_first_not_of(" \t"));
                     key.erase(key.find_last_not_of(" \t") + 1);
                     value.erase(0, value.find_first_not_of(" \t"));
@@ -107,7 +107,7 @@ std::unordered_map<std::string, std::string> FileManager::readTheConfig(const st
             }
             if (line.empty()) continue;
 
-            // Entfernen Sie Leerzeichen am Anfang der Zeile
+            // Entferne Leerzeichen am Anfang der Zeile
             line.erase(0, line.find_first_not_of(" \t"));
 
             // Erkenne Abschnittsnamen
@@ -124,7 +124,7 @@ std::unordered_map<std::string, std::string> FileManager::readTheConfig(const st
             if (std::getline(is_line, key, '=')) {
                 std::string value;
                 if (std::getline(is_line, value)) {
-                    // Entfernen Sie Leerzeichen am Anfang und am Ende des Schlüssels und des Werts
+                    // Entferne Leerzeichen am Anfang und am Ende des Schlüssels und des Werts
                     key.erase(0, key.find_first_not_of(" \t"));
                     key.erase(key.find_last_not_of(" \t") + 1);
                     value.erase(0, value.find_first_not_of(" \t"));
