@@ -14,7 +14,7 @@
 class SystemInit 
 {
 public:
-	void start(std::vector<Particle>& particles);
+	void start(Physics* phy, std::vector<Particle>& particles);
 
 private:
 	Physics physics;

@@ -168,7 +168,8 @@ void Menu::viewSimulation()
     }
     Physics* physics = new Physics(dataFolder);
     if (physics->configFile) physics->config();
-    physics->deltaTime = deltaTime;
+    physics->scaleUnits();
+    physics->deltaTime = physics->units->timeSI(deltaTime);
     physics->particlesSize = numParticle;
     physics->numTimeSteps = numTimeSteps;
 	
@@ -176,7 +177,7 @@ void Menu::viewSimulation()
     Engine engine(dataFolder);
     FileManager* fileManager = new FileManager(dataFolder);
 
-    if (!engine.init(deltaTime)) {
+    if (!engine.init(physics->deltaTime)) {
         std::cerr << "Engine initialization failed." << std::endl;
         return;
     }

@@ -10,6 +10,7 @@
 #include <glm.hpp>
 #include "BarnesHut/Octree.h"
 #include "FileManager.h"
+#include "Units.h"
 
 #define TARGET_FPS 30
 
@@ -24,6 +25,13 @@ public:
 
     bool configFile = true;
 
+//Choose the Unitscaling for the simulation
+    Units* units;
+    double lengthInitial = 1e21;
+    double massInitial = 1e40;
+    double timeInitial = 1e14;
+
+//All in SI Units
     int numTimeSteps = 100;
     int particlesSize = 20000;
 
@@ -87,6 +95,7 @@ public:
     std::vector<Particle> currentParticles;
 
     void config();
+    void scaleUnits();
 private:
     Octree* octree;
     std::vector<std::vector<double>> totalEnergie;

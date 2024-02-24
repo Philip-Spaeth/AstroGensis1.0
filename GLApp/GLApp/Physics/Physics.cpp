@@ -27,6 +27,8 @@ Physics::Physics(std::string newDataFolder)
     dataFolder = newDataFolder;
     // Initialisieren des Zufallszahlengenerators
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    //scale the units of every parameter
+    units = new Units(lengthInitial, massInitial, timeInitial);
 }
 
 bool Physics::init()
@@ -35,6 +37,9 @@ bool Physics::init()
 	std::cin.get();
     //Initilize the parameters based of the configfile
     if (configFile) config();
+    //scale the units of every parameter
+    units = new Units(lengthInitial, massInitial, timeInitial);
+    scaleUnits();
 
     // Select Folder save Data
     std::cout << "Please ENTER the name of the folder where the data should be saved.         Press ENTER to use default\n" << std::endl;
@@ -108,7 +113,7 @@ bool Physics::Calc()
         //Start values of the particles
         if (t == 0)
         {
-            systemInit->start(currentParticles);
+            systemInit->start(this,currentParticles);
 
 			for (int i = 0; i < currentParticles.size(); i++) 
             {
@@ -317,7 +322,7 @@ bool Physics::Calc()
             {
                 for (int p = 0; p < currentParticles.size(); p++)
                 {
-                    currentParticles[p].hubbleExpansion(deltaTime);
+                    //currentParticles[p].hubbleExpansion(deltaTime);
                 }
             }
 
@@ -583,4 +588,17 @@ bool stringToBool(const std::string& str) {
     else {
         throw std::invalid_argument("Invalid boolean string");
     }
+}
+
+void Physics::scaleUnits()
+{
+	// Skalieren der Einheiten to new Units
+    deltaTime = units->time(deltaTime);
+    softening = units->length(softening);
+    a = units->length(a);
+    h = units->length(h);
+    k = units->mass(k);
+    rh0 = units->density(rh0);
+    mu = units->energy(mu);
+    thermalConstant = units->energy(thermalConstant);
 }

@@ -111,19 +111,22 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 
 		double r = sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
 
+		//calc new G with units from the Units class
+		double G = phy->units->calcG();
+
 		if (r > 0)
 		{
+
 			//normal newtonian gravity
 			if (phy->PlummerSoftening)
 			{
 				//Plummer softening
 				double epsilon0 = softening / std::sqrt(1.0 + std::pow(r / a, 2));
-
 				double distance = glm::dot(delta, delta) + epsilon0 * epsilon0;
-
 				//normal direct force
 				double powN = 3.0 / 2.0;
 				glm::dvec3 Force = ((G * mass * p.mass * delta) / std::pow(distance, powN));
+				//std::cout << "Force: " << glm::length(Force) << std::endl;
 				Particle p2 = Particle(massCenter, mass);
 				potentialEngergy += p.calcPotentialEnergie(p2, G, epsilon0, 0);
 				force += Force;
@@ -132,7 +135,7 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 			{
 				double distance = glm::dot(delta,delta) + softening * softening;
 				//normal direct force
-				double forceMagnitude = G*((mass * p.mass) / std::pow(distance, 2));
+				double forceMagnitude = G *((mass * p.mass) / std::pow(distance, 2));
 				//std::cout << forceMagnitude << std::endl;
 				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
 				Particle p2 = Particle(massCenter, mass);
@@ -141,7 +144,8 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 			}
 			
 			//SPH
-			if (r < 2 * h)
+			if(false)
+			//if (r < 2 * h)
 			{
 				//Druckkraft
 				// Dichte berechnen
@@ -537,7 +541,8 @@ void Node::calcH()
 }
 
 
-bool Node::isInside(Particle& p){
+bool Node::isInside(Particle& p)
+{
 	if (p.position.x > center.x + radius || p.position.x < center.x - radius)
 	{
 		return false;

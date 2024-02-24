@@ -22,7 +22,7 @@ namespace fs = std::filesystem;
 
 using namespace std;
 
-void SystemInit::start(std::vector<Particle>& particles)
+void SystemInit::start(Physics* phy, std::vector<Particle>& particles)
 {
 	//manuelle Initialisierung
 	//andromeda vorsimulation with 2 particles 
@@ -74,9 +74,16 @@ void SystemInit::start(std::vector<Particle>& particles)
 				double powNumberDark = std::stod(config[galaxieKey + ".VerteilungsExponentDunkleMaterie"]);
 
 				// Position, Geschwindigkeit, Rotation
-				glm::vec3 position = fileManager->parseVector3(config[galaxieKey + ".Position"]);
-				glm::vec3 velocity = fileManager->parseVector3(config[galaxieKey + ".Geschwindigkeit"]);
-				glm::vec3 rotation = fileManager->parseVector3(config[galaxieKey + ".Rotation"]);
+				glm::dvec3 position = fileManager->parseVector3(config[galaxieKey + ".Position"]);
+				glm::dvec3 velocity = fileManager->parseVector3(config[galaxieKey + ".Geschwindigkeit"]);
+				glm::dvec3 rotation = fileManager->parseVector3(config[galaxieKey + ".Rotation"]);
+
+				// scale all the values to the right units
+				radius = (double)phy->units->lengthUnit / radius;
+				Masse = (double)phy->units->massUnit / Masse;
+				position = position * (1 / (double)phy->units->lengthUnit);
+				velocity = velocity * (1 / (double)phy->units->velocityUnit);
+				rotation = rotation * (1 / (double)phy->units->velocityUnit);
 
 				int endIndex = startIndex + particlesize - 1;
 
@@ -104,7 +111,7 @@ void SystemInit::start(std::vector<Particle>& particles)
 					}
 					if (hubbleklass == "S0")
 					{
-						ellipticalGalaxy.S0(startIndex, endIndex, position, rotation, velocity, radius, Masse, anteilBaryonischeMaterie, anteilDunkleMaterie, powNumberNormal, powNumberDark, particles);
+						ellipticalGalaxy.S0(phy, startIndex, endIndex, position, rotation, velocity, radius, Masse, anteilBaryonischeMaterie, anteilDunkleMaterie, powNumberNormal, powNumberDark, particles);
 					}
 				}
 				startIndex = endIndex; // Aktualisieren des Startindex für die nächste Galaxie

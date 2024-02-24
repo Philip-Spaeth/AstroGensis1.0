@@ -3,7 +3,7 @@
 #include <gtx/transform.hpp>
 #include "MathFunctions.h"
 
-void EllipticalGalaxy::S0(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double anteilBaryonischeMaterie, double anteilDunkleMaterie, double powNumberNormal, double powNumberDark, std::vector<Particle>& particles)
+void EllipticalGalaxy::S0(Physics* phy, int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double anteilBaryonischeMaterie, double anteilDunkleMaterie, double powNumberNormal, double powNumberDark, std::vector<Particle>& particles)
 
 {
     Physics physics;
@@ -99,7 +99,7 @@ void EllipticalGalaxy::S0(int startIndex, int endIndex, glm::dvec3 position, glm
         }
         
         // Berechnung der Geschwindigkeit
-        double v = (std::sqrt(physics.G * totalMassInSphere / distanceToCenter) * e);
+        double v = (std::sqrt(phy->units->calcG() * totalMassInSphere / distanceToCenter) * e);
 
         particles[j].velocity = glm::dvec3(-v * std::sin(particles[j].angle), v * std::cos(particles[j].angle), 0);
         particles[j].mass = totalMass / particleSize;
