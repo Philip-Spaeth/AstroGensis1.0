@@ -56,23 +56,25 @@ void Node::gravity(Physics* phy, Particle& p, glm::dvec3& force, double softenin
 
 		if (r > 0)
 		{
-			//newtonian gravity
+
+			//normal newtonian gravity
 			if (phy->PlummerSoftening)
 			{
 				//Plummer softening
 				double epsilon0 = softening / std::sqrt(1.0 + std::pow(r / a, 2));
 
-				double distance = r * r + epsilon0 * epsilon0;
+				double distance = glm::dot(delta, delta) + epsilon0 * epsilon0;
 
 				//normal direct force
-				glm::dvec3 Force = (G * mass * p.mass * delta) / std::pow(distance, double(3 / 2));
+				double powN = 3.0 / 2.0;
+				glm::dvec3 Force = ((G * mass * p.mass * delta) / std::pow(distance, powN));
 				Particle p2 = Particle(massCenter, mass);
 				potentialEngergy += p.calcPotentialEnergie(p2, G, epsilon0, 0);
 				force += Force;
 			}
 			else
 			{
-				double distance = r * r + softening * softening;
+				double distance = glm::dot(delta, delta) + softening * softening;
 				//normal direct force
 				double forceMagnitude = G * ((mass * p.mass) / std::pow(distance, 2));
 				//std::cout << forceMagnitude << std::endl;
@@ -81,6 +83,7 @@ void Node::gravity(Physics* phy, Particle& p, glm::dvec3& force, double softenin
 				potentialEngergy += p.calcPotentialEnergie(p2, G, softening, 0);
 				force += Force;
 			}
+
 
 			calculations++;
 		}
@@ -119,8 +122,8 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 				double distance = glm::dot(delta, delta) + epsilon0 * epsilon0;
 
 				//normal direct force
-				double powN = 3 / 2;
-				glm::dvec3 Force = ((G * mass * p.mass ) / std::pow(distance, powN)) * glm::normalize(delta);
+				double powN = 3.0 / 2.0;
+				glm::dvec3 Force = ((G * mass * p.mass * delta) / std::pow(distance, powN));
 				Particle p2 = Particle(massCenter, mass);
 				potentialEngergy += p.calcPotentialEnergie(p2, G, epsilon0, 0);
 				force += Force;
