@@ -23,7 +23,7 @@ public:
 	//SPH
 	void gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
 
-	void gravity(Particle& p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
+	void gravity(Physics* phy, Particle& p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
     void calcMass();
 	void calcH();
 	void color(glm::vec3 color);

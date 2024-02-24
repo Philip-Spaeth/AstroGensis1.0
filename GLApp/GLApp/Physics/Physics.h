@@ -58,7 +58,7 @@ public:
     bool simplifiedDensity = false; // simplyfied density calculation using the Octree
     bool adaptiveSmoothingLength = false; // Takes extra calculation time
     double hFactor = 1e1;
-    bool artificialViscosity = false; // Springel more accurate and complicated
+    bool springelViscosity = false; // Springel more accurate and complicated
     double alpha = 2e9;
     double beta = 1e18;
     double gamma = 5 / 3;
@@ -72,7 +72,7 @@ public:
     static const bool color = true;
     double colorH = 1e19;
 
-    //Physikalische Konstanten
+    //Physikalische Konstanten, unit of G is m^3 kg^-1 s^-2
     const double G = 6.67430e-11;
 
     //Date for short calculation

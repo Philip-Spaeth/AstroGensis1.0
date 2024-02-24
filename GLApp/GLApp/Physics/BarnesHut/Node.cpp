@@ -44,7 +44,7 @@ void Node::color(glm::vec3 color)
 		}
 	}
 }
-void Node::gravity(Particle& p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations)
+void Node::gravity(Physics* phy, Particle& p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations)
 {
 	double G = 6.67408e-11;
 
@@ -56,7 +56,8 @@ void Node::gravity(Particle& p, glm::dvec3& force, double softening, double a, d
 
 		if (r > 0)
 		{
-			if (true)
+			//newtonian gravity
+			if (phy->PlummerSoftening)
 			{
 				//Plummer softening
 				double epsilon0 = softening / std::sqrt(1.0 + std::pow(r / a, 2));
@@ -64,8 +65,7 @@ void Node::gravity(Particle& p, glm::dvec3& force, double softening, double a, d
 				double distance = r * r + epsilon0 * epsilon0;
 
 				//normal direct force
-				double forceMagnitude = (G * mass * p.mass) / std::pow(distance, 3 / 2);
-				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
+				glm::dvec3 Force = (G * mass * p.mass * delta) / std::pow(distance, double(3 / 2));
 				Particle p2 = Particle(massCenter, mass);
 				potentialEngergy += p.calcPotentialEnergie(p2, G, epsilon0, 0);
 				force += Force;
@@ -73,9 +73,9 @@ void Node::gravity(Particle& p, glm::dvec3& force, double softening, double a, d
 			else
 			{
 				double distance = r * r + softening * softening;
-				//double distance = r * r;
 				//normal direct force
-				double forceMagnitude = (G * mass * p.mass) / std::pow(distance, 1);
+				double forceMagnitude = G * ((mass * p.mass) / std::pow(distance, 2));
+				//std::cout << forceMagnitude << std::endl;
 				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
 				Particle p2 = Particle(massCenter, mass);
 				potentialEngergy += p.calcPotentialEnergie(p2, G, softening, 0);
@@ -116,19 +116,18 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 				//Plummer softening
 				double epsilon0 = softening / std::sqrt(1.0 + std::pow(r / a, 2));
 
-				double distance = r * r + epsilon0 * epsilon0;
+				double distance = glm::dot(delta, delta) + epsilon0 * epsilon0;
 
 				//normal direct force
-				double forceMagnitude = (G * mass * p.mass) / std::pow(distance, double(3 / 2));
-				//std::cout << forceMagnitude << std::endl;
-				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
+				double powN = 3 / 2;
+				glm::dvec3 Force = ((G * mass * p.mass ) / std::pow(distance, powN)) * glm::normalize(delta);
 				Particle p2 = Particle(massCenter, mass);
 				potentialEngergy += p.calcPotentialEnergie(p2, G, epsilon0, 0);
 				force += Force;
 			}
 			else
 			{
-				double distance = r * r + softening * softening;
+				double distance = glm::dot(delta,delta) + softening * softening;
 				//normal direct force
 				double forceMagnitude = G*((mass * p.mass) / std::pow(distance, 2));
 				//std::cout << forceMagnitude << std::endl;
@@ -173,13 +172,12 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 					// Kraft auf Partikel i anwenden
 					force -= vecPressureForce;
 				}
-				/*
 				//Viskosen Kräfte
 				//if both velocities are a rational number
 				if (!std::isnan(glm::length(p.velocity)) && !std::isnan(glm::length(particle.velocity)))
 				
 					//vereinfachung der formel mit thermaler energie
-					if (phy->artificialViscosity)
+					if (!phy->springelViscosity)
 					{
 						if (phy->adaptiveSmoothingLength) h = p.h;
 						glm::dvec3 velocityDiff = p.velocity - particle.velocity;
@@ -232,7 +230,6 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 						//std::cout << forcelenght << std::endl;
 						force += vForce;
 					}
-					*/
 				//Thermal Energy
 				glm::dvec3 velocityDiff = p.velocity - particle.velocity;
 				double distance = glm::length(p.position - massCenter);
@@ -261,7 +258,7 @@ glm::dvec3 Node::calcForce(Physics* phy, Particle& p, Node* root, double softeni
 		else
 		{
 			//normal direct force
-			gravity(p, force, softening, a, potentialEngergy, calculations);
+			gravity(phy, p, force, softening, a, potentialEngergy, calculations);
 		}
 	}
 	else
@@ -282,7 +279,7 @@ glm::dvec3 Node::calcForce(Physics* phy, Particle& p, Node* root, double softeni
 			else
 			{
 				//normal direct force
-				gravity(p, force, softening, a, potentialEngergy, calculations);
+				gravity(phy, p, force, softening, a, potentialEngergy, calculations);
 			}
 		}
 		else
