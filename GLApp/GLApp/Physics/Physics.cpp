@@ -18,6 +18,7 @@
 #include <sstream>
 #include <string>
 #include <unordered_map>
+#include <algorithm>
 namespace fs = std::filesystem;
 
 
