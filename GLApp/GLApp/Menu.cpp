@@ -168,8 +168,7 @@ void Menu::viewSimulation()
     }
     Physics* physics = new Physics(dataFolder);
     if (physics->configFile) physics->config();
-    physics->scaleUnits();
-    physics->deltaTime = physics->units->timeSI(deltaTime);
+    physics->deltaTime = deltaTime;
     physics->particlesSize = numParticle;
     physics->numTimeSteps = numTimeSteps;
 	

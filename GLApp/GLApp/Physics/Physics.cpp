@@ -72,7 +72,7 @@ bool Physics::init()
     std::ofstream file(infoFile);
     file << numTimeSteps << ";" << std::endl;
     file << particlesSize << ";" << std::endl;
-    file << deltaTime << std::endl;
+    file << units->timeSI(deltaTime) << std::endl;
     file.close();
 
     // Select calculation method
@@ -86,7 +86,6 @@ bool Physics::init()
     if (inputCalculationMethod != "") {
         calculationMethod = std::stoi(inputCalculationMethod);
     }
-
 
     std::cout << "\nStarting the calculations...\n" << std::endl;
     return true;
