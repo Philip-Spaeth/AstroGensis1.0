@@ -98,8 +98,8 @@ void EllipticalGalaxy::S0(Physics* phy, int startIndex, int endIndex, glm::dvec3
             }
         }
         
-        // Berechnung der Geschwindigkeit
-        double v = (std::sqrt(phy->units->G * totalMassInSphere / distanceToCenter) * e);
+        // Berechnung der Geschwindigkeit G = 1
+        double v = (std::sqrt(totalMassInSphere / distanceToCenter) * e);
 
         particles[j].velocity = glm::dvec3(-v * std::sin(particles[j].angle), v * std::cos(particles[j].angle), 0);
         particles[j].mass = totalMass / particleSize;

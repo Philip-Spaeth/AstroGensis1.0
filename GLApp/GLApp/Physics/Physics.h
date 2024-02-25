@@ -27,9 +27,11 @@ public:
 
 //Choose the Unitscaling for the simulation
     Units* units;
-    double lengthInitial = 1e40;
-    double massInitial = 1e40;
-    double timeInitial = 1e40;
+    //parsec
+    double lengthInitial = 3.086e+16;
+    //solar mass
+    double massInitial = 1.989e+30;
+    //time Unit is calculated so that the gravitational constant is 1
 
 //All in SI Units
     int numTimeSteps = 100;

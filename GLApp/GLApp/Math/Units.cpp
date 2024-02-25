@@ -2,11 +2,14 @@
 #include <cmath>
 #include <iostream>
 
-Units::Units(double lUnit, double MUnit, double TUnit)
+Units::Units(double lUnit, double MUnit)
 {
 	lengthUnit = lUnit;
 	massUnit = MUnit;
-	timeUnit = TUnit;
+
+	//Time Unit is calculated so that the gravitational constant is 1
+	timeUnit = std::sqrt(((lengthUnit * lengthUnit) * lengthUnit) / (massUnit * gravitationalConstantInSI));
+
 	velocityUnit = lengthUnit / timeUnit;
 	accelerationUnit = lengthUnit / (timeUnit * timeUnit);
 	forceUnit = massUnit * accelerationUnit;
@@ -14,6 +17,4 @@ Units::Units(double lUnit, double MUnit, double TUnit)
 	densityUnit = massUnit / (lengthUnit * lengthUnit * lengthUnit);
 	pressureUnit = forceUnit / (lengthUnit * lengthUnit);
 	temperatureUnit = energyUnit / massUnit;
-
-	G = gravitationalConstantInSI * ((lengthUnit * lengthUnit * lengthUnit) / (massUnit * (timeUnit * timeUnit)));
 }

@@ -28,7 +28,7 @@ Physics::Physics(std::string newDataFolder)
     // Initialisieren des Zufallszahlengenerators
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
     //scale the units of every parameter
-    units = new Units(lengthInitial, massInitial, timeInitial);
+    units = new Units(lengthInitial, massInitial);
 }
 
 bool Physics::init()
@@ -38,7 +38,7 @@ bool Physics::init()
     //Initilize the parameters based of the configfile
     if (configFile) config();
     //scale the units of every parameter
-    if(!units) units = new Units(lengthInitial, massInitial, timeInitial);
+    if(!units) units = new Units(lengthInitial, massInitial);
     scaleUnits();
 
     // Select Folder save Data

@@ -3,7 +3,7 @@
 class Units
 {
 public:
-	Units(double lUnit, double MUnit, double TUnit);
+	Units(double lUnit, double MUnit);
 	~Units() {};
 	//Time Scale
 	double lengthUnit;
@@ -21,8 +21,7 @@ public:
 
 	//Constants
 	double gravitationalConstantInSI = 6.67430e-11;
-	double G = 0;
-
+	//Gravitational Constant is 1 
 
 	//Conversion Functions to Unit Scale
 	double length(double l) { return l / lengthUnit; }
