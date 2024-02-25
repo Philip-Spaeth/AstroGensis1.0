@@ -27,9 +27,9 @@ public:
 
 //Choose the Unitscaling for the simulation
     Units* units;
-    double lengthInitial = 1e21;
+    double lengthInitial = 1e40;
     double massInitial = 1e40;
-    double timeInitial = 1e14;
+    double timeInitial = 1e40;
 
 //All in SI Units
     int numTimeSteps = 100;

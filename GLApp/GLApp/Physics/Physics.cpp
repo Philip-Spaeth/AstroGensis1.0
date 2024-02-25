@@ -38,7 +38,7 @@ bool Physics::init()
     //Initilize the parameters based of the configfile
     if (configFile) config();
     //scale the units of every parameter
-    units = new Units(lengthInitial, massInitial, timeInitial);
+    if(!units) units = new Units(lengthInitial, massInitial, timeInitial);
     scaleUnits();
 
     // Select Folder save Data
@@ -594,11 +594,17 @@ void Physics::scaleUnits()
 {
 	// Skalieren der Einheiten to new Units
     deltaTime = units->time(deltaTime);
+
     softening = units->length(softening);
     a = units->length(a);
+
     h = units->length(h);
     k = units->mass(k);
     rh0 = units->density(rh0);
     mu = units->energy(mu);
     thermalConstant = units->energy(thermalConstant);
+
+    colorH = units->length(colorH);
+
+    maxDistance = units->length(maxDistance);
 }

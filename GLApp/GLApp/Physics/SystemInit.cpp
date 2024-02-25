@@ -79,8 +79,8 @@ void SystemInit::start(Physics* phy, std::vector<Particle>& particles)
 				glm::dvec3 rotation = fileManager->parseVector3(config[galaxieKey + ".Rotation"]);
 
 				// scale all the values to the right units
-				radius = (double)phy->units->lengthUnit / radius;
-				Masse = (double)phy->units->massUnit / Masse;
+				radius = phy->units->length(radius);
+				Masse = phy->units->mass(Masse);
 				position = position * (1 / (double)phy->units->lengthUnit);
 				velocity = velocity * (1 / (double)phy->units->velocityUnit);
 				rotation = rotation * (1 / (double)phy->units->velocityUnit);

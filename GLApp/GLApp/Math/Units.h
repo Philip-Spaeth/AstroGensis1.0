@@ -21,13 +21,13 @@ public:
 
 	//Constants
 	double gravitationalConstantInSI = 6.67430e-11;
-	double calcG();
+	double G = 0;
 
 
 	//Conversion Functions to Unit Scale
 	double length(double l) { return l / lengthUnit; }
 	double mass(double m) { return m / massUnit; }
-	double time(double t);
+	double time(double t) { return t / timeUnit; }
 	double velocity(double v) { return v / velocityUnit; }
 	double acceleration(double a) { return a / accelerationUnit; }
 	double force(double f) { return f / forceUnit; }
