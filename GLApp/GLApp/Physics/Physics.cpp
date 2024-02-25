@@ -598,11 +598,11 @@ void Physics::scaleUnits()
     softening = units->length(softening);
     a = units->length(a);
 
+    k = k / (units->pressureUnit / (units->densityUnit * units->densityUnit));
+    mu = mu;
+    thermalConstant = thermalConstant * (units->energyUnit / units->timeUnit);
     h = units->length(h);
-    k = units->mass(k);
     rh0 = units->density(rh0);
-    mu = units->energy(mu);
-    thermalConstant = units->energy(thermalConstant);
 
     colorH = units->length(colorH);
 

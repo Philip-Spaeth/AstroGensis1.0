@@ -46,7 +46,6 @@ void Node::color(glm::vec3 color)
 }
 void Node::gravity(Physics* phy, Particle& p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations)
 {
-	double G = 6.67408e-11;
 
 	if (particle.position != p.position)
 	{
@@ -62,25 +61,26 @@ void Node::gravity(Physics* phy, Particle& p, glm::dvec3& force, double softenin
 			{
 				//Plummer softening
 				double epsilon0 = softening / std::sqrt(1.0 + std::pow(r / a, 2));
-
 				double distance = glm::dot(delta, delta) + epsilon0 * epsilon0;
-
 				//normal direct force
 				double powN = 3.0 / 2.0;
-				glm::dvec3 Force = ((G * mass * p.mass * delta) / std::pow(distance, powN));
+				//G = 1
+				glm::dvec3 Force = (mass * p.mass * delta) / std::pow(distance, powN);
+				//std::cout << "Force: " << glm::length(Force) << std::endl;
 				Particle p2 = Particle(massCenter, mass);
-				potentialEngergy += p.calcPotentialEnergie(p2, G, epsilon0, 0);
+				potentialEngergy += p.calcPotentialEnergie(p2, 1, epsilon0, 0);
 				force += Force;
 			}
 			else
 			{
 				double distance = glm::dot(delta, delta) + softening * softening;
 				//normal direct force
-				double forceMagnitude = G * ((mass * p.mass) / std::pow(distance, 2));
+				//G = 1
+				double forceMagnitude = (mass * p.mass) / std::pow(distance, 2);
 				//std::cout << forceMagnitude << std::endl;
 				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
 				Particle p2 = Particle(massCenter, mass);
-				potentialEngergy += p.calcPotentialEnergie(p2, G, softening, 0);
+				potentialEngergy += p.calcPotentialEnergie(p2, 1, softening, 0);
 				force += Force;
 			}
 
@@ -93,7 +93,6 @@ void Node::gravity(Physics* phy, Particle& p, glm::dvec3& force, double softenin
 
 void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations)
 {
-	double G = 6.67408e-11;
 
 	if (particle.position != p.position)
 	{
@@ -125,7 +124,7 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 				glm::dvec3 Force = (mass * p.mass * delta) / std::pow(distance, powN);
 				//std::cout << "Force: " << glm::length(Force) << std::endl;
 				Particle p2 = Particle(massCenter, mass);
-				potentialEngergy += p.calcPotentialEnergie(p2, G, epsilon0, 0);
+				potentialEngergy += p.calcPotentialEnergie(p2, 1, epsilon0, 0);
 				force += Force;
 			}
 			else
@@ -137,13 +136,12 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 				//std::cout << forceMagnitude << std::endl;
 				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
 				Particle p2 = Particle(massCenter, mass);
-				potentialEngergy += p.calcPotentialEnergie(p2, G, softening, 0);
+				potentialEngergy += p.calcPotentialEnergie(p2, 1, softening, 0);
 				force += Force;
 			}
 			
 			//SPH
-			if(false)
-			//if (r < 2 * h)
+			if (r < 2 * h)
 			{
 				//Druckkraft
 				// Dichte berechnen
@@ -180,7 +178,7 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 				//Viskosen Kräfte
 				//if both velocities are a rational number
 				if (!std::isnan(glm::length(p.velocity)) && !std::isnan(glm::length(particle.velocity)))
-				
+				{
 					//vereinfachung der formel mit thermaler energie
 					if (!phy->springelViscosity)
 					{
@@ -189,9 +187,10 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 						double distance = glm::length(p.position - massCenter);
 						double cubicSplineKernel = MathFunctions::laplaceCubicSplineKernel(p.position - massCenter, h);
 
-						glm::dvec3 viscousForce = - mu * (mass / density) * (velocityDiff / (distance + softening)) * cubicSplineKernel;
+						glm::dvec3 viscousForce = -mu * (mass / density) * (velocityDiff / (distance + softening)) * cubicSplineKernel;
 						force += viscousForce;
 					}
+					/*
 					//Springel Formular
 					else
 					{
@@ -208,7 +207,7 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 						// Geschwindigkeitsdifferenz
 						glm::dvec3 velocityDiff = p.velocity - particle.velocity;
 						glm::dvec3 rij = p.position - massCenter;
-						if(phy->adaptiveSmoothingLength) h = p.h;
+						if (phy->adaptiveSmoothingLength) h = p.h;
 						double mu_ij = h * glm::dot(velocityDiff, rij) / (glm::dot(rij, rij) + 0.01 * std::pow(h, 2));
 
 						// Viskositätstensor Πij
@@ -229,19 +228,20 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 						glm::dvec3 gradWj = MathFunctions::gradientCubicSplineKernel(rij, hj);
 						glm::dvec3 mediumGradW = (gradWi + gradWj) / 2.0;
 
-						double viscousForce = - mass * Pi_ij;
-						glm::dvec3 vForce= viscousForce * mediumGradW;
+						double viscousForce = -mass * Pi_ij;
+						glm::dvec3 vForce = viscousForce * mediumGradW;
 						double forcelenght = sqrt(vForce.x * vForce.x + vForce.y * vForce.y + vForce.z * vForce.z);
 						//std::cout << forcelenght << std::endl;
 						force += vForce;
 					}
-				//Thermal Energy
-				glm::dvec3 velocityDiff = p.velocity - particle.velocity;
-				double distance = glm::length(p.position - massCenter);
-				glm::dvec3 cubicSplineKernel = glm::normalize(delta) * MathFunctions::cubicSplineKernel(distance, h);
-				double thermalEnergyChange = uConst * (pressure_i / p.density)* mass * glm::dot(velocityDiff,cubicSplineKernel);
-				p.thermalEnergyChange += thermalEnergyChange;
-				
+					*/
+					//Thermal Energy
+					glm::dvec3 velocityDiff = p.velocity - particle.velocity;
+					double distance = glm::length(p.position - massCenter);
+					glm::dvec3 cubicSplineKernel = glm::normalize(delta) * MathFunctions::cubicSplineKernel(distance, h);
+					double thermalEnergyChange = uConst * (pressure_i / p.density)* mass * glm::dot(velocityDiff,cubicSplineKernel);
+					p.thermalEnergyChange += thermalEnergyChange;
+				}
 			}
 
 			calculations++;
