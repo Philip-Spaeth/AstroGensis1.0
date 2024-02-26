@@ -91,7 +91,7 @@ void EllipticalGalaxy::S0(Physics* phy, int startIndex, int endIndex, glm::dvec3
         //slwo down in bulge to cause caotiv movement so its more realistic
         if (distanceToCenter < bulgeR)
         {
-            //e = ((distanceToCenter * distanceToCenter)/ bulgeR) / bulgeR * (bulgeR / distanceToCenter);
+            e = ((distanceToCenter * distanceToCenter)/ bulgeR) / bulgeR * (bulgeR / distanceToCenter);
             if (e > 1)
             {
                 e = 1;
