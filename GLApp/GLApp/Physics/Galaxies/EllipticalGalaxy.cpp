@@ -91,7 +91,7 @@ void EllipticalGalaxy::S0(Physics* phy, int startIndex, int endIndex, glm::dvec3
         //slwo down in bulge to cause caotiv movement so its more realistic
         if (distanceToCenter < bulgeR)
         {
-            e = ((distanceToCenter * distanceToCenter)/ bulgeR) / bulgeR * (bulgeR / distanceToCenter);
+            //e = ((distanceToCenter * distanceToCenter)/ bulgeR) / bulgeR * (bulgeR / distanceToCenter);
             if (e > 1)
             {
                 e = 1;
@@ -105,8 +105,6 @@ void EllipticalGalaxy::S0(Physics* phy, int startIndex, int endIndex, glm::dvec3
         particles[j].mass = totalMass / particleSize;
         particles[j].radius = 1;
         particles[j].darkMatter = isDarkMatterParticle;
-        if(isDarkMatterParticle)particles[j].color = glm::vec3(0, 1000, 0);
-        else particles[j].color = glm::vec3(1, 1, 1);
 
         glm::vec4 pos = glm::vec4(particles[j].position - position, 1.0);
         glm::vec4 vel = glm::vec4(particles[j].velocity, 1.0);

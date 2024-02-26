@@ -160,13 +160,19 @@ void FileManager::saveParticles(int timestep, const std::vector<Particle>& parti
     //put the particle color and dark matter bool in a the array
     std::vector<glm::vec3> color;
     std::vector<glm::vec3> densitycolor;
+    std::vector<glm::vec3> thermalcolor;
+    std::vector<glm::vec1> isDarkMatter;
     color.resize(particles.size());
     densitycolor.resize(particles.size());
+    thermalcolor.resize(particles.size());
+    isDarkMatter.resize(particles.size());
     for (int i = 0; i < particles.size(); i++)
     {
         array[i] = glm::vec4(particles[i].position, particles[i].radius);
         color[i] = glm::vec3(particles[i].color);
         densitycolor[i] = glm::vec3(particles[i].densityColor);
+        thermalcolor[i] = glm::vec3(particles[i].thermalColor);
+        isDarkMatter[i] = glm::vec1(particles[i].darkMatter);
     }
 
     if (file.is_open()) 
@@ -177,7 +183,8 @@ void FileManager::saveParticles(int timestep, const std::vector<Particle>& parti
         file.write(reinterpret_cast<const char*>(array.data()), size * sizeof(glm::vec4));
         file.write(reinterpret_cast<const char*>(color.data()), size * sizeof(glm::vec3));
         file.write(reinterpret_cast<const char*>(densitycolor.data()), size * sizeof(glm::vec3));
-
+        file.write(reinterpret_cast<const char*>(thermalcolor.data()), size * sizeof(glm::vec3));
+        file.write(reinterpret_cast<const char*>(isDarkMatter.data()), size * sizeof(glm::vec1));
         file.close();
     }
     else {
@@ -185,7 +192,7 @@ void FileManager::saveParticles(int timestep, const std::vector<Particle>& parti
     }
 }
 
-void FileManager::loadParticles(Physics* p, int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec3>& color, std::vector<glm::vec3>& densitycolor, int maxNumberOfParticles)
+void FileManager::loadParticles(Physics* p, int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec3>& color, std::vector<glm::vec3>& densitycolor, std::vector<glm::vec3>& thermalColor, std::vector<glm::vec1>& isDarkMatter, int maxNumberOfParticles)
 {
     std::string fileName = "Data/" + p->dataFolder + "/Time_" + std::to_string(timestep) + ".dat";
     std::ifstream file(fileName, std::ios::binary);
@@ -199,10 +206,15 @@ void FileManager::loadParticles(Physics* p, int timestep, std::vector<glm::vec4>
         array.resize(particlesToRead);
         color.resize(particlesToRead);
         densitycolor.resize(particlesToRead);
+        thermalColor.resize(particlesToRead);
+        isDarkMatter.resize(particlesToRead);
+
 
         file.read(reinterpret_cast<char*>(array.data()), particlesToRead * sizeof(glm::vec4));
         file.read(reinterpret_cast<char*>(color.data()), particlesToRead * sizeof(glm::vec3));
         file.read(reinterpret_cast<char*>(densitycolor.data()), particlesToRead * sizeof(glm::vec3));
+        file.read(reinterpret_cast<char*>(thermalColor.data()), particlesToRead * sizeof(glm::vec3));
+        file.read(reinterpret_cast<char*>(isDarkMatter.data()), particlesToRead * sizeof(glm::vec1));
 
         // Skip the remaining data in the file if necessary
         if (size > maxNumberOfParticles) {

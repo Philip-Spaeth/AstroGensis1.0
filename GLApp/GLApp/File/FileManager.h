@@ -25,7 +25,7 @@ class FileManager
 	std::unordered_map<std::string, std::string> readTheConfig(const std::string& filename);
 
 	void saveParticles(int timestep, const std::vector<Particle>& particles, const std::string& path);
-	void loadParticles(Physics* p, int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec3>& color, std::vector<glm::vec3>& densitycolor, int maxNumberOfParticles);
+	void loadParticles(Physics* p, int timestep, std::vector<glm::vec4>& array, std::vector<glm::vec3>& color, std::vector<glm::vec3>& densitycolor, std::vector<glm::vec3>& thermalColor, std::vector<glm::vec1>& isDarkMatter, int maxNumberOfParticles);
 
 	void saveEnergieData(std::vector<std::vector<double>>& totalEnergie, std::string path);
 

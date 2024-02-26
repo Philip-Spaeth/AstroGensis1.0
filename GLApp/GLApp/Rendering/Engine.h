@@ -32,7 +32,7 @@ public:
     double changeSpeed = 1;
 
     bool showDarkMatter = true;
-    bool densityColor = true;
+    int colorMode = 0;
 
     double passedTime = 0;
 
@@ -47,6 +47,8 @@ public:
     std::vector<glm::vec4> positions;
     std::vector<glm::vec3> colors;
     std::vector<glm::vec3> densityColors;
+    std::vector<glm::vec3> thermalColors;
+    std::vector<glm::vec1> isDarkMatter;
     void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 private:
     int oldIndex = 0;

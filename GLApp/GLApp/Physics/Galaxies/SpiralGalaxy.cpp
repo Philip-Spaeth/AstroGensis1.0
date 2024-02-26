@@ -55,14 +55,14 @@ void SpiralGalaxy::ellipticalOrbit(Particle& p, double m, double diskR, double r
 	//slwo down in bulge to cause caotic movement so its more realistic
 	if (distanceToCenter < diskR)
 	{
-		e = ((distanceToCenter * distanceToCenter) / diskR) / diskR* (diskR / distanceToCenter);
+		//e = ((distanceToCenter * distanceToCenter) / diskR) / diskR* (diskR / distanceToCenter);
 		if (e > 1)
 		{
 			e = 1;
 		}
 	}
 	// Berechnung der Geschwindigkeit
-	double v = (std::sqrt(6.67430e-11 * m / distanceToCenter) * e) *(1 + ellipticity);
+	double v = (std::sqrt(m / distanceToCenter) * e) *(1 + ellipticity);
 
 	//velocity tangent to the orbit 
 	glm::dvec3 direction = glm::dvec3(-p.position.y, p.position.x, p.position.z);

@@ -227,7 +227,7 @@ void Engine::start(Physics* p)
     // Erstellen des FileManagers
     fileManager = new FileManager(dataFolder);
 
-    fileManager->loadParticles(p, 0, positions, colors, densityColors, maxNumberOfParticles);
+    fileManager->loadParticles(p, 0, positions, colors, densityColors,thermalColors,isDarkMatter, maxNumberOfParticles);
 
     // Hier VBO und VAO erstellen und konfigurieren
     GLuint VBO;
@@ -389,7 +389,8 @@ void Engine::update(int index)
     #endif
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
-        densityColor = !densityColor;
+        if(colorMode < 2) colorMode ++;
+        else colorMode = 0;
     }
     oldIndex = index;
 }
@@ -443,30 +444,38 @@ void Engine::renderParticles()
     {
         for (int p = 0; p < positions.size(); p++)
         {
-            if(showDarkMatter == false && colors[p].x == 0 && colors[p].y == 1000 && colors[p].z == 0)
+            if(showDarkMatter == false && isDarkMatter[p].x)
 			{
                 continue;
 			}
-            if (showDarkMatter == true && colors[p].r == 0 && colors[p].g == 1000 && colors[p].b == 0)
+            if (showDarkMatter == true && isDarkMatter[p].x)
             {
-                if (densityColor)
+                if (colorMode == 0)
                 {
                     glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr((densityColors[p])));
                 }
-                else
+                if (colorMode == 1)
                 {
                     glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr((colors[p])));
                 }
+                if (colorMode == 2)
+                {
+					glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr((thermalColors[p])));
+				}
             }
             else
 			{
-                if (densityColor)
+                if (colorMode == 0)
                 {
                     glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr((densityColors[p])));
                 }
-                else
+                if (colorMode == 1)
                 {
                     glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr((colors[p])));
+                }
+                if (colorMode == 2)
+                {
+                    glUniform3fv(glGetUniformLocation(shaderProgram, "particleColor"), 1, glm::value_ptr((thermalColors[p])));
                 }
 			}
 

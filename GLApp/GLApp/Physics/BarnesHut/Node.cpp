@@ -179,6 +179,7 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 				//if both velocities are a rational number
 				if (!std::isnan(glm::length(p.velocity)) && !std::isnan(glm::length(particle.velocity)))
 				{
+					/*
 					//vereinfachung der formel mit thermaler energie
 					if (!phy->springelViscosity)
 					{
@@ -190,7 +191,6 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 						glm::dvec3 viscousForce = -mu * (mass / density) * (velocityDiff / (distance + softening)) * cubicSplineKernel;
 						force += viscousForce;
 					}
-					/*
 					//Springel Formular
 					else
 					{

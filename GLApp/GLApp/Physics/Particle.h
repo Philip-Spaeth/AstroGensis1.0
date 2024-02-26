@@ -51,7 +51,10 @@ public:
     glm::vec3 color;
     //infrared
     glm::vec3 densityColor;
-    void setColor(double mediumDensity);
+    glm::vec3 thermalColor = {1,1,1};
+    //visible color
+
+    void setColor(double mediumDensity, double mediumThermal);
 
 
     //SystemInit

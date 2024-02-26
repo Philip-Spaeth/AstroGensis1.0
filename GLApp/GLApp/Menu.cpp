@@ -225,7 +225,7 @@ void Menu::viewSimulation()
             std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>((1.0 / TARGET_FPS - frameTime) * 1000)));
         }
 
-        fileManager->loadParticles(physics, counter, engine.positions, engine.colors, engine.densityColors, engine.maxNumberOfParticles);
+        fileManager->loadParticles(physics, counter, engine.positions, engine.colors, engine.densityColors, engine.thermalColors,engine.isDarkMatter, engine.maxNumberOfParticles);
 
         // update particles
         engine.update(counter);

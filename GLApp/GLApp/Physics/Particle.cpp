@@ -235,19 +235,60 @@ double Particle::CalculateDistance(const Particle& other) const {
     return glm::length(delta);
 }
 
-void Particle::setColor(double mediumDensity)
+void Particle::setColor(double mediumDensity, double mediumThermal)
 {
+    //density color
     double maxDensity = mediumDensity;
-    double midDensity = mediumDensity;
+    double midDensity = mediumDensity / 2;
     //set the color based on the density
     double r = density / midDensity;
     double g = 0;
-    double b = (midDensity / 2) / density;
+    double b = (midDensity / 3) / density;
     
-    double soft = 3;
+    double soft = 5;
     r = r + (density / (maxDensity * soft));
     g = g + (density / (maxDensity * soft));
     b = b + (density / (maxDensity * soft)) / 3;
-
     densityColor = { r, g, b };
+
+    //thermal color
+    double maxThermal = mediumThermal;
+    double midThermal = mediumThermal;
+    //set the color based on the thermal energy
+    r = thermalEnergy / midThermal;
+    g = 0;
+    b = (midThermal / 3) / thermalEnergy;
+
+    r = r + (thermalEnergy / (maxThermal * soft));
+    g = g + (thermalEnergy / (maxThermal * soft));
+    b = b + (thermalEnergy / (maxThermal * soft)) / 3;
+    thermalColor = { r, g, b };
+
+    double brightness = density / mediumDensity;
+    double yellowness = density * 50 / (mediumDensity * 100);
+    r = 0.0 + yellowness + brightness;
+    g = 0.0 + yellowness + brightness;
+    b = 0.5 + brightness;
+    // if one color is bigger than one scale all colors down so the biggest is 1
+    if (r > 1 || g > 1 || b > 1) 
+    {
+		double max = r;
+		if (g > max) {
+			max = g;
+		}
+		if (b > max) {
+			max = b;
+		}
+		r = r / max;
+		g = g / max;
+		b = b / max;
+	}
+    // if denisty is just a little bit bigger than the medium density make the color red
+    if ((density * 0.4) > mediumDensity && (density * 0.3) < mediumDensity)
+    {
+        r = 1;
+		g = 0;
+		b = 0;
+    }
+    color = {r, g, b};
 }
