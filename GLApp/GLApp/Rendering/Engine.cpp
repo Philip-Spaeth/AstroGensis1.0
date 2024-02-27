@@ -12,6 +12,8 @@
 #include <chrono>
 #include <thread>
 #include <string>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 
 
  Engine::Engine(std::string NewDataFolder) : window(nullptr), shaderProgram(0), VAO(0)
@@ -202,11 +204,15 @@ bool Engine::init(double physicsFaktor)
     glAttachShader(shaderProgram, fragmentShader);
     glLinkProgram(shaderProgram);
     checkShaderLinkStatus(shaderProgram);
+    if (RenderLive)
+    {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+    else
+    {
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-
-    
     return true;
 }
 void Engine::framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -303,21 +309,49 @@ void Engine::renderBlur() {
     glUseProgram(0);
 }
 
+void Engine::saveAsPicture(std::string folderName, int index)
+{
+    // Speichern Sie das gerenderte Bild als .png-Datei
+	int width, height;
+	glfwGetFramebufferSize(window, &width, &height);
+	unsigned char* data = new unsigned char[3 * width * height];
+	glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+	// Umkehren der Pixelreihenfolge
+	for (int y = 0; y < height / 2; y++) {
+		for (int x = 0; x < 3 * width; x++) {
+			std::swap(data[3 * width * y + x], data[3 * width * (height - 1 - y) + x]);
+		}
+	}
+
+    std::filesystem::create_directory("Video/" + folderName);
+	// Speichern Sie das gerenderte Bild als .png-Datei
+	std::string filename = "Video/" + folderName + "/Picture_" + std::to_string(index) + ".png";
+	stbi_write_png(filename.c_str(), width, height, 3, data, 3 * width);
+	//std::cout << "Saved rendered image as " << filename << std::endl;
+
+	delete[] data;
+}
 
 
-void Engine::update(int index)
+void Engine::update(int index, std::string folderName)
 {
     //calculate the time
-    if (isRunning && index != oldIndex) 
+    if (isRunning && index != oldIndex && RenderLive)
     {
         calcTime(index);
     }
 
-    processMouseInput();
-    processInput();
+    if (RenderLive)
+    {
+        processMouseInput();
+    }
+
+    if(isRunning && RenderLive == false) processInput();
+    if (RenderLive) processInput();
 
     // set the globalScale of the system
-    if (index == 0) 
+    if (index == 0)
     {
         calculateGlobalScale();
     }
@@ -328,69 +362,68 @@ void Engine::update(int index)
     glfwSwapBuffers(window);
     glfwPollEvents();
 
-    //pause if space is pressed
-    #ifdef WIN32
-    if (GetAsyncKeyState(32) & 0x8000)
-    #else
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-    #endif
+    //if video is rendered
+    if (RenderLive == false && index != oldIndex)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
-        isRunning = !isRunning;
+        saveAsPicture(folderName, index);
     }
 
-    //speed up if right arrow is pressed
-    #ifdef WIN32
-    if (GetAsyncKeyState(39) & 0x8000)
-    #else
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-    #endif
+    if(RenderLive == true)
     {
-		playSpeed = playSpeed + changeSpeed;
-	}
-    //slow down if left arrow is pressed
-    #ifdef WIN32
-    if (GetAsyncKeyState(37) & 0x8000)
-    #else
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-    #endif
-    {
-        playSpeed = playSpeed - changeSpeed;
-    }
 
-    //if 1 is pressed
+        //speed up if right arrow is pressed
     #ifdef WIN32
-    if (GetAsyncKeyState(49) & 0x8000)
+        if (GetAsyncKeyState(39) & 0x8000)
     #else
-    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
     #endif
-    {
-        //set the play speed to 1
-        playSpeed = 1;
-    }
-  
+        {
+            playSpeed = playSpeed + changeSpeed;
+        }
+        //slow down if left arrow is pressed
+    #ifdef WIN32
+        if (GetAsyncKeyState(37) & 0x8000)
+    #else
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+    #endif
+        {
+            playSpeed = playSpeed - changeSpeed;
+        }
 
-    //disable / enable dark matter with Z
+        //if 1 is pressed
     #ifdef WIN32
-    if (GetAsyncKeyState(90) & 0x8000)
+        if (GetAsyncKeyState(49) & 0x8000)
     #else
-    if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
     #endif
-    {
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
-		showDarkMatter = !showDarkMatter;
-	}
+        {
+            //set the play speed to 1
+            playSpeed = 1;
+        }
 
-    //disable / enable dark matter with U
+
+        //disable / enable dark matter with Z
     #ifdef WIN32
-    if (GetAsyncKeyState(85) & 0x8000)
+        if (GetAsyncKeyState(90) & 0x8000)
     #else
-    if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
     #endif
-    {
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
-        if(colorMode < 2) colorMode ++;
-        else colorMode = 0;
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
+            showDarkMatter = !showDarkMatter;
+        }
+
+        //disable / enable dark matter with U
+    #ifdef WIN32
+        if (GetAsyncKeyState(85) & 0x8000)
+    #else
+        if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
+    #endif
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
+            if (colorMode < 2) colorMode++;
+            else colorMode = 0;
+        }
     }
     oldIndex = index;
 }
@@ -448,6 +481,10 @@ void Engine::renderParticles()
 			{
                 continue;
 			}
+            if (showBaryonicMatter == false && !isDarkMatter[p].x)
+            {
+				continue;
+            }
             if (showDarkMatter == true && isDarkMatter[p].x)
             {
                 if (colorMode == 0)
@@ -502,63 +539,73 @@ void Engine::renderParticles()
 
 void Engine::processInput()
 {
-    // Toggle zwischen Kameramodi mit "L"
-    static bool lKeyWasPressedLastFrame = false;
-
-    // Prüfen, ob die Taste "L" gerade gedrückt wurde
-    bool lKeyPressed =
-    #ifdef WIN32
-    (GetAsyncKeyState('L') & 0x8000) != 0;
-    #else
-        glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS;
-    #endif
-
-    // Umschalten des Kameramodus nur, wenn die Taste neu gedrückt wurde
-    if (lKeyPressed && !lKeyWasPressedLastFrame) 
+    if (RenderLive)
     {
-        focusedCamera = !focusedCamera;
+        // Toggle zwischen Kameramodi mit "L"
+        static bool lKeyWasPressedLastFrame = false;
 
-        
+        // Prüfen, ob die Taste "L" gerade gedrückt wurde
+        bool lKeyPressed =
+#ifdef WIN32
+        (GetAsyncKeyState('L') & 0x8000) != 0;
+#else
+            glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS;
+#endif
+
+        // Umschalten des Kameramodus nur, wenn die Taste neu gedrückt wurde
+        if (lKeyPressed && !lKeyWasPressedLastFrame)
+        {
+            focusedCamera = !focusedCamera;
+
+
+        }
+
+        // Aktualisieren des letzten Tastendruckzustands
+        lKeyWasPressedLastFrame = lKeyPressed;
+
+        if (RenderLive)
+        {
+#ifdef WIN32
+            if (GetAsyncKeyState(VK_CONTROL) < 0)
+#else
+            if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+#endif
+            {
+                // Kamerabewegung
+                float index = 0.1f;
+                if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+                    cameraPosition += rushSpeed * index * cameraFront;
+                if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+                    cameraPosition -= rushSpeed * index * cameraFront;
+                if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+                    cameraPosition -= rushSpeed * index * glm::normalize(glm::cross(cameraFront, cameraUp));
+                if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+                    cameraPosition += rushSpeed * index * glm::normalize(glm::cross(cameraFront, cameraUp));
+            }
+            else
+            {
+                // Kamerabewegung
+                float index = 0.1f;
+                if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+                    cameraPosition += cameraSpeed * index * cameraFront;
+                if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+                    cameraPosition -= cameraSpeed * index * cameraFront;
+                if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+                    cameraPosition -= cameraSpeed * index * glm::normalize(glm::cross(cameraFront, cameraUp));
+                if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+                    cameraPosition += cameraSpeed * index * glm::normalize(glm::cross(cameraFront, cameraUp));
+            }
+        }
     }
     if (focusedCamera) {
         // Richtet die Kamera auf den Ursprung aus
         glm::dvec3 direction = glm::normalize(glm::dvec3(0, 0, 0) - cameraPosition);
         cameraFront = direction;
     }
-
-    // Aktualisieren des letzten Tastendruckzustands
-    lKeyWasPressedLastFrame = lKeyPressed;
-
-
-    #ifdef WIN32
-    if (GetAsyncKeyState(VK_CONTROL) < 0)
-    #else
-    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-    #endif
+    if (RenderLive == false)
     {
-        // Kamerabewegung
-        float index = 0.1f; // �ndern Sie diesen Wert je nach Bedarf
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-            cameraPosition += rushSpeed * index * cameraFront;
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-            cameraPosition -= rushSpeed * index * cameraFront;
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-            cameraPosition -= rushSpeed * index * glm::normalize(glm::cross(cameraFront, cameraUp));
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            cameraPosition += rushSpeed * index * glm::normalize(glm::cross(cameraFront, cameraUp));
-    }
-    else
-    {
-        // Kamerabewegung
-        float index = 0.1f; // �ndern Sie diesen Wert je nach Bedarf
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-            cameraPosition += cameraSpeed * index * cameraFront;
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-            cameraPosition -= cameraSpeed * index * cameraFront;
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-            cameraPosition -= cameraSpeed * index * glm::normalize(glm::cross(cameraFront, cameraUp));
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            cameraPosition += cameraSpeed * index * glm::normalize(glm::cross(cameraFront, cameraUp));
+        float index = 0.1f; 
+        cameraPosition += cameraSpeed * index * glm::normalize(glm::cross(cameraFront, cameraUp));
     }
     // Aktualisieren der Ansichtsmatrix (Kameraposition und Blickrichtung)
     view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);

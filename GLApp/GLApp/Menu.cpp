@@ -228,7 +228,7 @@ void Menu::viewSimulation()
         fileManager->loadParticles(physics, counter, engine.positions, engine.colors, engine.densityColors, engine.thermalColors,engine.isDarkMatter, engine.maxNumberOfParticles);
 
         // update particles
-        engine.update(counter);
+        engine.update(counter, " ");
         // add time when engine is running
         if (engine.isRunning)
         {
@@ -413,11 +413,6 @@ void Menu::renderSimulation()
             break;
         }
     }
-    Physics* physics = new Physics(dataFolder);
-    if (physics->configFile) physics->config();
-    physics->deltaTime = deltaTime;
-    physics->particlesSize = numParticle;
-    physics->numTimeSteps = numTimeSteps;
 
     //choose a Name for the video
     std::string videoName;
@@ -429,11 +424,11 @@ void Menu::renderSimulation()
     std::cout << "\nDo you want to rotate the camera around the center? (y/n): ";
     std::string input2;
     std::getline(std::cin, input2);
+    //choose the speed of the rotation
+    double speed = 0;
     if (input2 == "y")
     {
 		rotate = true;
-        //choose the speed of the rotation
-        double speed;
         std::cout << "\nPlease enter the speed of the rotation(between 10-1000):  ";
         std::getline(std::cin, input2);
         speed = std::stod(input2);
@@ -456,5 +451,239 @@ void Menu::renderSimulation()
     std::getline(std::cin, input3);
     colorMode = std::stoi(input3);
 
+    Physics* physics = new Physics(dataFolder);
+    if (physics->configFile) physics->config();
+    physics->deltaTime = deltaTime;
+    physics->particlesSize = numParticle;
+    physics->numTimeSteps = numTimeSteps;
 
+    //Remder the data
+    Engine engine(dataFolder);
+
+    //Set the render Mode to Video
+    engine.RenderLive = false;
+    engine.focusedCamera = rotate;
+    engine.cameraSpeed = speed;
+    engine.rushSpeed = speed;
+
+    FileManager* fileManager = new FileManager(dataFolder);
+
+    if (!engine.init(physics->deltaTime)) {
+        std::cerr << "Engine initialization failed." << std::endl;
+        return;
+    }
+
+    if(colorMode == 1 || colorMode == 2 || colorMode == 3)
+	{
+		engine.colorMode = 1;
+        if (engine.colorMode == 1)
+        {
+            engine.showBaryonicMatter = true;
+            engine.showDarkMatter = true;
+        }
+        if (colorMode == 2)
+        {
+            engine.showBaryonicMatter = true;
+            engine.showDarkMatter = false;
+        }
+        else if (colorMode == 3)
+        {
+			engine.showBaryonicMatter = false;
+			engine.showDarkMatter = true;
+		}
+	}
+    else if (colorMode == 4 || colorMode == 5 || colorMode == 6)
+    {
+        engine.colorMode = 2;
+        if (engine.colorMode == 4)
+        {
+            engine.showBaryonicMatter = true;
+            engine.showDarkMatter = true;
+        }
+        if (colorMode == 5)
+        {
+            engine.showBaryonicMatter = true;
+            engine.showDarkMatter = false;
+        }
+        else if (colorMode == 6)
+        {
+            engine.showBaryonicMatter = false;
+            engine.showDarkMatter = true;
+        }
+	}
+	else if (colorMode == 7 || colorMode == 8 || colorMode == 9)
+	{
+		engine.colorMode = 0;
+        if (engine.colorMode == 7)
+        {
+            engine.showBaryonicMatter = true;
+            engine.showDarkMatter = true;
+        }
+        if (colorMode == 8)
+        {
+            engine.showBaryonicMatter = true;
+            engine.showDarkMatter = false;
+        }
+        else if (colorMode == 9)
+        {
+            engine.showBaryonicMatter = false;
+            engine.showDarkMatter = true;
+        }
+    }
+    engine.start(physics);
+
+    //set the camera start position and direction
+    engine.cameraPosition = glm::dvec3(0, 100, 600);
+    engine.cameraFront = glm::dvec3(0, 0, -1);
+    engine.cameraUp = glm::dvec3(0, 1, 0);
+    engine.cameraYaw = -90;
+    engine.cameraPitch = 0;
+
+    double lastFrameTime = glfwGetTime(); // Zeit des letzten Frames
+    double frameTime; // Zeitdauer eines Frames 
+
+    int frameCount = 0;
+    double secondCounter = 0.0;
+    int counter = 0;
+
+
+    std::vector<Particle> currentParticles;
+    engine.isRunning = true;
+
+    // Haupt-Render-Schleife
+    while (!glfwWindowShouldClose(engine.window))
+    {
+        #ifdef WIN32
+        // check for exit Programm with Key ESC
+        if (GetAsyncKeyState(27) & 0x8000)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
+            OutputDebugString(L"ESC KEY\n");
+            glfwSetWindowShouldClose(engine.window, true);
+        }
+        #else
+        if (getch() == 27) // ESC
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
+            //OutputDebugString(L"ESC KEY\n");
+            glfwSetWindowShouldClose(engine.window, true);
+        }
+        #endif
+
+        double currentFrameTime = glfwGetTime();
+        frameTime = currentFrameTime - lastFrameTime;
+        lastFrameTime = currentFrameTime;
+
+        // Rufen Sie die update-Funktion auf und �bergeben Sie die Zeitdauer eines Frames
+        if (frameTime < 1.0 / TARGET_FPS)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>((1.0 / TARGET_FPS - frameTime) * 1000)));
+        }
+
+        fileManager->loadParticles(physics, counter, engine.positions, engine.colors, engine.densityColors, engine.thermalColors, engine.isDarkMatter, engine.maxNumberOfParticles);
+
+        // update particles
+        engine.update(counter, videoName);
+        
+        if (engine.isRunning)
+        {
+            double progressInPercent = (double)counter / (double)physics->numTimeSteps * 100;
+            std::cout << "Progress: " << progressInPercent << "%" << std::endl;
+        }
+
+        if (counter >= physics->numTimeSteps - 1)
+		{
+            std::cout << std::endl;
+            std::cout << "Rendering finished" << std::endl;
+            std::cout << std::endl;
+			break; 
+            //close the window
+            glfwSetWindowShouldClose(engine.window, true);
+		}
+
+        // add time when engine is running
+        if (engine.isRunning)
+        {
+            if (counter >= 0 && counter <= physics->numTimeSteps - 1)
+            {
+                counter = counter + engine.playSpeed;
+            }
+        }
+        if (counter >= physics->numTimeSteps - 1)
+        {
+            counter = physics->numTimeSteps - 1;
+            engine.playSpeed = 0;
+        }
+        if (counter < 0)
+        {
+            counter = 0;
+            engine.playSpeed = 0;
+        }
+
+            #ifdef WIN32
+        //restart if R is pressed
+        if (GetAsyncKeyState(82) & 0x8000)
+        {
+            counter = 0;
+            engine.playSpeed = 0;
+        }
+        /*
+        #else
+        if (getch() == 82)
+        {
+            counter = 0;
+            engine.playSpeed = 0;
+        }
+        */
+        #endif
+
+        frameCount++;
+        secondCounter += frameTime;
+
+        // Wenn eine Sekunde vergangen ist, zeigen Sie die FPS an
+        if (secondCounter >= 1.0)
+        {
+            char numStr[20]; // Ein char-Array zur Speicherung der Zeichenkette
+            // Verwende sprintf, um die Ganzzahl in das char-Array umzuwandeln
+            snprintf(numStr, sizeof(numStr), "%d", frameCount);
+
+            //std::cout << "Die umgewandelte Zeichenkette: " << numStr << std::endl;
+            #ifdef WIN32
+            strcat_s(numStr, " FPS");
+            #else
+            strcat(numStr, " FPS");
+            #endif
+
+            glfwSetWindowTitle(engine.window, numStr);
+            //std::cout << "FPS: " << frameCount << std::endl;
+            frameCount = 0;
+            secondCounter = 0.0;
+        }
+
+        // Wenn F11 gedrückt wird fullstreen mit guter auflösung
+        // Wenn F11 gedrückt wird, schalten Sie in den Vollbildmodus um
+        if (glfwGetKey(engine.window, GLFW_KEY_F11) == GLFW_PRESS)
+        {
+            // Speichern Sie die aktuelle Monitor-Information
+            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+            // Prüfen Sie den aktuellen Vollbild-Status des Fensters
+            if (glfwGetWindowMonitor(engine.window) == NULL) {
+                // Wenn das Fenster nicht im Vollbildmodus ist, schalten Sie in den Vollbildmodus
+                glfwSetWindowMonitor(engine.window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+                engine.framebuffer_size_callback(engine.window, mode->width, mode->height);
+            }
+            else {
+                // Wenn das Fenster bereits im Vollbildmodus ist, schalten Sie in den Fenstermodus
+                glfwSetWindowMonitor(engine.window, NULL, 100, 100, 1200, 800, mode->refreshRate);
+                engine.framebuffer_size_callback(engine.window, 1200, 800);
+            }
+
+        }
+    }
+
+    // Beenden Sie GLFW
+    engine.clean();
+    glfwTerminate();
 }

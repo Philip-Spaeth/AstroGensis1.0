@@ -83,7 +83,6 @@ void SystemInit::start(Physics* phy, std::vector<Particle>& particles)
 				Masse = phy->units->mass(Masse);
 				position = position * (1 / (double)phy->units->lengthUnit);
 				velocity = velocity * (1 / (double)phy->units->velocityUnit);
-				rotation = rotation * (1 / (double)phy->units->velocityUnit);
 
 				int endIndex = startIndex + particlesize - 1;
 

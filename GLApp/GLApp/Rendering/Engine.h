@@ -18,8 +18,11 @@ public:
 
     bool init(double physicsFaktor);
     void start(Physics* p);
-    void update(int index);
+    void update(int index, std::string folderName);
     bool clean();
+    void saveAsPicture(std::string folderName, int index);
+
+    bool RenderLive = true;
 
     GLFWwindow* window;
     Physics* physics;
@@ -31,6 +34,7 @@ public:
     double playSpeed = 1;
     double changeSpeed = 1;
 
+    bool showBaryonicMatter = true;
     bool showDarkMatter = true;
     int colorMode = 0;
 
@@ -40,7 +44,14 @@ public:
     //double globalScale = 1e-18;
     void calculateGlobalScale();
 
-    bool focusedCamera = false;
+    bool focusedCamera = false; 
+    glm::dvec3 cameraPosition;
+    glm::dvec3 cameraFront;
+    glm::dvec3 cameraUp;
+    double cameraYaw;
+    double cameraPitch;
+    double cameraSpeed = 100;
+    double rushSpeed = 1000;
 
     //render Tree
     const double theta = 0;
@@ -57,14 +68,6 @@ private:
     std::vector<glm::vec4> bgStars;
 
     bool tracks = false;
-
-    glm::dvec3 cameraPosition;
-    glm::dvec3 cameraFront;
-    glm::dvec3 cameraUp;
-    double cameraSpeed = 100;
-    double rushSpeed = 1000;
-    double cameraYaw;
-    double cameraPitch;
     double cameraViewDistance = 1e15;
     glm::mat4 view;
 
