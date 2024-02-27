@@ -16,6 +16,7 @@
 #delete the Data 
 *.dat
 *.png
+*.mp4
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
