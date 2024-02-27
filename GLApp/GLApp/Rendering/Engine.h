@@ -29,7 +29,7 @@ public:
 
     bool isRunning = false;
 
-    int maxNumberOfParticles = 100000;
+    int maxNumberOfParticles = 1000000000;
 
     double playSpeed = 1;
     double changeSpeed = 1;
