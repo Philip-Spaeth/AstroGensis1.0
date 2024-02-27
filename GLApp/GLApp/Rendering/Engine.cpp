@@ -234,18 +234,18 @@ void Engine::start(Physics* p)
     fileManager = new FileManager(dataFolder);
 
     fileManager->loadParticles(p, 0, positions, colors, densityColors,thermalColors,isDarkMatter, maxNumberOfParticles);
-
+    int size = p->particlesSize;
+    if (p->particlesSize > maxNumberOfParticles)
+    {
+        size = maxNumberOfParticles;
+	}
     // Hier VBO und VAO erstellen und konfigurieren
     GLuint VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    int particles = p->particlesSize;
-    if (p->particlesSize > maxNumberOfParticles)
-    {
-        particles = maxNumberOfParticles;
-        p->particlesSize = maxNumberOfParticles;
-    }
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * p->particlesSize, &positions[0], GL_STATIC_DRAW);
+
+    // Stelle sicher, dass du die korrekte Größe und den korrekten Typ für die Daten verwendest
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * positions.size(), positions.data(), GL_STATIC_DRAW);
 
     // Erstellen des Vertex Array Objects (VAO)
     glGenVertexArrays(1, &VAO);
@@ -866,29 +866,30 @@ double Engine::random(double min, double max)
     return randomFloat;
 }
 
-void Engine::calculateGlobalScale() 
+void Engine::calculateGlobalScale()
 {
     double maxDistance = 0;
-    for (int i = 0; i < positions.size(); i++){
-	    double distance = sqrt(pow(positions[i].x, 2) + pow(positions[i].y, 2) + pow(positions[i].z, 2));
-        if (distance > maxDistance){
-		    maxDistance = distance;
-	    }
-	}
+    for (int i = 0; i < positions.size(); i++)
+    {
+        // Skip ungültige oder extreme Werte
+        if (positions[i].x == 0 && positions[i].y == 0 && positions[i].z == 0)
+            continue;
+        if (std::isinf(positions[i].x) || std::isinf(positions[i].y) || std::isinf(positions[i].z) ||
+            std::isnan(positions[i].x) || std::isnan(positions[i].y) || std::isnan(positions[i].z))
+            continue;
 
-    // Distance is the diameter of the system
-    maxDistance = maxDistance * 2;
-
-    // Exponenten finden
-    int exponent;
-
-    if (maxDistance != 0) {
-        exponent = static_cast<int>(std::floor(std::log10(std::abs(maxDistance))));
-    }
-    else {
-        exponent = 0; // Der Logarithmus von 0 ist nicht definiert.
+        double distance = sqrt(pow(positions[i].x, 2) + pow(positions[i].y, 2) + pow(positions[i].z, 2));
+        if (distance > maxDistance)
+            maxDistance = distance;
     }
 
-	globalScale = maxDistance / pow(10, exponent*2 - 2);
-    //globalScale = 1e-18;
+    // Vermeide die Verarbeitung, wenn alle Positionen ungültig sind
+    if (maxDistance == 0) {
+        globalScale = 1; // Standardwert oder Fehlerwert setzen
+        return;
+    }
+
+    maxDistance = maxDistance * 2; // Durchmesser des Systems
+    int exponent = static_cast<int>(std::floor(std::log10(std::abs(maxDistance))));
+    globalScale = maxDistance / pow(10, exponent * 2 - 2);
 }
