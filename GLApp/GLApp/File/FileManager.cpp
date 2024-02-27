@@ -201,25 +201,18 @@ void FileManager::loadParticles(Physics* p, int timestep, std::vector<glm::vec4>
         size_t size;
         file.read(reinterpret_cast<char*>(&size), sizeof(size));
 
-        size_t particlesToRead = (size > maxNumberOfParticles) ? maxNumberOfParticles : size;
-
-        array.resize(particlesToRead);
-        color.resize(particlesToRead);
-        densitycolor.resize(particlesToRead);
-        thermalColor.resize(particlesToRead);
-        isDarkMatter.resize(particlesToRead);
+        array.resize(size);
+        color.resize(size);
+        densitycolor.resize(size);
+        thermalColor.resize(size);
+        isDarkMatter.resize(size);
 
 
-        file.read(reinterpret_cast<char*>(array.data()), particlesToRead * sizeof(glm::vec4));
-        file.read(reinterpret_cast<char*>(color.data()), particlesToRead * sizeof(glm::vec3));
-        file.read(reinterpret_cast<char*>(densitycolor.data()), particlesToRead * sizeof(glm::vec3));
-        file.read(reinterpret_cast<char*>(thermalColor.data()), particlesToRead * sizeof(glm::vec3));
-        file.read(reinterpret_cast<char*>(isDarkMatter.data()), particlesToRead * sizeof(glm::vec1));
-
-        // Skip the remaining data in the file if necessary
-        if (size > maxNumberOfParticles) {
-            file.seekg((size - maxNumberOfParticles) * (sizeof(glm::vec4) + 2 * sizeof(glm::vec3)), std::ios::cur);
-        }
+        file.read(reinterpret_cast<char*>(array.data()), size * sizeof(glm::vec4));
+        file.read(reinterpret_cast<char*>(color.data()), size * sizeof(glm::vec3));
+        file.read(reinterpret_cast<char*>(densitycolor.data()), size * sizeof(glm::vec3));
+        file.read(reinterpret_cast<char*>(thermalColor.data()), size * sizeof(glm::vec3));
+        file.read(reinterpret_cast<char*>(isDarkMatter.data()), size * sizeof(glm::vec1));
 
         file.close();
     }
