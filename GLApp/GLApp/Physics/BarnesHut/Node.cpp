@@ -4,7 +4,7 @@
 #include <cmath>
 #include "MathFunctions.h"
 
-Node::Node(glm::dvec3 center, double radius, double theta, int index, int maxdepth, bool renderTree, glm::vec3* newparticleColor)
+Node::Node(glm::dvec3 center, double radius, double theta, int index, int maxdepth, bool renderTree, glm::vec3 newparticleColor)
 {
 	this->center = center;
 	this->radius = radius;
@@ -15,23 +15,38 @@ Node::Node(glm::dvec3 center, double radius, double theta, int index, int maxdep
 	particleColor = newparticleColor;
 }
 
-Node::~Node()
-{
-	for (Node* child : child)
+// just for first Node because first Node is not allowed to delete
+void Node::clear(){
+	for (int i = 0; i < 8; i++)
 	{
-		if (child != nullptr)
-		{
-			delete child;
+		if(child[i] != nullptr){
+			delete child[i];
+			child[i] = nullptr; // Verhindert Zugriff auf freigegebenen Speicher
 		}
 	}
 }
+
+Node::~Node()
+{
+	for (int i = 0; i < 8; i++)
+	{
+		if(child[i] != nullptr){
+			//particleColor = nullptr;
+			delete child[i];
+			child[i] = nullptr; // Verhindert Zugriff auf freigegebenen Speicher
+		}
+	}
+	//delete particleColor; // Stellen Sie sicher, dass dies nur einmal pro `particleColor` geschieht.
+	//particleColor = nullptr; // Verhindert Zugriff auf freigegebenen Speicher
+}
+
 void Node::color(glm::vec3 color)
 {
 	if (isLeaf)
 	{
-		particleColor->r = color.r;
-		particleColor->g = color.g;
-		particleColor->b = color.b;
+		particleColor.r = color.r;
+		particleColor.g = color.g;
+		particleColor.b = color.b;
 	}
 	else
 	{
@@ -365,7 +380,7 @@ void Node::insert(Particle& p)
 		{
 			mass = p.mass;
 			particle = p;
-			particleColor = &p.color;
+			particleColor = p.color;
 			isLeaf = true;
 			massCenter = p.position;
 		}
@@ -435,7 +450,7 @@ void Node::insert(Particle& p)
 					newCenter.z += newRadius;
 					break;
 				}
-				child[quadrant] = new Node(newCenter, newRadius, theta, index + 1, maxDepth, renderTree,new  glm::vec3(1, 0, 0));
+				child[quadrant] = new Node(newCenter, newRadius, theta, index + 1, maxDepth, renderTree, glm::vec3(1, 0, 0));
 			}
 			child[quadrant]->insert(p);
 
@@ -504,19 +519,6 @@ void Node::calcMass()
 		}
 		massCenter = massCenterSum / massSum;
 		mass = massSum;
-	}
-}
-
-void Node::clear() 
-{
-	for(int i = 0; i < 8; i++)
-	{
-		if (child[i] != nullptr)
-		{
-			child[i]->clear();
-			delete child[i];
-			child[i] = nullptr;
-		}
 	}
 }
 

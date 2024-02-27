@@ -12,7 +12,7 @@ class Physics;
 class Node 
 {
 public:
-	Node(glm::dvec3 center, double radius, double theta, int index, int maxdepth, bool renderTree, glm::vec3* newparticleColor);
+	Node(glm::dvec3 center, double radius, double theta, int index, int maxdepth, bool renderTree, glm::vec3 newparticleColor);
 	~Node();
 
 	bool isInside(Particle& p);
@@ -51,11 +51,12 @@ public:
 
 	bool renderTree = false;
 
-	glm::vec3* particleColor;
+	glm::vec3 particleColor;
 	Particle particle;
 	bool particlePushed = false;
 
 	void clear();
+
 };
 
 #endif

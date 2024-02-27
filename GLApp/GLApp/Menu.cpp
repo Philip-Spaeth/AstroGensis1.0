@@ -562,12 +562,12 @@ void Menu::renderSimulation()
             glfwSetWindowShouldClose(engine.window, true);
         }
         #else
-        if (getch() == 27) // ESC
+        /* if (config.inigetch() == 27) // ESC
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(200));
             //OutputDebugString(L"ESC KEY\n");
             glfwSetWindowShouldClose(engine.window, true);
-        }
+        } */
         #endif
 
         double currentFrameTime = glfwGetTime();

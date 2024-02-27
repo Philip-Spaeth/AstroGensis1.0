@@ -10,12 +10,12 @@ Octree::Octree(glm::dvec3 center, double radius, double theta, int maxDepth)
 	this->center = center;
 	this->radius = radius;
 	this->theta = theta;
-	root = new Node(center, radius, theta, 0, maxDepth, false,new glm::vec3(1,0,0));
+	root = new Node(center, radius, theta, 0, maxDepth, false, glm::vec3(1,0,0));
 }
 
 Octree::~Octree() {
+	delete root;
 }
-
 glm::dvec3 Octree::calculateForces(Physics* phy, Particle& particle, double softening, double a, double& potentialEngergy, double& calculations)
 {
 	return root->calcForce(phy,particle,root, softening,a, potentialEngergy, calculations);
@@ -65,9 +65,12 @@ void Octree::insert(std::vector<Particle>& particles, int start, int end)
 	}
 }
 
-void Octree::clearTree() 
+void Octree::clearTree(bool firstNode) 
 {
 	root->clear();
+	if(firstNode){
+		delete root;
+	}
 }
 
 double Octree::calculateTotalMassInSphere(Node* currentNode, glm::dvec3 targetPosition, double radius)

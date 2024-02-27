@@ -121,8 +121,11 @@ bool Physics::Calc()
 					maxDistance = distance;
 				}
 			}
+            if(octree != nullptr) octree->clearTree(true);
+            delete octree;
             octree = new Octree(glm::dvec3(0, 0, 0), maxDistance * 2, theta, maxDepth);
             // delte tree to clear memory
+            //if(octree != nullptr) octree->clearTree();
             octree->clearTree();
             //build a new tree
             octree->buildTree(currentParticles);
@@ -161,6 +164,7 @@ bool Physics::Calc()
             }
 
             //rotation and masscurves
+            delete fileManager;
             fileManager = new FileManager(dataFolder);
             //fileManager->saveRotationCurve(currentParticles, "");
             //fileManager->saveMassCurve(currentParticles, "");
@@ -179,6 +183,9 @@ bool Physics::Calc()
                         maxDistance = distance;
                     }
                 }
+                octree->clearTree(true);
+                delete octree;
+                //delete octree;
                 octree = new Octree(glm::dvec3(0, 0, 0), maxDistance * 2, theta, maxDepth);
             }
 
@@ -186,6 +193,7 @@ bool Physics::Calc()
             octree->clearTree();
             //build a new tree
             octree->buildTree(currentParticles);
+            //std::cout << "buildTree: " << std::endl;
 
             double mediumDensity = 0;
             int densityN = 0;
