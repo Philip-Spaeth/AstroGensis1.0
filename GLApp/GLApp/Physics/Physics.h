@@ -107,7 +107,7 @@ private:
     void calcTime(int index, std::chrono::system_clock::time_point current_time);
     std::chrono::system_clock::time_point time;
     void calculateGravitation(int timeStap);
-    void calculateGravitation(int timeStap, int p);
+    void calculateGravitation(int timeStap, int start, int end);
     std::atomic<int> taskIndex{0};
 };
 

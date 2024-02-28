@@ -437,11 +437,16 @@ void Physics::calculateGravitation(int t) {
     for(int i = 0; i < num_threads; ++i) {
         threads.emplace_back([this, t]() {
             while (true) {
-                int index = taskIndex.fetch_add(1); // Sichere Erhöhung des Index
-                if (index >= currentParticles.size()) break; // Alle Partikel verarbeitet
-                
-                // Berechne Gravitation für einzelnen Partikel
-                this->calculateGravitation(t, index);
+                if (taskIndex + 10 < currentParticles.size()) {
+                    int index = taskIndex.fetch_add(10);
+                    this->calculateGravitation(t, index - 10, index);
+                }
+                else{
+                    int index = taskIndex.fetch_add(1); // Sichere Erhöhung des Index
+                    if (index >= currentParticles.size()) break; // Alle Partikel verarbeitet
+                    this->calculateGravitation(t, index -1, index);
+                }
+
             }
         });
     }
@@ -452,17 +457,21 @@ void Physics::calculateGravitation(int t) {
     }
 }
 
-void Physics::calculateGravitation(int t, int p) {
-    // Berechne die Gesamtkraft auf das Partikel
-    glm::dvec3 totalForce = { 0,0,0 };
-    double potentialEngergy = 0;
-    double l = 0;
-    totalForce = octree->calculateForces(this, currentParticles[p], softening,a, potentialEngergy, l);
-    totalEnergie[t][p] += potentialEngergy;
-    totalEnergie[t][p] += currentParticles[p].thermalEnergy;
-    currentParticles[p].force = totalForce;
+void Physics::calculateGravitation(int t, int start, int stop) {
+    // particlesSize ist die Anzahl der Partikel
+    for (int p = start; p < stop; ++p)
+    {
+        // Berechne die Gesamtkraft auf das Partikel
+        glm::dvec3 totalForce = { 0,0,0 };
+        double potentialEngergy = 0;
+        double l = 0;
+        totalForce = octree->calculateForces(this, currentParticles[p], softening,a, potentialEngergy, l);
+        totalEnergie[t][p] += potentialEngergy;
+        totalEnergie[t][p] += currentParticles[p].thermalEnergy;
+        currentParticles[p].force = totalForce;
 
-    totalEnergie[t][p] += currentParticles[p].calcKineticEnergie();
+        totalEnergie[t][p] += currentParticles[p].calcKineticEnergie();
+    }
 }
 
 
