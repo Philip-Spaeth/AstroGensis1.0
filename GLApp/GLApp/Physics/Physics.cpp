@@ -437,16 +437,24 @@ void Physics::calculateGravitation(int t) {
     for(int i = 0; i < num_threads; ++i) {
         threads.emplace_back([this, t]() {
             while (true) {
-                if (taskIndex + 10 < currentParticles.size()) {
-                    int index = taskIndex.fetch_add(10);
-                    this->calculateGravitation(t, index - 10, index);
+                int index = taskIndex.fetch_add(10); // Sichere Erhöhung des Index
+                if (index = currentParticles.size()) break;
+                if (index > currentParticles.size()) {
+                    for(int i = index - 9; i <= index ; i++)
+                    {
+                        if(i < currentParticles.size())
+                        {
+                            this->calculateGravitation(t, i, i + 1);
+                        }
+                        else{
+                            break;
+                        }
+                    }
                 }
                 else{
-                    int index = taskIndex.fetch_add(1); // Sichere Erhöhung des Index
-                    if (index >= currentParticles.size()) break; // Alle Partikel verarbeitet
-                    this->calculateGravitation(t, index -1, index);
+                    // Berechne Gravitation für alle 10 Partikel
+                    this->calculateGravitation(t, index - 9, index + 1);
                 }
-
             }
         });
     }
