@@ -432,35 +432,19 @@ void Physics::calcTime(int index, std::chrono::system_clock::time_point current_
 void Physics::calculateGravitation(int t) {
     int num_threads = std::thread::hardware_concurrency();
     std::vector<std::thread> threads;
-    taskIndex = 0; // Initialisiere den gemeinsamen Index
+
+    int n = currentParticles.size(); // Gesamtanzahl der Iterationen
+    int step = n / num_threads;
 
     for(int i = 0; i < num_threads; ++i) {
-        threads.emplace_back([this, t]() {
-            while (true) {
-                int index = taskIndex.fetch_add(10); // Sichere Erhöhung des Index
-                if (index = currentParticles.size()) break;
-                if (index > currentParticles.size()) {
-                    for(int i = index - 9; i <= index ; i++)
-                    {
-                        if(i < currentParticles.size())
-                        {
-                            this->calculateGravitation(t, i, i + 1);
-                        }
-                        else{
-                            break;
-                        }
-                    }
-                }
-                else{
-                    // Berechne Gravitation für alle 10 Partikel
-                    this->calculateGravitation(t, index - 9, index + 1);
-                }
-            }
-        });
-    }
+		threads.emplace_back([this, i, step, t]() {
+			this->calculateGravitation(t, i * step, (i + 1) * step);
+			});
+	}
 
-    // Warte auf das Ende aller Threads
-    for (auto& thread : threads) {
+    // thrads abfangen
+    for (auto& thread : threads)
+    {
         thread.join();
     }
 }
