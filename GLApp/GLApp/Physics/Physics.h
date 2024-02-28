@@ -11,6 +11,7 @@
 #include "BarnesHut/Octree.h"
 #include "FileManager.h"
 #include "Units.h"
+#include <atomic>
 
 #define TARGET_FPS 30
 
@@ -106,7 +107,8 @@ private:
     void calcTime(int index, std::chrono::system_clock::time_point current_time);
     std::chrono::system_clock::time_point time;
     void calculateGravitation(int timeStap);
-    void calculateGravitation(int timeStap, int start, int stop);
+    void calculateGravitation(int timeStap, int p);
+    std::atomic<int> taskIndex{0};
 };
 
 #endif
