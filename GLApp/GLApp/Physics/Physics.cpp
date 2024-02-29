@@ -121,12 +121,7 @@ bool Physics::Calc()
 					maxDistance = distance;
 				}
 			}
-            if(octree != nullptr) octree->clearTree(true);
-            delete octree;
             octree = new Octree(glm::dvec3(0, 0, 0), maxDistance * 2, theta, maxDepth);
-            // delte tree to clear memory
-            //if(octree != nullptr) octree->clearTree();
-            octree->clearTree();
             //build a new tree
             octree->buildTree(currentParticles);
             
@@ -183,14 +178,11 @@ bool Physics::Calc()
                         maxDistance = distance;
                     }
                 }
-                octree->clearTree(true);
-                delete octree;
-                //delete octree;
-                octree = new Octree(glm::dvec3(0, 0, 0), maxDistance * 2, theta, maxDepth);
             }
-
-            // delte tree to clear memory
-            octree->clearTree();
+            delete octree;
+            //delete octree;
+            octree = new Octree(glm::dvec3(0, 0, 0), maxDistance * 2, theta, maxDepth);
+         
             //build a new tree
             octree->buildTree(currentParticles);
             //std::cout << "buildTree: " << std::endl;
@@ -283,7 +275,9 @@ bool Physics::Calc()
                     currentParticles[p].thermalEnergyChange = 0;
                 }
 
-                octree->clearTree();
+                delete octree;
+                //delete octree;
+                octree = new Octree(glm::dvec3(0, 0, 0), maxDistance * 2, theta, maxDepth);
                 octree->buildTree(currentParticles);
                 calculateGravitation(t);
                 for(int p = 0; p < currentParticles.size(); p++)

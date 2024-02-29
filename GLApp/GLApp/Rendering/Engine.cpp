@@ -341,6 +341,20 @@ void Engine::update(int index, std::string folderName)
     {
         calcTime(index);
     }
+    if (RenderLive)
+    {
+        //continue if space is pressed
+        #ifdef WIN32
+        if (GetAsyncKeyState(32) & 0x8000)
+        #else
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        #endif
+        {
+			isRunning = !isRunning;
+            //small delay
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
+		}
+	}
 
     if (RenderLive)
     {
