@@ -127,6 +127,12 @@ void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm
     double totalMass = Masse; // Gesamtmasse der Galaxie
     double mass = totalMass / particleSize; // Masse eines einzelnen Partikels
 
+    double baryonicFraction = anteilBaryonischeMaterie; // Anteil der baryonischen Materie
+    double darkMatterFraction = anteilDunkleMaterie; // Anteil der dunklen Materie
+
+    double powNumber = powNumberNormal; // Verteilungsparameter für baryonische Materie
+    double darkPowNumber = powNumberNormal; // Verteilungsparameter für dunkle Materie
+
     int i = 0;
 
     // Erstellen einer elliptischen Galaxie

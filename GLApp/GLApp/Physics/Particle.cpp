@@ -254,6 +254,7 @@ void Particle::setColor(double mediumDensity, double mediumThermal)
 
     //thermal color
     //set the color based on the thermal energy
+    /*
     r = 0;
     if (thermalEnergy > mediumThermal)
     {
@@ -261,7 +262,19 @@ void Particle::setColor(double mediumDensity, double mediumThermal)
 	}
     g = thermalEnergy * 5 / mediumThermal;
     b = (mediumThermal / 10) / thermalEnergy;
-
+    */
+    if (darkMatter)
+    {
+		r = 0;
+		g = 0;
+		b = 1;
+	}
+    else
+    {
+		r = 1;
+		g = 0;
+		b = 0;
+	}
     thermalColor = { r, g, b};
 
     double brightness = density / mediumDensity;
