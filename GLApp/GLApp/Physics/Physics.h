@@ -29,13 +29,13 @@ public:
 //Choose the Unitscaling for the simulation
     Units* units;
     //parsec
-    double lengthInitial = 3.086e+16;
+    double lengthInitial = 1e10;
     //solar mass
-    double massInitial = 1.989e+30;
+    double massInitial = 1e-10;
     //time Unit is calculated so that the gravitational constant is 1
 
 //All in SI Units
-    int numTimeSteps = 100;
+    int numTimeSteps = 10;
     int particlesSize = 20000;
 
     //the time per frame
@@ -55,24 +55,36 @@ public:
     const bool newDistanceCalc = false;
     double maxDistance = 0;
 
-    //SPH takes extra calculation time
+// SPH Parameters
     bool SPH = true;
+
+//Basic variables
     double h = 1e19;
+    //Pressure
     double k = 1e42;
     double rh0 = 0.5e-21;
+    //Artificial Viscosity
     double mu = 1;
-    double thermalConstant = 1e-3;
-    //ok good for S0:      double h = 1e18;     double k = 3e46;    double rh0 = 1e-19;     double mu = 1e47;
-
-    //SPH better functions (Extra Calculation Time
-    bool normilizedPressureForce = true; // takes the direction of the other particles into account
-    bool simplifiedDensity = false; // simplyfied density calculation using the Octree
-    bool adaptiveSmoothingLength = false; // Takes extra calculation time
+    double alpha = 1;
+    double beta = 2;
+    double gamma = 5.0 / 3.0;
     double hFactor = 1e1;
+    //Thermal Energy
+    double thermalConstant = 1e-3;
+
+
+//Simplified with Octree to save calculation time
+    bool simplifiedDensityApproximation = true; // by just using the the density of the node and not the of the particles (Not using kernel function for density Approximation)
+    bool adaptiveSmoothingLength = false;
+    bool artificialViscosity = true;
+
+
+
+//simplefied SPH 
+    bool normilizedPressureForce = false; // takes the direction of the other particles into account
+    bool rho_With_Medium_Density = false; // takes the medium density into account
+    bool simplifiedDensity = false; // simplyfied density calculation using the Octree
     bool springelViscosity = false; // Springel more accurate and complicated
-    double alpha = 2e9;
-    double beta = 1e18;
-    double gamma = 5 / 3;
 
 
     //dark Energy / Cosmological Constant

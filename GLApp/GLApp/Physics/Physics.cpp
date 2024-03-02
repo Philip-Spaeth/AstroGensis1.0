@@ -139,6 +139,11 @@ bool Physics::Calc()
                 }
                 //only for color
                 mediumDensity = mediumDensity / densityN;
+                //set rho to mediumDensity
+                if (rho_With_Medium_Density)
+                {
+                    rh0 = mediumDensity;
+                }
                 MediumThermalEnergy = mediumDensity / densityN;
                 for (int p = 0; p < currentParticles.size(); p++)
                 {
@@ -328,7 +333,7 @@ bool Physics::Calc()
             {
                 for (int p = 0; p < currentParticles.size(); p++)
                 {
-                    //currentParticles[p].hubbleExpansion(deltaTime);
+                    currentParticles[p].hubbleExpansion(deltaTime);
                 }
             }
             for (int p = 0; p < currentParticles.size(); p++)

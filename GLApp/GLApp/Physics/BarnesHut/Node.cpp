@@ -194,20 +194,7 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 				//if both velocities are a rational number
 				if (!std::isnan(glm::length(p.velocity)) && !std::isnan(glm::length(particle.velocity)))
 				{
-					/*
-					//vereinfachung der formel mit thermaler energie
-					if (!phy->springelViscosity)
-					{
-						if (phy->adaptiveSmoothingLength) h = p.h;
-						glm::dvec3 velocityDiff = p.velocity - particle.velocity;
-						double distance = glm::length(p.position - massCenter);
-						double cubicSplineKernel = MathFunctions::laplaceCubicSplineKernel(p.position - massCenter, h);
-
-						glm::dvec3 viscousForce = -mu * (mass / density) * (velocityDiff / (distance + softening)) * cubicSplineKernel;
-						force += viscousForce;
-					}
-					//Springel Formular
-					else
+					if (phy->artificialViscosity)
 					{
 						// Mittlere Schallgeschwindigkeit
 						double ci = sqrt(gamma * pressure_i / p.density);
@@ -231,7 +218,7 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 							Pi_ij = (-alpha * cij * mu_ij + beta * (mu_ij * mu_ij)) / rhoij;
 						}
 
-						// Kernel-Funktion und deren Gradient (mittelwert)
+						// Kernel-Funktion und deren Gradient
 						double hi = h;
 						double hj = h;
 						if (phy->adaptiveSmoothingLength)
@@ -239,17 +226,17 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 							hi = p.h;
 							hj = smoothingLength;
 						}
-						glm::dvec3 gradWi = MathFunctions::gradientCubicSplineKernel(rij, hi);
-						glm::dvec3 gradWj = MathFunctions::gradientCubicSplineKernel(rij, hj);
-						glm::dvec3 mediumGradW = (gradWi + gradWj) / 2.0;
+						double hij = (hi + hj) / 2.0;
+						glm::dvec3 gradW = MathFunctions::gradientCubicSplineKernel(rij, hij);
 
 						double viscousForce = -mass * Pi_ij;
-						glm::dvec3 vForce = viscousForce * mediumGradW;
-						double forcelenght = sqrt(vForce.x * vForce.x + vForce.y * vForce.y + vForce.z * vForce.z);
+						glm::dvec3 vForce = viscousForce * gradW;
+						//double forcelenght = sqrt(vForce.x * vForce.x + vForce.y * vForce.y + vForce.z * vForce.z);
 						//std::cout << forcelenght << std::endl;
 						force += vForce;
 					}
-					*/
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					//Thermal Energy
 					glm::dvec3 velocityDiff = p.velocity - particle.velocity;
 					double distance = glm::length(p.position - massCenter);

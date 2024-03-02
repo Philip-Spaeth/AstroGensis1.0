@@ -213,7 +213,8 @@ void Particle::hubbleExpansion(double deltaTime)
     glm::dvec3 delta = position;
     double distance = glm::length(delta);
 
-    if (distance == 0) {
+    if (distance == 0) 
+    {
         return; // Verhindere eine Division durch Null.
     }
     Physics phy;
@@ -252,17 +253,16 @@ void Particle::setColor(double mediumDensity, double mediumThermal)
     densityColor = { r, g, b };
 
     //thermal color
-    double maxThermal = mediumThermal;
-    double midThermal = mediumThermal;
     //set the color based on the thermal energy
-    r = thermalEnergy / midThermal;
-    g = 0;
-    b = (midThermal / 3) / thermalEnergy;
+    r = 0;
+    if (thermalEnergy > mediumThermal)
+    {
+		r = thermalEnergy / mediumThermal;
+	}
+    g = thermalEnergy * 5 / mediumThermal;
+    b = (mediumThermal / 10) / thermalEnergy;
 
-    r = r + (thermalEnergy / (maxThermal * soft));
-    g = g + (thermalEnergy / (maxThermal * soft));
-    b = b + (thermalEnergy / (maxThermal * soft)) / 3;
-    thermalColor = { r, g, b };
+    thermalColor = { r, g, b};
 
     double brightness = density / mediumDensity;
     double yellowness = density * 50 / (mediumDensity * 100);
