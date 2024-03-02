@@ -192,7 +192,7 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 				}
 				//Viskosen Kräfte
 				//if both velocities are a rational number
-				if (!std::isnan(glm::length(p.velocity)) && !std::isnan(glm::length(particle.velocity)))
+				if (!std::isnan(glm::length(p.velocity)) && !std::isnan(glm::length(particle.velocity)) && p.darkMatter == false)
 				{
 					if (phy->artificialViscosity)
 					{
