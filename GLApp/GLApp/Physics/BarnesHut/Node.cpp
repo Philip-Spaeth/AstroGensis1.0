@@ -225,15 +225,18 @@ void Node::gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, d
 						{
 							hi = p.h;
 							hj = smoothingLength;
-						}
+						}                  
 						double hij = (hi + hj) / 2.0;
 						glm::dvec3 gradW = MathFunctions::gradientCubicSplineKernel(rij, hij);
 
-						double viscousForce = -mass * Pi_ij;
-						glm::dvec3 vForce = viscousForce * gradW;
-						//double forcelenght = sqrt(vForce.x * vForce.x + vForce.y * vForce.y + vForce.z * vForce.z);
-						//std::cout << forcelenght << std::endl;
-						force += vForce;
+						double viscousForce = -baryonicMass * Pi_ij;
+						if (viscousForce != 0)
+						{
+							glm::dvec3 vForce = viscousForce * gradW;
+							//double forcelenght = sqrt(vForce.x * vForce.x + vForce.y * vForce.y + vForce.z * vForce.z);
+							//std::cout << forcelenght << std::endl;
+							force += vForce;
+						}
 					}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -366,6 +369,14 @@ void Node::insert(Particle& p)
 		if (mass == 0)
 		{
 			mass = p.mass;
+			if (p.darkMatter) 
+			{
+				darkMatterMass = p.mass;
+			}
+			else
+			{
+				baryonicMass = p.mass;
+			}
 			particle = p;
 			particleColor = p.color;
 			isLeaf = true;
