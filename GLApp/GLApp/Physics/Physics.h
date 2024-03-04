@@ -29,9 +29,9 @@ public:
 //Choose the Unitscaling for the simulation
     Units* units;
     //parsec
-    double lengthInitial = 1e10;
+    double lengthInitial = 1;
     //solar mass
-    double massInitial = 1e-10;
+    double massInitial = 1;
     //time Unit is calculated so that the gravitational constant is 1
 
 //All in SI Units

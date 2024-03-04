@@ -121,7 +121,7 @@ void EllipticalGalaxy::S0(Physics* phy, int startIndex, int endIndex, glm::dvec3
 void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double anteilBaryonischeMaterie, double anteilDunkleMaterie, double powNumberNormal, double powNumberDark, std::vector<Particle>& particles)
 {
     Physics physics;
-    int particleSize = endIndex + 1;
+    int particleSize = endIndex + 1 - startIndex;
 
     double galaxyRadius = maxRadius; // Radius der Galaxie
     double totalMass = Masse; // Gesamtmasse der Galaxie
@@ -139,15 +139,25 @@ void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm
     for (int j = startIndex; j != endIndex; j++)
     {
         double theta = MathFunctions::random(0, glm::pi<double>());
-        double phi = MathFunctions::random(0, 2 * glm::pi<double>());
+        particles[j].angle = MathFunctions::random(0, 2 * glm::pi<double>());
 
-        //distribution
-        double scaledI = i / (double)particleSize;
-        double faktor = powNumberNormal;
-        double r = galaxyRadius * std::pow(scaledI, faktor) * (faktor * faktor);
+        double random = MathFunctions::random(-baryonicFraction, darkMatterFraction);
+        bool isDarkMatterParticle;
+        if (random > 0)
+        {
+            isDarkMatterParticle = true;
+        }
+        else
+        {
+            isDarkMatterParticle = false;
+        }
 
-        double x = r * std::sin(theta) * std::cos(phi);
-        double y = r * std::sin(theta) * std::sin(phi);
+
+        double scaledI = std::pow(static_cast<double>(j - startIndex) / particleSize, 1.0 / (isDarkMatterParticle ? darkPowNumber : powNumber));
+        double r = galaxyRadius * scaledI;
+
+        double x = r * std::sin(theta) * std::cos(particles[j].angle);
+        double y = r * std::sin(theta) * std::sin(particles[j].angle);
         double z = r * std::cos(theta); // Für eine dreidimensionale Struktur
 
         particles[j].position = glm::dvec3(x, y, z) + position;
@@ -155,10 +165,11 @@ void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm
         // Geschwindigkeitsberechnung basierend auf der Gravitation
         double distanceToCenter = glm::length(particles[j].position - position);
         double massInSphere = totalMass * std::pow(scaledI, 3); // Masse innerhalb der Kugel
-        double v = std::sqrt(physics.G * massInSphere / distanceToCenter);
+        double v = std::sqrt(massInSphere / distanceToCenter);
 
-        particles[j].velocity = glm::dvec3(-v * std::sin(phi), v * std::cos(phi), 0) + velocity;
+        particles[j].velocity = glm::dvec3(-v * std::sin(particles[j].angle), v * std::cos(particles[j].angle), 0) + velocity;
         particles[j].mass = mass;
+        particles[j].darkMatter = isDarkMatterParticle;
         particles[j].radius = 1;
         i++;
     }
