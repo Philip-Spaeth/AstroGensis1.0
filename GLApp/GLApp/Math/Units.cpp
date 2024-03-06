@@ -6,9 +6,10 @@ Units::Units(double lUnit, double MUnit)
 {
 	lengthUnit = lUnit;
 	massUnit = MUnit;
+	timeUnit = 1.0;
 
 	//Time Unit is calculated so that the gravitational constant is 1
-	timeUnit = std::sqrt(((lengthUnit * lengthUnit) * lengthUnit) / (massUnit * gravitationalConstantInSI));
+	//timeUnit = std::sqrt(((lengthUnit * lengthUnit) * lengthUnit) / (massUnit * gravitationalConstantInSI));
 
 	velocityUnit = lengthUnit / timeUnit;
 	accelerationUnit = lengthUnit / (timeUnit * timeUnit);

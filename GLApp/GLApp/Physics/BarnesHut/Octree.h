@@ -16,12 +16,11 @@ public:
     ~Octree();
 
     void buildTree(std::vector<Particle>& particles);
-    void setColors();
     double calculateTotalMassInSphere(glm::dvec3 targetPosition, double radius);
     double calculateTotalMassInSphere(Node* currentNode, glm::dvec3 targetPosition, double radius);
     void calcdensity(Particle& p,double h, double& medium, int& n);
     glm::dvec3 calculateForces(Physics* phy, Particle& particle, double softening, double a, double& potentialEngergy, double& calculations);
-    void calcH();
+    void calcH(Particle& p);
 private:
 
 	Node* root;

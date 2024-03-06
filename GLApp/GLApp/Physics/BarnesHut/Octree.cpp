@@ -21,15 +21,12 @@ glm::dvec3 Octree::calculateForces(Physics* phy, Particle& particle, double soft
 {
 	return root->calcForce(phy,particle,root, softening,a, potentialEngergy, calculations);
 }
-void Octree::calcH()
+void Octree::calcH(Particle& p)
 {
 	//calc h for all nodes not particles
-	root->calcH();
+	root->calcH(p);
 }
 
-void Octree::setColors()
-{
-}
 void Octree::calcdensity(Particle& p, double h, double& medium, int& n)
 {
 	root->calcDensity(p,h, medium, n);

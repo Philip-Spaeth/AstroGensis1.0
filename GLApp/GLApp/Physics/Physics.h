@@ -58,35 +58,6 @@ public:
 // SPH Parameters
     bool SPH = true;
 
-//Basic variables
-    double h = 1e19;
-    //Pressure
-    double k = 1e42;
-    double rh0 = 0.5e-21;
-    //Artificial Viscosity
-    double mu = 1;
-    double alpha = 1;
-    double beta = 2;
-    double gamma = 5.0 / 3.0;
-    double hFactor = 1e1;
-    //Thermal Energy
-    double thermalConstant = 1e-3;
-
-
-//Simplified with Octree to save calculation time
-    bool simplifiedDensityApproximation = true; // by just using the the density of the node and not the of the particles (Not using kernel function for density Approximation)
-    bool adaptiveSmoothingLength = false;
-    bool artificialViscosity = true;
-
-
-
-//simplefied SPH 
-    bool normilizedPressureForce = false; // takes the direction of the other particles into account
-    bool rho_With_Medium_Density = false; // takes the medium density into account
-    bool simplifiedDensity = false; // simplyfied density calculation using the Octree
-    bool springelViscosity = false; // Springel more accurate and complicated
-
-
     //dark Energy / Cosmological Constant
     bool darkEnergy = true;
     int HubbleConstant = 70;

@@ -98,8 +98,9 @@ void EllipticalGalaxy::S0(Physics* phy, int startIndex, int endIndex, glm::dvec3
             }
         }
         
-        // Berechnung der Geschwindigkeit G = 1
-        double v = (std::sqrt(totalMassInSphere / distanceToCenter) * e);
+        // Berechnung der Geschwindigkeit
+        double G = 6.674 * std::pow(10, -11);
+        double v = std::sqrt(G * totalMassInSphere / distanceToCenter) * e;
 
         particles[j].velocity = glm::dvec3(-v * std::sin(particles[j].angle), v * std::cos(particles[j].angle), 0);
         particles[j].mass = totalMass / particleSize;
@@ -165,7 +166,8 @@ void EllipticalGalaxy::E0(int startIndex, int endIndex, glm::dvec3 position, glm
         // Geschwindigkeitsberechnung basierend auf der Gravitation
         double distanceToCenter = glm::length(particles[j].position - position);
         double massInSphere = totalMass * std::pow(scaledI, 3); // Masse innerhalb der Kugel
-        double v = std::sqrt(massInSphere / distanceToCenter);
+        double G = 6.674 * std::pow(10, -11);
+        double v = std::sqrt(G * massInSphere / distanceToCenter);
 
         particles[j].velocity = glm::dvec3(-v * std::sin(particles[j].angle), v * std::cos(particles[j].angle), 0) + velocity;
         particles[j].mass = mass;
