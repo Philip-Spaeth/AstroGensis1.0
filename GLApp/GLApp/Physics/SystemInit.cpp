@@ -26,25 +26,9 @@ void SystemInit::start(Physics* phy, std::vector<Particle>& particles)
 {
 	//manuelle Initialisierung
 	//andromeda vorsimulation with 2 particles 
-	if (false)
+	if (true)
 	{
-		Particle particle1;
-		particle1.position = glm::vec3(0, 0, 0);
-		particle1.velocity = glm::vec3(0, 0, 0);
-		particle1.mass = 2.9833800017169e42;
-		particle1.radius = 10;
-		particle1.color = glm::vec3(1, 1, 0);
-		particle1.darkMatter = false;
-		particles[0] = particle1;
-
-		Particle particle2;
-		particle2.position = glm::vec3(2.3841041e22, 0, 0);
-		particle2.velocity = glm::vec3(-300000, 0, 0);
-		particle2.mass = 2.7844880016024e42;
-		particle2.radius = 10;
-		particle2.color = glm::vec3(1, 1, 0);
-		particle2.darkMatter = false;
-		particles[1] = particle2;
+		halo.halo(0, 1000, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1e21, 3e41, particles);
 	}
 	else
 	{

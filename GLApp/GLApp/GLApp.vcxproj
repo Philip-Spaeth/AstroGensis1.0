@@ -166,6 +166,7 @@
     <ClCompile Include="Physics\BarnesHut\Node.cpp" />
     <ClCompile Include="Physics\BarnesHut\Octree.cpp" />
     <ClCompile Include="Physics\Galaxies\EllipticalGalaxy.cpp" />
+    <ClCompile Include="Physics\Galaxies\Halo.cpp" />
     <ClCompile Include="Physics\Particle.cpp" />
     <ClCompile Include="Physics\Physics.cpp" />
     <ClCompile Include="Physics\SystemInit.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="Physics\BarnesHut\Node.h" />
     <ClInclude Include="Physics\BarnesHut\Octree.h" />
     <ClInclude Include="Physics\Galaxies\EllipticalGalaxy.h" />
+    <ClInclude Include="Physics\Galaxies\Halo.h" />
     <ClInclude Include="Physics\Galaxies\SpiralGalaxy.h" />
     <ClInclude Include="Physics\Particle.h" />
     <ClInclude Include="Physics\Physics.h" />

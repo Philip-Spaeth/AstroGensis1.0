@@ -240,13 +240,13 @@ void Particle::setColor(double mediumDensity, double mediumThermal)
 {
     //density color
     double maxDensity = mediumDensity;
-    double midDensity = mediumDensity / 2;
+    double midDensity = mediumDensity;
     //set the color based on the density
     double r = density / midDensity;
     double g = 0;
-    double b = (midDensity / 3) / density;
+    double b = (midDensity) / density;
     
-    double soft = 5;
+    double soft = 100;
     r = r + (density / (maxDensity * soft));
     g = g + (density / (maxDensity * soft));
     b = b + (density / (maxDensity * soft)) / 3;

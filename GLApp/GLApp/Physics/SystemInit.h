@@ -10,6 +10,7 @@
 #include "Galaxies/BarredGalaxy.h"
 #include "Galaxies/SpiralGalaxy.h"
 #include "Galaxies/EllipticalGalaxy.h"
+#include "Halo.h"
 
 class SystemInit 
 {
@@ -22,6 +23,7 @@ private:
 	BarredGalaxy barredGalaxy;
 	SpiralGalaxy spiralGalaxy;
 	EllipticalGalaxy ellipticalGalaxy;
+	Halo halo;
 
 	//solar system
 	void solarSystem(std::vector<Particle>& particles);
