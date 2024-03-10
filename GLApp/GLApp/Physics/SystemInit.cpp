@@ -26,9 +26,9 @@ void SystemInit::start(Physics* phy, std::vector<Particle>& particles)
 {
 	//manuelle Initialisierung
 	//andromeda vorsimulation with 2 particles 
-	if (true)
+	if (false)
 	{
-		halo.halo(0, 1000, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1e21, 3e41, particles);
+		
 	}
 	else
 	{
@@ -50,13 +50,12 @@ void SystemInit::start(Physics* phy, std::vector<Particle>& particles)
 				string typ = config[galaxieKey + ".Typ"];
 				string hubbleklass = config[galaxieKey + ".HubbleKlassifikation"];
 				int particlesize = std::stoi(config[galaxieKey + ".ParticleSize"]);
-				double radius = std::stod(config[galaxieKey + ".Radius"]);
+				double radius = std::stod(config[galaxieKey + ".DiskRadius"]);
+				double haloRadius = std::stod(config[galaxieKey + ".HaloRadius"]);
 				double Masse = std::stod(config[galaxieKey + ".GesammtMasse"]);
 				double anteilBaryonischeMaterie = std::stod(config[galaxieKey + ".AnteilBaryonischeMaterie"]);
 				double anteilDunkleMaterie = std::stod(config[galaxieKey + ".AnteilDunkleMaterie"]);
-				double powNumberNormal = std::stod(config[galaxieKey + ".VerteilungsExponentBaryonischeMaterie"]);
-				double powNumberDark = std::stod(config[galaxieKey + ".VerteilungsExponentDunkleMaterie"]);
-
+				double haloStability = std::stod(config[galaxieKey + ".HaloStability"]);
 				// Position, Geschwindigkeit, Rotation
 				glm::dvec3 position = fileManager->parseVector3(config[galaxieKey + ".Position"]);
 				glm::dvec3 velocity = fileManager->parseVector3(config[galaxieKey + ".Geschwindigkeit"]);
@@ -64,42 +63,97 @@ void SystemInit::start(Physics* phy, std::vector<Particle>& particles)
 
 				// scale all the values to the right units
 				radius = phy->units->length(radius);
+				haloRadius = phy->units->length(haloRadius);
 				Masse = phy->units->mass(Masse);
 				position = position * (1 / (double)phy->units->lengthUnit);
 				velocity = velocity * (1 / (double)phy->units->velocityUnit);
 
-				int endIndex = startIndex + particlesize - 1;
+				if (haloRadius == 0 || anteilDunkleMaterie == 0)
+				{
+					int endIndex = startIndex + particlesize - 1;
 
-				if (typ == "Spiral")
-				{
-					if (hubbleklass == "Sa")
+					if (typ == "Spiral")
 					{
-						//spiral galaxie with theese parameter:int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double anteilBaryonischeMaterie, double anteilDunkleMaterie, double powNumberNormal, double powNumberDark, std::vector<Particle>& particles
-						spiralGalaxy.Sa(startIndex, endIndex, position, rotation, velocity, radius, Masse, anteilBaryonischeMaterie, anteilDunkleMaterie, powNumberNormal, powNumberDark, particles);
+						if (hubbleklass == "Sa")
+						{
+							//spiral galaxie with theese parameter:int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double anteilBaryonischeMaterie, double anteilDunkleMaterie, double powNumberNormal, double powNumberDark, std::vector<Particle>& particles
+							spiralGalaxy.Sa(startIndex, endIndex, position, rotation, velocity, radius, Masse, 1, 0, 0.9, 0.9, particles);
+						}
+						if (hubbleklass == "Sb")
+						{
+							spiralGalaxy.Sb(startIndex, endIndex, position, rotation, velocity, radius, Masse, 1, 0, 0.9, 0.9, particles);
+						}
+						if (hubbleklass == "Sc")
+						{
+							spiralGalaxy.Sc(startIndex, endIndex, position, rotation, velocity, radius, Masse, 1, 0, 0.9, 0.9, particles);
+						}
 					}
-					if (hubbleklass == "Sb")
+					if (typ == "Elliptisch")
 					{
-						spiralGalaxy.Sb(startIndex, endIndex, position, rotation, velocity, radius, Masse, anteilBaryonischeMaterie, anteilDunkleMaterie, powNumberNormal, powNumberDark, particles);
+						if (hubbleklass == "E0")
+						{
+							ellipticalGalaxy.E0(startIndex, endIndex, position, rotation, velocity, radius, Masse, 1, 0, 0.9, 0.9, particles);
+						}
+						if (hubbleklass == "S0")
+						{
+							ellipticalGalaxy.S0(phy, startIndex, endIndex, position, rotation, velocity, radius, Masse, 1, 0, 0.9, 0.9, particles);
+						}
 					}
-					if (hubbleklass == "Sc")
-					{
-						spiralGalaxy.Sc(startIndex, endIndex, position, rotation, velocity, radius, Masse, anteilBaryonischeMaterie, anteilDunkleMaterie, powNumberNormal, powNumberDark, particles);
-					}
+					startIndex = endIndex; // Aktualisieren des Startindex für die nächste Galaxie
+					galaxieNummer++;
+					galaxieKey = "Galaxie" + std::to_string(galaxieNummer);
 				}
-				if (typ == "Elliptisch")
+
+				else
 				{
-					if (hubbleklass == "E0")
+					// Galaxy with halo
+					int endIndex = startIndex + particlesize - 1;
+
+					int size = endIndex - startIndex + 1;
+					int fraction = size * anteilDunkleMaterie;
+					int fractionDark = size * anteilBaryonischeMaterie;
+
+					int endIndexDisk = startIndex + fraction - 1;
+
+					int startIndexHalo = endIndex - fractionDark + 1;
+					int endIndexHalo = endIndex;
+
+					Halo halo;
+					halo.halo(startIndex, endIndexDisk, position, rotation, velocity, haloRadius, Masse, haloStability, particles);
+
+					if (typ == "Spiral")
 					{
-						ellipticalGalaxy.E0(startIndex, endIndex, position, rotation, velocity, radius, Masse, anteilBaryonischeMaterie, anteilDunkleMaterie, powNumberNormal, powNumberDark, particles);
+						if (hubbleklass == "Sa")
+						{
+							//spiral galaxie with theese parameter:int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double anteilBaryonischeMaterie, double anteilDunkleMaterie, double powNumberNormal, double powNumberDark, std::vector<Particle>& particles
+							spiralGalaxy.Sa(startIndexHalo, endIndex, position, rotation, velocity, radius, Masse, 1, 0, 0.9, 0.9, particles);
+						}
+						if (hubbleklass == "Sb")
+						{
+							spiralGalaxy.Sb(startIndexHalo, endIndex, position, rotation, velocity, radius, Masse, 1, 0, 0.9, 0.9, particles);
+						}
+						if (hubbleklass == "Sc")
+						{
+							spiralGalaxy.Sc(startIndexHalo, endIndex, position, rotation, velocity, radius, Masse, 1, 0, 0.9, 0.9, particles);
+						}
 					}
-					if (hubbleklass == "S0")
+					if (typ == "Elliptisch")
 					{
-						ellipticalGalaxy.S0(phy, startIndex, endIndex, position, rotation, velocity, radius, Masse, anteilBaryonischeMaterie, anteilDunkleMaterie, powNumberNormal, powNumberDark, particles);
+						if (hubbleklass == "E0")
+						{
+							ellipticalGalaxy.E0(startIndexHalo, endIndex, position, rotation, velocity, radius, Masse, anteilBaryonischeMaterie, anteilDunkleMaterie, 0.9, 0.9, particles);
+						}
+						if (hubbleklass == "S0")
+						{
+							ellipticalGalaxy.S0(phy, startIndexHalo, endIndex, position, rotation, velocity, radius, Masse, anteilBaryonischeMaterie, anteilDunkleMaterie, 0.9, 0.9, particles);
+						}
 					}
+
+					startIndex = endIndex; // Aktualisieren des Startindex für die nächste Galaxie
+					galaxieNummer++;
+					galaxieKey = "Galaxie" + std::to_string(galaxieNummer);
+
 				}
-				startIndex = endIndex; // Aktualisieren des Startindex für die nächste Galaxie
-				galaxieNummer++;
-				galaxieKey = "Galaxie" + std::to_string(galaxieNummer);
 			}
 		}
 		//manuelles Initialisieren

@@ -20,9 +20,9 @@ double nfwPotential(double r, double rho0, double rs)
 }
 
 
-void Halo::halo(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, std::vector<Particle>& particles)
+void Halo::halo(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double stable, std::vector<Particle>& particles)
 {
-    int size = endIndex - startIndex;
+    int size = endIndex + 1 - startIndex;
 	//create halo
 	for (int i = startIndex; i < endIndex; i++)
 	{
@@ -56,7 +56,7 @@ void Halo::halo(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 ro
 
 		double potential = nfwPotential(r, rho0, rs);
         // random velocity
-		double velocityMagnetude = sqrt(2.0 * abs(potential)) / 3;
+		double velocityMagnetude = sqrt(2.0 * abs(potential)) * stable;
 
         double cosTheta = 2.0 * (rand() / (double)RAND_MAX) - 1.0;
         double sinTheta = sqrt(1.0 - cosTheta * cosTheta);
