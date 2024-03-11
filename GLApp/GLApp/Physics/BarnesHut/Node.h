@@ -48,11 +48,13 @@ public:
 	double darkMatterDensity = 0;
 	double smoothingLength = 0;
 	void calcDensity(Particle& p,double h, double& medium, int& n);
+	void calcDensity(double h, double& medium, int& n);
 
 	bool renderTree = false;
 
 	glm::vec3 particleColor;
 	Particle particle;
+	std::vector<Particle&> baryonicParticles;
 	bool particlePushed = false;
 
 	void clear();
