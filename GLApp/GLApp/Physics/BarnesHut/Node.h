@@ -12,25 +12,26 @@ class Physics;
 class Node 
 {
 public:
-	Node(glm::dvec3 center, double radius, double theta, int index, int maxdepth, bool renderTree, glm::vec3 newparticleColor);
+	Node(glm::dvec3 center, double radius, double theta, int index, int maxdepth, bool renderTree, glm::vec3 newparticleColor, int ParticlesSize);
 	~Node();
 
-	bool isInside(Particle& p);
+	bool isInside(Particle* p);
 
-	void insert(Particle& p);
-	glm::dvec3 calcForce(Physics* phy, Particle& p, Node* root, double softening, double a, double& potentialEngergy, double& calculations);
+	void insert(Particle* p);
+	glm::dvec3 calcForce(Physics* phy, Particle* p, Node* root, double softening, double a, double& potentialEngergy, double& calculations);
 
 	//SPH
-	void gravitySPH(Physics* phy,Particle& p, Node* root, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
+	void gravitySPH(Physics* phy,Particle* p, Node* root, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
 
-	void gravity(Physics* phy, Particle& p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
+	void gravity(Physics* phy, Particle* p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations);
     void calcMass();
-	void calcH(Particle& p);
+	void calcH(Particle* p);
 	void color(glm::vec3 color);
 
 	Node* child[8] = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 
 	int index = 0;
+	int particlesize = 0;
 	int maxDepth;
 	int depth = 5;
 	bool isLeaf = false;
@@ -50,7 +51,7 @@ public:
 	//just for color
 	double baryonicDensity = 0;
 	double darkMatterDensity = 0;
-	void calcDensity(Particle& p,double h, double& medium, int& n);
+	void calcDensity(Particle* p,double h, double& medium, int& n);
 	void calcDensity(double h, double& medium, int& n);
 
 	bool renderTree = false;

@@ -121,9 +121,9 @@ bool Physics::Calc()
 					maxDistance = distance;
 				}
 			}
-            octree = new Octree(glm::dvec3(0, 0, 0), maxDistance * 2, theta, maxDepth);
+            octree = new Octree(glm::dvec3(0, 0, 0), maxDistance * 2, theta, maxDepth, currentParticles.size());
             //build a new tree
-            octree->buildTree(currentParticles);
+            octree->buildTree(&currentParticles);
             
             double mediumDensity = 0;
             int densityN = 0;
@@ -179,10 +179,10 @@ bool Physics::Calc()
             }
             delete octree;
             //delete octree;
-            octree = new Octree(glm::dvec3(0, 0, 0), maxDistance * 2, theta, maxDepth);
+            octree = new Octree(glm::dvec3(0, 0, 0), maxDistance * 2, theta, maxDepth, currentParticles.size());
          
             //build a new tree
-            octree->buildTree(currentParticles);
+            octree->buildTree(&currentParticles);
             //std::cout << "buildTree: " << std::endl;
 
             double mediumDensity = 0;
@@ -265,8 +265,8 @@ bool Physics::Calc()
 
                 delete octree;
                 //delete octree;
-                octree = new Octree(glm::dvec3(0, 0, 0), maxDistance * 2, theta, maxDepth);
-                octree->buildTree(currentParticles);
+                octree = new Octree(glm::dvec3(0, 0, 0), maxDistance * 2, theta, maxDepth, currentParticles.size());
+                octree->buildTree(&currentParticles);
                 calculateGravitation(t);
                 for(int p = 0; p < currentParticles.size(); p++)
 				{
@@ -441,7 +441,7 @@ void Physics::calculateGravitation(int t, int start, int stop) {
         glm::dvec3 totalForce = { 0,0,0 };
         double potentialEngergy = 0;
         double l = 0;
-        totalForce = octree->calculateForces(this, currentParticles[p], softening,a, potentialEngergy, l);
+        totalForce = octree->calculateForces(this, &currentParticles[p], softening,a, potentialEngergy, l);
         totalEnergie[t][p] += potentialEngergy;
         totalEnergie[t][p] += currentParticles[p].thermalEnergy;
         currentParticles[p].force = totalForce;

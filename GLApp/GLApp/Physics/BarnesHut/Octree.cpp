@@ -5,23 +5,23 @@
 #include <vector>
 #include <functional>
 
-Octree::Octree(glm::dvec3 center, double radius, double theta, int maxDepth) 
+Octree::Octree(glm::dvec3 center, double radius, double theta, int maxDepth, int particlesSize) 
 {
 	this->center = center;
 	this->radius = radius;
 	this->theta = theta;
-	root = new Node(center, radius, theta, 0, maxDepth, false, glm::vec3(1,0,0));
+	root = new Node(center, radius, theta, 0, maxDepth, false, glm::vec3(1,0,0), particlesSize);
 }
 
 Octree::~Octree() 
 {
 	delete root;
 }
-glm::dvec3 Octree::calculateForces(Physics* phy, Particle& particle, double softening, double a, double& potentialEngergy, double& calculations)
+glm::dvec3 Octree::calculateForces(Physics* phy, Particle* particle, double softening, double a, double& potentialEngergy, double& calculations)
 {
 	return root->calcForce(phy,particle,root, softening,a, potentialEngergy, calculations);
 }
-void Octree::calcH(Particle& p)
+void Octree::calcH(Particle* p)
 {
 	//calc h for all nodes not particles
 	root->calcH(p);
@@ -32,16 +32,17 @@ void Octree::calcdensity(double h, double& medium, int& n)
 	root->calcDensity(h, medium, n);
 }
 
-void Octree::buildTree(std::vector<Particle>& particles) 
+void Octree::buildTree(std::vector<Particle>* particles)
 {
 	int num_threads = std::thread::hardware_concurrency();
 	std::vector<std::thread> threads;
 
-	int n = particles.size(); // Gesamtanzahl der Iterationen
+	int n = particles->size(); // Gesamtanzahl der Iterationen
 	int step = n / num_threads;
 	for (int i = 0; i < num_threads; ++i) {
 		//threads.emplace_back(insert, particles, i * step, (i + 1) * step);
-		threads.emplace_back([this, &particles, i, step]() {
+		threads.emplace_back([this, &particles, i, step]() 
+			{
 			this->insert(particles, i * step, (i + 1) * step);
 		});
 	}
@@ -52,13 +53,14 @@ void Octree::buildTree(std::vector<Particle>& particles)
 	}
 }
 
-void Octree::insert(std::vector<Particle>& particles, int start, int end)
+void Octree::insert(std::vector<Particle>* particles, int start, int end)
 {
 	for(int i = start; i < end; i++)
 	{
-		if (particles[i].mass != 0)
+		if ((*particles)[i].mass != 0)
 		{
-			root->insert(particles[i]);
+			Particle* p = &((*particles)[i]);
+			root->insert(p);
 		}
 	}
 }
