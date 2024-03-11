@@ -27,9 +27,6 @@ void Octree::calcH(Particle& p)
 	root->calcH(p);
 }
 
-void Octree::setColors()
-{
-}
 void Octree::calcdensity(double h, double& medium, int& n)
 {
 	root->calcDensity(h, medium, n);
