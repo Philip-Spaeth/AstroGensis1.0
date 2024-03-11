@@ -247,57 +247,41 @@ glm::dvec3 Node::calcForce(Physics* phy, Particle& p, Node* root, double softeni
 
 void Node::calcDensity(double h, double& medium, int& n)
 {
+	/*
+	std::cout << "Start Calc Density" << std::endl;
 	//std::cout << "Dichte1: " << baryonicParticles.size() << std::endl;
 	int particleSize = baryonicParticles.size();
 
-	if(index != 0){
-		for(int i = 0; i < particleSize; i++)
-		{
-			/* std::cout << abs(10.3) << std::endl;
-			std::cout << "Position: " << i << std::endl;
-			std::cout << baryonicParticles[i].position.z << std::endl;
-			std::cout << radius/2 - std::fabs(baryonicParticles[i].position.x - center.x) << std::endl; */
-			// distanz zu Wand berechnen, wenn zu klein für nächste Node
-			// -> Dichte berechnen
-			double xDistance = radius/2 - std::fabs(baryonicParticles[i].position.x - center.x);
-			double yDistance = radius/2 - std::fabs(baryonicParticles[i].position.y - center.y);
-			double zDistance = radius/2 - std::fabs(baryonicParticles[i].position.z - center.z);
-			/* this->calcDensity(baryonicParticles[i], h, medium, n);
-			std::string inputCalculationMethod;
-			std::getline(std::cin, inputCalculationMethod); */
-			if(xDistance > ((radius/2) - h) && xDistance < ((radius/2) + h)){ this->calcDensity(baryonicParticles[i], h, medium, n);}
-			else if(yDistance > ((radius/2) - h) && yDistance < ((radius/2) + h)){ this->calcDensity(baryonicParticles[i], h, medium, n);}
-			else if(zDistance > ((radius/2) - h) && zDistance < ((radius/2) + h)){ this->calcDensity(baryonicParticles[i], h, medium, n);}
+	for(int i = 0; i < particleSize; i++)
+	{
+		// -> Dichte berechnen
+		double xDistance = radius/2 - std::fabs(baryonicParticles.at(i).position.x - center.x);
+		double yDistance = radius/2 - std::fabs(baryonicParticles.at(i).position.y - center.y);
+		double zDistance = radius/2 - std::fabs(baryonicParticles.at(i).position.z - center.z);
+		if(xDistance > ((radius/2) - h) && xDistance < ((radius/2) + h)){ this->calcDensity(baryonicParticles.at(i), h, medium, n);}
+		else if(yDistance > ((radius/2) - h) && yDistance < ((radius/2) + h)){ this->calcDensity(baryonicParticles.at(i), h, medium, n);}
+		else if(zDistance > ((radius/2) - h) && zDistance < ((radius/2) + h)){ this->calcDensity(baryonicParticles.at(i), h, medium, n);}
 			
-			//std::cout << "Position Ende : " << i << std::endl;
-		}
+		//std::cout << "Position Ende : " << i << std::endl;
 	}
-	/* std::string inputCalculationMethod;
-    std::getline(std::cin, inputCalculationMethod);
-	std::cout << "Dichte: " << density << std::endl; */
+
 	// In nächste Node gehen
-	for(int i = 0; i < 8; i++){
-		if(child[i] != nullptr){
-			if(child[i]->baryonicParticles.size() > 32){
+	for(int i = 0; i < 8; i++)
+	{
+		if(child[i] != nullptr)
+		{
+			if(child[i]->baryonicParticles.size() > 32)
+			{
 				child[i]->calcDensity(h, medium, n);
 			}
-			// if not enough Particles in Child
-			else{
-				// calc density already here.
-				int particleSize = child[i]->baryonicParticles.size();
-				std::cout << "Anzahl: " << particleSize << std::endl;
-				for(int y = 0; y < particleSize; y++){
-					std::cout << "Position: " << y << std::endl;
-					std::cout << child[i]->baryonicParticles[y].position.x << std::endl;
-					this->calcDensity(child[i]->baryonicParticles[y], h, medium, n);
-				}
-			}
 		}
-	}
+	}*/
 }
 
-void Node::calcDensity(Particle& p, double h, double& medium, int& n){
-
+void Node::calcDensity(Particle& p, double h, double& medium, int& n)
+{
+	/*
+	std::cout << "Start Calc Density" << std::endl;
 	// hier die Dichte für diesen Partikel berechnen
 	// Die 32 wenig weit entferntesten Partikel finden.
 	int smallestDistanceParticles[32];
@@ -327,17 +311,21 @@ void Node::calcDensity(Particle& p, double h, double& medium, int& n){
 			}
 		}
 	}
-
-	double Hp = glm::distance(p.position, baryonicParticles[smallestDistanceParticles[32]].position) * 2;
-	//std::cout << "Hp: ";
-	//std::cout << Hp << std::endl;
+	double Hp = 0;
+	for (int i = 31; i > 0; i--) {
+		if (smallestDistanceParticles[i] != 0)
+		{
+			Hp = glm::distance(p.position, baryonicParticles.at(smallestDistanceParticles[i]).position) * 2;
+		}
+	}
 
 
 	// Dichte mit den 32 nächsten Partikeln berechnen.
 	double density = 0;
 	for(int i = 0; i < 32; i++){
-		if(smallestDistanceParticles[i] != 0){
-			double w = MathFunctions::cubicSplineKernel(glm::distance(p.position, baryonicParticles[smallestDistanceParticles[i]].position), Hp);
+		if(smallestDistanceParticles[i] != 0)
+		{
+			double w = MathFunctions::cubicSplineKernel(glm::distance(p.position, baryonicParticles.at(smallestDistanceParticles[i]).position), Hp);
 			density += p.mass * w;
 		}
 	}
@@ -346,13 +334,16 @@ void Node::calcDensity(Particle& p, double h, double& medium, int& n){
 	p.density = density;
 	
 	//std::cout << "Ende Calc Density" << std::endl;
+	*/
 }
 
 void Node::insert(Particle& p)
 {
+	//std::cout << "inserted particle " << "in node " << index << std::endl;
 	// Partikel in Global Node einfuegen.
-	if(p.darkMatter == false){
-		baryonicParticles.push_back(p);
+	if(p.darkMatter == false)
+	{
+		baryonicParticles.push_back(&p);
 	}
 
 	if (index < maxDepth)

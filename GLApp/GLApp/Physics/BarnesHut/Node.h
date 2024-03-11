@@ -57,7 +57,7 @@ public:
 
 	glm::vec3 particleColor;
 	Particle particle;
-	std::vector<Particle&> baryonicParticles;
+	std::vector<Particle*> baryonicParticles;
 	bool particlePushed = false;
 
 	void clear();

@@ -26,6 +26,8 @@ public:
 
     bool configFile = true;
 
+    double h = 1e19;
+
 //Choose the Unitscaling for the simulation
     Units* units;
     //parsec
@@ -74,7 +76,7 @@ public:
     int year = 2020;
     int month = 1;
     int day = 1;
-
+    bool adaptiveSmoothingLength = true;
     bool init();
     bool Calc();
 
