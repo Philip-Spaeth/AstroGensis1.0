@@ -27,9 +27,9 @@ void Octree::calcH(Particle& p)
 	root->calcH(p);
 }
 
-void Octree::calcdensity(Particle& p, double h, double& medium, int& n)
+void Octree::calcdensity(double h, double& medium, int& n)
 {
-	root->calcDensity(p,h, medium, n);
+	root->calcDensity(h, medium, n);
 }
 
 void Octree::buildTree(std::vector<Particle>& particles) 

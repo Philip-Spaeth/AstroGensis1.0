@@ -131,12 +131,15 @@ bool Physics::Calc()
             //only for color
             if (color)
             {
-                for (int p = 0; p < currentParticles.size(); p++)
+                /* for (int p = 0; p < currentParticles.size(); p++)
                 {
                     currentParticles[p].density = 0;
                     //For color and SPH calculations
                     octree->calcdensity(currentParticles[p], colorH, mediumDensity, densityN);
-                }
+                } */
+                //For color and SPH calculations
+                octree->calcdensity(colorH, mediumDensity, densityN);
+
                 //only for color
                 mediumDensity = mediumDensity / densityN;
                 MediumThermalEnergy = mediumDensity / densityN;
@@ -150,7 +153,7 @@ bool Physics::Calc()
             ///SPH before main loop
             if (SPH)
             {
-                for (int p = 0; p < currentParticles.size(); p++)
+                /* for (int p = 0; p < currentParticles.size(); p++)
                 {
                     //calculate h for every particle
                     currentParticles[p].h = 0;
@@ -158,10 +161,12 @@ bool Physics::Calc()
 
                     //calculate the density
                     currentParticles[p].density = 0;
-                    octree->calcdensity(currentParticles[p], currentParticles[p].h, mediumDensity, densityN);
-                }
+                    //For color and SPH calculations
+                    octree->calcdensity(currentParticles[p], h, mediumDensity, densityN);
+                } */
+                //For color and SPH calculations
+                octree->calcdensity(h, mediumDensity, densityN);
             }
-            */
 
             //rotation and masscurves
             delete fileManager;
@@ -201,10 +206,13 @@ bool Physics::Calc()
                 for (int p = 0; p < currentParticles.size(); p++)
                 {
                     currentParticles[p].density = 0;
-                    //For color and SPH calculations
-                    octree->calcdensity(currentParticles[p], colorH, mediumDensity, densityN);
+                    /* //For color and SPH calculations
+                    octree->calcdensity(currentParticles[p], colorH, mediumDensity, densityN); */
                     MediumThermalEnergy += currentParticles[p].thermalEnergy;
                 }
+                //For color and SPH calculations
+                octree->calcdensity(colorH, mediumDensity, densityN);
+
                 //only for color
                 mediumDensity = mediumDensity / densityN;
                 MediumThermalEnergy = MediumThermalEnergy / currentParticles.size();
@@ -225,10 +233,23 @@ bool Physics::Calc()
 
                     //calculate the density
                     currentParticles[p].density = 0;
-                    octree->calcdensity(currentParticles[p], currentParticles[p].h, mediumDensity, densityN);
+                    /* //For color and SPH calculations
+                    octree->calcdensity(currentParticles[p], h, mediumDensity, densityN); */
+                    if (adaptiveSmoothingLength)
+                    {
+                        currentParticles[p].h = pow((3 * currentParticles[p].mass) / (4 * glm::pi<double>() * currentParticles[p].density), 1.0 / 3.0) * hFactor;
+                        //std::cout << "h: " << currentParticles[p].h << std::endl;
+                    }
                 }
+                //For color and SPH calculations
+                octree->calcdensity(h, mediumDensity, densityN);
+                //calc h for all nodes
+                if (adaptiveSmoothingLength)
+                {
+                    octree->calcH();
+				}
             }
-            */
+
             //Other methods
             if (calculationMethod != 0 && calculationMethod != 3)
             {
