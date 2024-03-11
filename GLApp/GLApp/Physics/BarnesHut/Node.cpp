@@ -266,6 +266,13 @@ void Node::calcDensity(double h, double& medium, int& n)
 	{
 		if (baryonicParticles[i] != nullptr)
 		{
+			
+			//gefährlich !!!!!!!!!!!!!1
+			if (reinterpret_cast<uintptr_t>(baryonicParticles[i]) == 0xCDCDCDCD) 
+			{
+				std::cout << "Ungültiger Speicherzugriff übersprungen." << std::endl;
+				continue;
+			}
 			///hier fehler!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			// Direktes Überprüfen auf NaN-Werte in den Positionen
 			if (glm::isnan(baryonicParticles[i]->position.x) ||
@@ -274,7 +281,6 @@ void Node::calcDensity(double h, double& medium, int& n)
 				glm::isnan(baryonicParticles[i]->position.z)) {
 				continue; // Überspringe diesen Partikel
 			}
-			std::cout << "Position: " << i << std::endl;
 			// -> Dichte berechnen
 			double xDistance = radius / 2 - std::fabs(baryonicParticles[i]->position.x - center.x);
 			double yDistance = radius / 2 - std::fabs(baryonicParticles[i]->position.y - center.y);
@@ -389,7 +395,12 @@ void Node::insert(Particle* p)
 		baryonicParticles.reserve(maxParticles);
 		if (p->darkMatter == false)
 		{
-			baryonicParticles.push_back(p);
+			if (!glm::isnan(p->position.x) &&
+				!glm::isnan(p->position.y) &&
+				!glm::isnan(p->position.z))
+			{
+				baryonicParticles.push_back(p);
+			}
 		}
 	}
 
