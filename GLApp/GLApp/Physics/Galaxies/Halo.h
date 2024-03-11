@@ -12,6 +12,6 @@ class Halo
 public:
 	Halo() {};
 	Physics* physics;
-	void halo(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse,double stable, std::vector<Particle>& particles);
+	void halo(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse,double stable,bool isGas,  std::vector<Particle>& particles);
 };
 #endif

@@ -18,6 +18,7 @@
 #include <unordered_map>
 #include "MathFunctions.h"
 #include "FileManager.h"
+#include "Cluster/Cluster.h"
 namespace fs = std::filesystem;
 
 using namespace std;
@@ -33,41 +34,44 @@ void SystemInit::start(Physics* phy, std::vector<Particle>& particles)
 	else
 	{
 		Physics p;
-		//Init nach Config File
-		if (true)
+		// Einlesen der Konfigurationen
+		FileManager* fileManager = new FileManager("config.ini");
+		auto config = fileManager->readTheConfig("config.ini");
+
+		// Verarbeiten der Galaxie-Konfigurationen
+		int galaxieNummer = 1;
+		std::string galaxieKey = "Galaxie" + std::to_string(galaxieNummer);
+		int startIndex = 1;
+
+		while (config.find(galaxieKey + ".Typ") != config.end())
 		{
-			// Einlesen der Konfigurationen
-			FileManager* fileManager = new FileManager("config.ini");
-			auto config = fileManager->readTheConfig("config.ini");
+			string typ = config[galaxieKey + ".Typ"];
+			string hubbleklass = config[galaxieKey + ".HubbleKlassifikation"];
+			int particlesize = std::stoi(config[galaxieKey + ".ParticleSize"]);
+			double radius = std::stod(config[galaxieKey + ".DiskRadius"]);
+			double haloRadius = std::stod(config[galaxieKey + ".HaloRadius"]);
+			double Masse = std::stod(config[galaxieKey + ".GesammtMasse"]);
+			double anteilBaryonischeMaterie = std::stod(config[galaxieKey + ".AnteilBaryonischeMaterie"]);
+			double anteilDunkleMaterie = std::stod(config[galaxieKey + ".AnteilDunkleMaterie"]);
+			double haloStability = std::stod(config[galaxieKey + ".HaloStability"]);
+			// Position, Geschwindigkeit, Rotation
+			glm::dvec3 position = fileManager->parseVector3(config[galaxieKey + ".Position"]);
+			glm::dvec3 velocity = fileManager->parseVector3(config[galaxieKey + ".Geschwindigkeit"]);
+			glm::dvec3 rotation = fileManager->parseVector3(config[galaxieKey + ".Rotation"]);
 
-			// Verarbeiten der Galaxie-Konfigurationen
-			int galaxieNummer = 1;
-			std::string galaxieKey = "Galaxie" + std::to_string(galaxieNummer);
-			int startIndex = 1;
+			// scale all the values to the right units
+			radius = phy->units->length(radius);
+			haloRadius = phy->units->length(haloRadius);
+			Masse = phy->units->mass(Masse);
+			position = position * (1 / (double)phy->units->lengthUnit);
+			velocity = velocity * (1 / (double)phy->units->velocityUnit);
 
-			while (config.find(galaxieKey + ".Typ") != config.end())
+			if (false)
 			{
-				string typ = config[galaxieKey + ".Typ"];
-				string hubbleklass = config[galaxieKey + ".HubbleKlassifikation"];
-				int particlesize = std::stoi(config[galaxieKey + ".ParticleSize"]);
-				double radius = std::stod(config[galaxieKey + ".DiskRadius"]);
-				double haloRadius = std::stod(config[galaxieKey + ".HaloRadius"]);
-				double Masse = std::stod(config[galaxieKey + ".GesammtMasse"]);
-				double anteilBaryonischeMaterie = std::stod(config[galaxieKey + ".AnteilBaryonischeMaterie"]);
-				double anteilDunkleMaterie = std::stod(config[galaxieKey + ".AnteilDunkleMaterie"]);
-				double haloStability = std::stod(config[galaxieKey + ".HaloStability"]);
-				// Position, Geschwindigkeit, Rotation
-				glm::dvec3 position = fileManager->parseVector3(config[galaxieKey + ".Position"]);
-				glm::dvec3 velocity = fileManager->parseVector3(config[galaxieKey + ".Geschwindigkeit"]);
-				glm::dvec3 rotation = fileManager->parseVector3(config[galaxieKey + ".Rotation"]);
 
-				// scale all the values to the right units
-				radius = phy->units->length(radius);
-				haloRadius = phy->units->length(haloRadius);
-				Masse = phy->units->mass(Masse);
-				position = position * (1 / (double)phy->units->lengthUnit);
-				velocity = velocity * (1 / (double)phy->units->velocityUnit);
-
+			}
+			else
+			{
 				if (haloRadius == 0 || anteilDunkleMaterie == 0)
 				{
 					int endIndex = startIndex + particlesize - 1;
@@ -103,7 +107,6 @@ void SystemInit::start(Physics* phy, std::vector<Particle>& particles)
 					galaxieNummer++;
 					galaxieKey = "Galaxie" + std::to_string(galaxieNummer);
 				}
-
 				else
 				{
 					// Galaxy with halo
@@ -119,7 +122,7 @@ void SystemInit::start(Physics* phy, std::vector<Particle>& particles)
 					int endIndexHalo = endIndex;
 
 					Halo halo;
-					halo.halo(startIndex, endIndexDisk, position, rotation, velocity, haloRadius, Masse, haloStability, particles);
+					halo.halo(startIndex, endIndexDisk, position, rotation, velocity, haloRadius, Masse, haloStability, false, particles);
 
 					if (typ == "Spiral")
 					{
@@ -155,29 +158,6 @@ void SystemInit::start(Physics* phy, std::vector<Particle>& particles)
 
 				}
 			}
-		}
-		//manuelles Initialisieren
-		else
-		{
-			//planet systemns without SPH
-
-			//solarSystem(particles);
-			//ourSolarSystem(particles);
-
-			//galaxies
-
-			//ellipticalGalaxy.E0(0, 19999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, 1e12, 0.5, 0.5, 0.5, 0.5, particles);
-			//ellipticalGalaxy.S0(1, 9999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
-
-
-			//Spiral galaxy like milky way
-			//spiralGalaxy.Sa(1, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1e21, 1e42, 0.5, 0.5, 0.5, 0.5, particles);
-			//ellipticalGalaxy.S0(10000, 19999, { 1.065e21, 0.565e21,0 }, { 0, 0, 0 }, { 0,0,0 }, 0.3, particles);
-			//spiralGalaxy.Sc(20000, 29999, { 1e22,0,0 }, { 1,2,1 }, { 0,0,0 }, 0.5, particles);
-
-			//barredGalaxy.SBa(0, 9999, { 0,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
-			//barredGalaxy.SBb(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
-			//barredGalaxy.SBc(10000, 19999, { 1e22,0,0 }, { 0,0,0 }, { 0,0,0 }, 1, particles);
 		}
 	}
 }

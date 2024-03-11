@@ -20,12 +20,14 @@ double nfwPotential(double r, double rho0, double rs)
 }
 
 
-void Halo::halo(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double stable, std::vector<Particle>& particles)
+void Halo::halo(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 rotation, glm::dvec3 velocity, double maxRadius, double Masse, double stable, bool isGas, std::vector<Particle>& particles)
 {
     int size = endIndex + 1 - startIndex;
+    int index = 0;
 	//create halo
 	for (int i = startIndex; i < endIndex; i++)
-	{
+    {
+        index++;
         double c = 0e-5;
         double rvir = maxRadius;
         double rs = maxRadius;
@@ -37,12 +39,12 @@ void Halo::halo(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 ro
 
         // Calculate cumulative mass
         double totalMass = 0.0;
-        for (int i = 1; i <= size; ++i) {
-            double radius = rs * i / size;
+        for (int j = 1; j <= size; ++j) {
+            double radius = rs * j / size;
             totalMass += 4.0 * pi * pow(radius, 2) * nfwProfile(radius, rho0, rs) * (rs / size);
         }
 
-        double targetMass = i * totalMass / (size - 1);
+        double targetMass = index * totalMass / (size - 1);
         double radius = 0.0;
         double mass = 0.0;
 
@@ -71,6 +73,7 @@ void Halo::halo(int startIndex, int endIndex, glm::dvec3 position, glm::dvec3 ro
         particles[i].mass = Masse / size;
 		particles[i].radius = 1;
 		particles[i].color = glm::vec3(1, 1, 1);
-		particles[i].darkMatter = true;
+		if(isGas == false) particles[i].darkMatter = true;
+        else particles[i].darkMatter = false;
 	}
 }
