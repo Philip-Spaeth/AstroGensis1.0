@@ -142,11 +142,6 @@ bool Physics::Calc()
 
                 //only for color
                 mediumDensity = mediumDensity / densityN;
-                //set rho to mediumDensity
-                if (rho_With_Medium_Density)
-                {
-                    rh0 = mediumDensity;
-                }
                 MediumThermalEnergy = mediumDensity / densityN;
                 for (int p = 0; p < currentParticles.size(); p++)
                 {
@@ -154,12 +149,17 @@ bool Physics::Calc()
 
                 }
             }
-
-            ///for SPH
+            /*
+            ///SPH before main loop
             if (SPH)
             {
                 /* for (int p = 0; p < currentParticles.size(); p++)
                 {
+                    //calculate h for every particle
+                    currentParticles[p].h = 0;
+                    octree->calcH(currentParticles[p]);
+
+                    //calculate the density
                     currentParticles[p].density = 0;
                     //For color and SPH calculations
                     octree->calcdensity(currentParticles[p], h, mediumDensity, densityN);
@@ -221,11 +221,17 @@ bool Physics::Calc()
                     if (color) currentParticles[p].setColor(mediumDensity, MediumThermalEnergy);
                 }
             }
-            ///for SPH
+            /*
+            ///SPH before main loop
             if (SPH)
             {
                 for (int p = 0; p < currentParticles.size(); p++)
                 {
+                    //calculate h for every particle
+                    currentParticles[p].h = 0;
+                    octree->calcH(currentParticles[p]);
+
+                    //calculate the density
                     currentParticles[p].density = 0;
                     /* //For color and SPH calculations
                     octree->calcdensity(currentParticles[p], h, mediumDensity, densityN); */
@@ -351,6 +357,7 @@ bool Physics::Calc()
                 //For color and SPH calculations
                 MediumThermalEnergy += currentParticles[p].thermalEnergy;
             }
+
             //only for color
             mediumDensity = mediumDensity / densityN;
             MediumThermalEnergy = MediumThermalEnergy / currentParticles.size();
@@ -538,56 +545,6 @@ void Physics::config() {
         std::cout << "Theta wurde nicht gefunden" << std::endl;
     }
 
-    // SPH
-    if (config.find("SPH") != config.end()) 
-    {
-        std::string l = config["SPH"];
-        SPH = stringToBool(config["SPH"]);
-    }
-    else {
-        std::cout << "SPH wurde nicht gefunden" << std::endl;
-    }
-
-    // h
-    if (config.find("h") != config.end()) {
-        h = std::stod(config["h"]);
-    }
-    else {
-        std::cout << "h wurde nicht gefunden" << std::endl;
-    }
-
-    // k
-    if (config.find("k") != config.end()) {
-        k = std::stod(config["k"]);
-    }
-    else {
-        std::cout << "k wurde nicht gefunden" << std::endl;
-    }
-
-    // rho0
-    if (config.find("rho0") != config.end()) {
-        rh0 = std::stod(config["rho0"]);
-    }
-    else {
-        std::cout << "rho0 wurde nicht gefunden" << std::endl;
-    }
-
-    // mu
-    if (config.find("mu") != config.end()) {
-        mu = std::stod(config["mu"]);
-    }
-    else {
-        std::cout << "mu wurde nicht gefunden" << std::endl;
-    }
-    //thermal const
-    if (config.find("uConst") != config.end()) {
-		thermalConstant = std::stod(config["uConst"]);
-	}
-    else {
-		std::cout << "thermalConstant wurde nicht gefunden" << std::endl;
-	}
-
-
     // HubbleConstant
     if (config.find("HubbleConstant") != config.end()) {
         HubbleConstant = std::stod(config["HubbleConstant"]);
@@ -629,12 +586,6 @@ void Physics::scaleUnits()
 
     softening = units->length(softening);
     a = units->length(a);
-
-    k = k / (units->pressureUnit / (units->densityUnit * units->densityUnit));
-    mu = mu * (units->lengthUnit * units->massUnit);
-    thermalConstant = thermalConstant * (units->energyUnit / units->timeUnit);
-    h = units->length(h);
-    rh0 = units->density(rh0);
 
     colorH = units->length(colorH);
 
