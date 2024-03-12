@@ -127,12 +127,28 @@ bool Physics::Calc()
             
             double mediumDensity = 0;
             int densityN = 0;
+            int thermalN = 0;
             double MediumThermalEnergy = 0;
             
             ///SPH before main loop
             if (SPH)
             {
                 octree->calcdensity(h, mediumDensity, densityN);
+            }
+            mediumDensity = mediumDensity / densityN;
+            for (int p = 0; p < currentParticles.size(); p++)
+            {
+                if (!currentParticles[p].darkMatter)
+                {
+                    MediumThermalEnergy += currentParticles[p].thermalEnergy;
+                    thermalN++;
+                }
+			}
+            MediumThermalEnergy = MediumThermalEnergy / thermalN;
+
+            for (int p = 0; p < currentParticles.size(); p++)
+            {
+                if (color) currentParticles[p].setColor(mediumDensity, MediumThermalEnergy);
             }
 
             //rotation and masscurves
@@ -166,12 +182,28 @@ bool Physics::Calc()
 
             double mediumDensity = 0;
             int densityN = 0;
+            int thermalN = 0;
             double MediumThermalEnergy = 0;
+
             ///SPH before main loop
             if (SPH)
             {
-                //For color and SPH calculations
                 octree->calcdensity(h, mediumDensity, densityN);
+            }
+            mediumDensity = mediumDensity / densityN;
+            for (int p = 0; p < currentParticles.size(); p++)
+            {
+                if (!currentParticles[p].darkMatter)
+                {
+                    MediumThermalEnergy += currentParticles[p].thermalEnergy;
+                    thermalN++;
+                }
+            }
+            MediumThermalEnergy = MediumThermalEnergy / thermalN;
+
+            for (int p = 0; p < currentParticles.size(); p++)
+            {
+                if (color) currentParticles[p].setColor(mediumDensity, MediumThermalEnergy);
             }
 
             //Other methods
@@ -276,20 +308,6 @@ bool Physics::Calc()
                     currentParticles[p].hubbleExpansion(deltaTime);
                 }
             }
-            for (int p = 0; p < currentParticles.size(); p++)
-            {
-                //For color and SPH calculations
-                MediumThermalEnergy += currentParticles[p].thermalEnergy;
-            }
-
-            //only for color
-            mediumDensity = mediumDensity / densityN;
-            MediumThermalEnergy = MediumThermalEnergy / currentParticles.size();
-            for (int p = 0; p < currentParticles.size(); p++)
-            {
-                if (color) currentParticles[p].setColor(mediumDensity, MediumThermalEnergy);
-            }
-
             if(false)
             {
                 //rotation and masscurves
