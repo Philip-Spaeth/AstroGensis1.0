@@ -89,6 +89,9 @@ void EllipticalGalaxy::S0(Physics* phy, int startIndex, int endIndex, glm::dvec3
 
         particles[j].velocity = glm::dvec3(-v * std::sin(particles[j].angle), v * std::cos(particles[j].angle), 0);
         particles[j].mass = totalMass / particleSize;
+        double u = MathFunctions::tempretureToInternalEnergy(10e22);
+        double yi = 5.0 / 3.0;
+        particles[j].thermalEnergy = (u * (yi - 1)) / std::pow(1e-21, (yi - 1));
         particles[j].radius = 1;
         particles[j].darkMatter = false;
 

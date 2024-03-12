@@ -132,6 +132,7 @@ void Node::gravitySPH(Physics* phy,Particle* p, Node* root, glm::dvec3& force, d
 				Particle p2 = Particle(massCenter, mass);
 				potentialEngergy += p->calcPotentialEnergie(p2, 1, epsilon0, 0);
 				force += Force;
+				//std::cout << "Force: " << glm::length(Force) << std::endl;
 			}
 			else
 			{
@@ -162,7 +163,7 @@ void Node::gravitySPH(Physics* phy,Particle* p, Node* root, glm::dvec3& force, d
 
 
 				double u_i = (p->thermalEnergy / (gamma - 1)) * std::pow(density_i, gamma - 1);
-				std::cout << "Thermal Energy: " << p->thermalEnergy << std::endl;
+				//std::cout << "Thermal Energy: " << p->thermalEnergy << std::endl;
 				p->pressure = (gamma - 1) * density_i * u_i;
 				// Druck berechnen
 				double pressure_i = p->pressure;
@@ -184,7 +185,7 @@ void Node::gravitySPH(Physics* phy,Particle* p, Node* root, glm::dvec3& force, d
 				force += sphForce;
 				//std::cout << "Force: " << glm::length(sphForce) << std::endl;
 
-				p->thermalEnergyChange += 0.5 * (gamma - 1) / (std::pow(density_i, gamma - 1)) * viscosityTensor * glm::dot(v_ij, MathFunctions::gradientCubicSplineKernel(p->position - massCenter, (h_i + h_j) / 2));
+				p->thermalEnergyChange += 0.5 * ((gamma - 1) / (std::pow(density_i, gamma - 1))) * p->mass * viscosityTensor * glm::dot(v_ij, MathFunctions::gradientCubicSplineKernel(p->position - massCenter, (h_i + h_j) / 2));
 			}
 			calculations++;
 		}
@@ -267,30 +268,22 @@ void Node::calcDensity(double h, double& medium, int& n)
 		{
 			
 			//gefährlich !!!!!!!!!!!!!1
-			if (reinterpret_cast<uintptr_t>(baryonicParticles[i]) == 0xCDCDCDCD) 
+			if (reinterpret_cast<uintptr_t>(baryonicParticles[i]) == 0xCDCDCDCD)
 			{
-				std::cout << "Ungültiger Speicherzugriff übersprungen." << std::endl;
+				//std::cout << "Ungültiger Speicherzugriff übersprungen." << std::endl;
 				continue;
 			}
-			///hier fehler!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			if(reinterpret_cast<uintptr_t>(baryonicParticles[i]) == 0xCDCDCDCD) {
-        		std::cout << "Ungültiger Speicherzugriff übersprungen." << std::endl;
-        		continue;
-    		}		
 			// Direktes Überprüfen auf NaN-Werte in den Positionen
-			if (glm::isnan(baryonicParticles[i]->position.x) ||
-
-				glm::isnan(baryonicParticles[i]->position.y) ||
-				glm::isnan(baryonicParticles[i]->position.z)) {
-				continue; // Überspringe diesen Partikel
+			if (!glm::isnan(baryonicParticles[i]->position.x) && !glm::isnan(baryonicParticles[i]->position.y) && !glm::isnan(baryonicParticles[i]->position.z))
+			{
+				// -> Dichte berechnen
+				double xDistance = radius / 2 - std::fabs(baryonicParticles[i]->position.x - center.x);
+				double yDistance = radius / 2 - std::fabs(baryonicParticles[i]->position.y - center.y);
+				double zDistance = radius / 2 - std::fabs(baryonicParticles[i]->position.z - center.z);
+				if (xDistance > ((radius / 2) - h) && xDistance < ((radius / 2) + h)) { this->calcDensity(baryonicParticles[i], h, medium, n); }
+				else if (yDistance > ((radius / 2) - h) && yDistance < ((radius / 2) + h)) { this->calcDensity(baryonicParticles[i], h, medium, n); }
+				else if (zDistance > ((radius / 2) - h) && zDistance < ((radius / 2) + h)) { this->calcDensity(baryonicParticles[i], h, medium, n); }
 			}
-			// -> Dichte berechnen
-			double xDistance = radius / 2 - std::fabs(baryonicParticles[i]->position.x - center.x);
-			double yDistance = radius / 2 - std::fabs(baryonicParticles[i]->position.y - center.y);
-			double zDistance = radius / 2 - std::fabs(baryonicParticles[i]->position.z - center.z);
-			if (xDistance > ((radius / 2) - h) && xDistance < ((radius / 2) + h)) { this->calcDensity(baryonicParticles[i], h, medium, n); }
-			else if (yDistance > ((radius / 2) - h) && yDistance < ((radius / 2) + h)) { this->calcDensity(baryonicParticles[i], h, medium, n); }
-			else if (zDistance > ((radius / 2) - h) && zDistance < ((radius / 2) + h)) { this->calcDensity(baryonicParticles[i], h, medium, n); }
 		}
 			
 		//std::cout << "Position Ende : " << i << std::endl;
@@ -336,6 +329,19 @@ void Node::calcDensity(Particle* p, double h, double& medium, int& n)
 		if (p != nullptr && baryonicParticles[i] != nullptr)
 		{
 			double distance = 0;
+
+			//gefährlich !!!!!!!!!!!!!1
+			if (reinterpret_cast<uintptr_t>(baryonicParticles[i]) == 0xCDCDCDCD)
+			{
+				//std::cout << "Ungültiger Speicherzugriff übersprungen." << std::endl;
+				continue;
+			}
+			if (reinterpret_cast<uintptr_t>(p) == 0xCDCDCDCD)
+			{
+				//std::cout << "Ungültiger Speicherzugriff übersprungen." << std::endl;
+				return;
+			}
+
 			//check if the positions ar real and not nan
 			if (!glm::isnan(p->position.x) && !glm::isnan(p->position.y) && !glm::isnan(p->position.z) && !glm::isnan(baryonicParticles[i]->position.x) && !glm::isnan(baryonicParticles[i]->position.y)&& !glm::isnan(baryonicParticles[i]->position.z))
 			{
@@ -371,7 +377,7 @@ void Node::calcDensity(Particle* p, double h, double& medium, int& n)
 		{
 			if (p != nullptr && baryonicParticles[i] != nullptr)
 			{
-				Hp = glm::distance(p->position, baryonicParticles.at(smallestDistanceParticles[i])->position) * 2;
+				Hp = glm::distance(p->position, baryonicParticles.at(smallestDistanceParticles[i])->position);
 			}
 		}
 	}
@@ -386,6 +392,8 @@ void Node::calcDensity(Particle* p, double h, double& medium, int& n)
 			if (p != nullptr && baryonicParticles[i] != nullptr)
 			{
 				w = MathFunctions::cubicSplineKernel(glm::distance(p->position, baryonicParticles.at(smallestDistanceParticles[i])->position), Hp);
+				medium += p->mass * w;
+				n++;
 			}
 			density += p->mass * w;
 		}

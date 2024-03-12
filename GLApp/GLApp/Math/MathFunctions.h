@@ -17,6 +17,8 @@ public:
 	static double cubicSplineKernel(double r, double h);
 	static double laplaceCubicSplineKernel(const glm::dvec3& rVec, double h);
 	static glm::dvec3 gradientCubicSplineKernel(const glm::dvec3& r, double h);
+	//SPH functions
+	static double tempretureToInternalEnergy(double tempreture);
 
 	//random Functions
 	static void setRandomSeed(unsigned int seed);
