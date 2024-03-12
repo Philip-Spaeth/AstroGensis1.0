@@ -147,9 +147,6 @@ void Node::gravitySPH(Physics* phy,Particle* p, Node* root, glm::dvec3& force, d
 			}
 			
 			//SPH
-			//just for testing because adaptive h is not implemented yet
-			p->h = 1e18;
-
 			if (r < 2 * p->h && p->darkMatter == false)
 			{
 				double h_i = p->h; // Glättungsradius
@@ -165,6 +162,7 @@ void Node::gravitySPH(Physics* phy,Particle* p, Node* root, glm::dvec3& force, d
 
 
 				double u_i = (p->thermalEnergy / (gamma - 1)) * std::pow(density_i, gamma - 1);
+				std::cout << "Thermal Energy: " << p->thermalEnergy << std::endl;
 				p->pressure = (gamma - 1) * density_i * u_i;
 				// Druck berechnen
 				double pressure_i = p->pressure;
@@ -184,6 +182,7 @@ void Node::gravitySPH(Physics* phy,Particle* p, Node* root, glm::dvec3& force, d
 				}
 				glm::dvec3 sphForce = -baryonicMass * (pressure_i / std::pow(density_i, 2) + pressure_j / std::pow(density_j, 2) + viscosityTensor) * MathFunctions::gradientCubicSplineKernel(p->position - massCenter, h_i);
 				force += sphForce;
+				//std::cout << "Force: " << glm::length(sphForce) << std::endl;
 
 				p->thermalEnergyChange += 0.5 * (gamma - 1) / (std::pow(density_i, gamma - 1)) * viscosityTensor * glm::dot(v_ij, MathFunctions::gradientCubicSplineKernel(p->position - massCenter, (h_i + h_j) / 2));
 			}
@@ -390,10 +389,6 @@ void Node::calcDensity(Particle* p, double h, double& medium, int& n)
 		p->density = density;
 		p->h = Hp;
 	}
-	std::cout << "Dichte: " << density << std::endl;
-	std::cout << "Hp: " << Hp << std::endl;
-	
-	//std::cout << "Ende Calc Density" << std::endl;
 }
 
 void Node::insert(Particle* p)
