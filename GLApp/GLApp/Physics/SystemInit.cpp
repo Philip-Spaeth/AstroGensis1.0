@@ -103,7 +103,7 @@ void SystemInit::start(Physics* phy, std::vector<Particle>& particles)
 							ellipticalGalaxy.S0(phy, startIndex, endIndex, position, rotation, velocity, radius, Masse, 1, 0, 0.9, 0.9, particles);
 						}
 					}
-					startIndex = endIndex; // Aktualisieren des Startindex für die nächste Galaxie
+					startIndex = endIndex; // Aktualisieren des Startindex fï¿½r die nï¿½chste Galaxie
 					galaxieNummer++;
 					galaxieKey = "Galaxie" + std::to_string(galaxieNummer);
 				}
@@ -152,7 +152,7 @@ void SystemInit::start(Physics* phy, std::vector<Particle>& particles)
 						}
 					}
 
-					startIndex = endIndex; // Aktualisieren des Startindex für die nächste Galaxie
+					startIndex = endIndex; // Aktualisieren des Startindex fï¿½r die nï¿½chste Galaxie
 					galaxieNummer++;
 					galaxieKey = "Galaxie" + std::to_string(galaxieNummer);
 

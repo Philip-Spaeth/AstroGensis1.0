@@ -267,6 +267,10 @@ void Node::calcDensity(double h, double& medium, int& n)
 		if (baryonicParticles[i] != nullptr)
 		{
 			///hier fehler!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			if(reinterpret_cast<uintptr_t>(baryonicParticles[i]) == 0xCDCDCDCD) {
+        		std::cout << "Ungültiger Speicherzugriff übersprungen." << std::endl;
+        		continue;
+    		}		
 			// Direktes Überprüfen auf NaN-Werte in den Positionen
 			if (glm::isnan(baryonicParticles[i]->position.x) ||
 
@@ -274,7 +278,6 @@ void Node::calcDensity(double h, double& medium, int& n)
 				glm::isnan(baryonicParticles[i]->position.z)) {
 				continue; // Überspringe diesen Partikel
 			}
-			std::cout << "Position: " << i << std::endl;
 			// -> Dichte berechnen
 			double xDistance = radius / 2 - std::fabs(baryonicParticles[i]->position.x - center.x);
 			double yDistance = radius / 2 - std::fabs(baryonicParticles[i]->position.y - center.y);
@@ -295,6 +298,17 @@ void Node::calcDensity(double h, double& medium, int& n)
 			if(countNonNullPointers(child[i]->baryonicParticles) > 32)
 			{
 				child[i]->calcDensity(h, medium, n);
+			}
+			else
+			{
+				for(int y = 0; y < child[i]->baryonicParticles.size(); y++)
+				{
+					if (child[i]->baryonicParticles[y] != nullptr)
+					{
+						this->calcDensity(child[i]->baryonicParticles[y], h, medium, n);
+					}
+				}
+					
 			}
 		}
 	}
@@ -317,7 +331,7 @@ void Node::calcDensity(Particle* p, double h, double& medium, int& n)
 		{
 			double distance = 0;
 			//check if the positions ar real and not nan
-			if (glm::isnan(p->position.x) && glm::isnan(p->position.y) && glm::isnan(p->position.z) && glm::isnan(baryonicParticles[i]->position.x) && glm::isnan(baryonicParticles[i]->position.y)&& glm::isnan(baryonicParticles[i]->position.z))
+			if (!glm::isnan(p->position.x) && !glm::isnan(p->position.y) && !glm::isnan(p->position.z) && !glm::isnan(baryonicParticles[i]->position.x) && !glm::isnan(baryonicParticles[i]->position.y)&& !glm::isnan(baryonicParticles[i]->position.z))
 			{
 				distance = glm::distance(p->position, baryonicParticles[i]->position);
 			}
@@ -374,7 +388,10 @@ void Node::calcDensity(Particle* p, double h, double& medium, int& n)
 	if (p != nullptr)
 	{
 		p->density = density;
+		p->h = Hp;
 	}
+	std::cout << "Dichte: " << density << std::endl;
+	std::cout << "Hp: " << Hp << std::endl;
 	
 	//std::cout << "Ende Calc Density" << std::endl;
 }
