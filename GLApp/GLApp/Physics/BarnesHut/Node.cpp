@@ -147,9 +147,6 @@ void Node::gravitySPH(Physics* phy,Particle* p, Node* root, glm::dvec3& force, d
 			}
 			
 			//SPH
-			//just for testing because adaptive h is not implemented yet
-			p->h = 1e18;
-
 			if (r < 2 * p->h && p->darkMatter == false)
 			{
 				double h_i = p->h; // Glättungsradius
@@ -165,6 +162,7 @@ void Node::gravitySPH(Physics* phy,Particle* p, Node* root, glm::dvec3& force, d
 
 
 				double u_i = (p->thermalEnergy / (gamma - 1)) * std::pow(density_i, gamma - 1);
+				std::cout << "Thermal Energy: " << p->thermalEnergy << std::endl;
 				p->pressure = (gamma - 1) * density_i * u_i;
 				// Druck berechnen
 				double pressure_i = p->pressure;
@@ -184,6 +182,7 @@ void Node::gravitySPH(Physics* phy,Particle* p, Node* root, glm::dvec3& force, d
 				}
 				glm::dvec3 sphForce = -baryonicMass * (pressure_i / std::pow(density_i, 2) + pressure_j / std::pow(density_j, 2) + viscosityTensor) * MathFunctions::gradientCubicSplineKernel(p->position - massCenter, h_i);
 				force += sphForce;
+				//std::cout << "Force: " << glm::length(sphForce) << std::endl;
 
 				p->thermalEnergyChange += 0.5 * (gamma - 1) / (std::pow(density_i, gamma - 1)) * viscosityTensor * glm::dot(v_ij, MathFunctions::gradientCubicSplineKernel(p->position - massCenter, (h_i + h_j) / 2));
 			}
@@ -274,6 +273,10 @@ void Node::calcDensity(double h, double& medium, int& n)
 				continue;
 			}
 			///hier fehler!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			if(reinterpret_cast<uintptr_t>(baryonicParticles[i]) == 0xCDCDCDCD) {
+        		std::cout << "Ungültiger Speicherzugriff übersprungen." << std::endl;
+        		continue;
+    		}		
 			// Direktes Überprüfen auf NaN-Werte in den Positionen
 			if (glm::isnan(baryonicParticles[i]->position.x) ||
 
@@ -302,6 +305,17 @@ void Node::calcDensity(double h, double& medium, int& n)
 			{
 				child[i]->calcDensity(h, medium, n);
 			}
+			else
+			{
+				for(int y = 0; y < child[i]->baryonicParticles.size(); y++)
+				{
+					if (child[i]->baryonicParticles[y] != nullptr)
+					{
+						this->calcDensity(child[i]->baryonicParticles[y], h, medium, n);
+					}
+				}
+					
+			}
 		}
 	}
 }
@@ -323,7 +337,7 @@ void Node::calcDensity(Particle* p, double h, double& medium, int& n)
 		{
 			double distance = 0;
 			//check if the positions ar real and not nan
-			if (glm::isnan(p->position.x) && glm::isnan(p->position.y) && glm::isnan(p->position.z) && glm::isnan(baryonicParticles[i]->position.x) && glm::isnan(baryonicParticles[i]->position.y)&& glm::isnan(baryonicParticles[i]->position.z))
+			if (!glm::isnan(p->position.x) && !glm::isnan(p->position.y) && !glm::isnan(p->position.z) && !glm::isnan(baryonicParticles[i]->position.x) && !glm::isnan(baryonicParticles[i]->position.y)&& !glm::isnan(baryonicParticles[i]->position.z))
 			{
 				distance = glm::distance(p->position, baryonicParticles[i]->position);
 			}
@@ -380,9 +394,8 @@ void Node::calcDensity(Particle* p, double h, double& medium, int& n)
 	if (p != nullptr)
 	{
 		p->density = density;
+		p->h = Hp;
 	}
-	
-	//std::cout << "Ende Calc Density" << std::endl;
 }
 
 void Node::insert(Particle* p)
