@@ -26,10 +26,16 @@ using namespace std;
 void SystemInit::start(Physics* phy, std::vector<Particle>& particles)
 {
 	//manuelle Initialisierung
-	//andromeda vorsimulation with 2 particles 
-	if (false)
+	if (true)
 	{
-		
+		//Bulletcluster
+		//Cluster1
+		Halo halo;
+		halo.halo(1, 499, glm::dvec3(0, 0, 0), glm::dvec3(0, 0, 0), glm::dvec3(0, 0, 0), 1e22, 1e42, 0.3, false, particles);
+		halo.halo(500, 999, glm::dvec3(0, 0, 0), glm::dvec3(0, 0, 0), glm::dvec3(0, 0, 0), 1e22, 1e42, 0.3, true, particles);
+		//Cluster2
+		halo.halo(1000, 1499, glm::dvec3(-0.3e23, 0, 0), glm::dvec3(0, 0, 0), glm::dvec3(2e6, 0, 0), 1e22, 1e42, 0.3, false, particles);
+		halo.halo(1500, 1999, glm::dvec3(-0.3e23, 0, 0), glm::dvec3(0, 0, 0), glm::dvec3(2e6, 0, 0), 1e22, 1e42, 0.3, true, particles);
 	}
 	else
 	{
@@ -68,7 +74,6 @@ void SystemInit::start(Physics* phy, std::vector<Particle>& particles)
 
 			if (false)
 			{
-
 			}
 			else
 			{

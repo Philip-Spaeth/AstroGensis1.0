@@ -42,6 +42,7 @@ public:
 	double darkMatterMass = 0;
 	double radius = 0;
 	double theta = 0;
+	bool reservedVe = false;
 
 	//SPH
 	double density = 0;
@@ -58,7 +59,8 @@ public:
 
 	glm::vec3 particleColor;
 	Particle particle;
-	std::vector<Particle*> baryonicParticles;
+	int currentIndex = 0;
+	Particle* baryonicParticles[1000000];
 	bool particlePushed = false;
 
 	void clear();

@@ -36,7 +36,7 @@ public:
 
     bool showBaryonicMatter = true;
     bool showDarkMatter = true;
-    int colorMode = 0;
+    int colorMode = 2;
 
     double passedTime = 0;
 

@@ -178,12 +178,16 @@ void Node::gravitySPH(Physics* phy,Particle* p, Node* root, glm::dvec3& force, d
 					double c_i = std::sqrt(gamma * pressure_i / density_i);
 					double c_j = std::sqrt(gamma * pressure_j / density_j);
 					double c_ij = (c_i + c_j) / 2;
-					double mu = h * glm::dot(v_ij, r_ij) / (glm::dot(r_ij, r_ij) + 0.01 * std::pow(h, 2));
+					double mu = h_i * glm::dot(v_ij, r_ij) / (glm::dot(r_ij, r_ij) + 0.01 * std::pow(h_i, 2));
 					viscosityTensor = -alpha * c_ij * mu + beta * std::pow(mu, 2);
 				}
-				glm::dvec3 sphForce = -baryonicMass * (pressure_i / std::pow(density_i, 2) + pressure_j / std::pow(density_j, 2) + viscosityTensor) * MathFunctions::gradientCubicSplineKernel(p->position - massCenter, h_i);
-				force += sphForce;
-				//std::cout << "Force: " << glm::length(sphForce) << std::endl;
+				glm::dvec3 pressureForce = -baryonicMass * (pressure_i / std::pow(density_i, 2) + pressure_j / std::pow(density_j, 2)) * MathFunctions::gradientCubicSplineKernel(p->position - massCenter, h_i);
+				glm::dvec3 artificialViscosity = -baryonicMass * viscosityTensor * MathFunctions::gradientCubicSplineKernel(p->position - massCenter, h_i);
+				force += pressureForce + artificialViscosity;
+				if (glm::length(artificialViscosity) > 0)
+				{
+					//std::cout << "Force: " << glm::length(artificialViscosity) << std::endl;
+				}
 
 				p->thermalEnergyChange += 0.5 * ((gamma - 1) / (std::pow(density_i, gamma - 1))) * p->mass * viscosityTensor * glm::dot(v_ij, MathFunctions::gradientCubicSplineKernel(p->position - massCenter, (h_i + h_j) / 2));
 			}
@@ -245,12 +249,12 @@ glm::dvec3 Node::calcForce(Physics* phy, Particle* p, Node* root, double softeni
 
 	return force;
 }
-int countNonNullPointers(const std::vector<Particle*>& particles) 
+int countNonNullPointers(Particle* particles[1000000], int size)
 {
 	int count = 0;
-	for (auto p : particles) 
+	for (int i = 0 ; i < size; i++)
 	{
-		if (p != nullptr) {
+		if (particles[i] != nullptr) {
 			++count; // Zählt nur Nicht-Nullpointer
 		}
 	}
@@ -260,7 +264,7 @@ int countNonNullPointers(const std::vector<Particle*>& particles)
 void Node::calcDensity(double h, double& medium, int& n)
 {
 	//std::cout << "Dichte1: " << baryonicParticles.size() << std::endl;
-	int particleSize = baryonicParticles.size();
+	int particleSize = currentIndex + 1;
 
 	for(int i = 0; i < particleSize; i++)
 	{
@@ -294,13 +298,13 @@ void Node::calcDensity(double h, double& medium, int& n)
 	{
 		if(child[i] != nullptr)
 		{
-			if(countNonNullPointers(child[i]->baryonicParticles) > 32)
+			if(countNonNullPointers(child[i]->baryonicParticles,currentIndex +1) > 32)
 			{
 				child[i]->calcDensity(h, medium, n);
 			}
 			else
 			{
-				for(int y = 0; y < child[i]->baryonicParticles.size(); y++)
+				for(int y = 0; y < (child[i]->currentIndex + 1); y++)
 				{
 					if (child[i]->baryonicParticles[y] != nullptr)
 					{
@@ -315,6 +319,11 @@ void Node::calcDensity(double h, double& medium, int& n)
 
 void Node::calcDensity(Particle* p, double h, double& medium, int& n)
 {
+	if (reinterpret_cast<uintptr_t>(p) == 0xCDCDCDCD)
+	{
+		//std::cout << "Ungültiger Speicherzugriff übersprungen." << std::endl;
+		return;
+	}
 	// hier die Dichte für diesen Partikel berechnen
 	// Die 32 wenig weit entferntesten Partikel finden.
 	int smallestDistanceParticles[32];
@@ -324,7 +333,7 @@ void Node::calcDensity(Particle* p, double h, double& medium, int& n)
 		smallestDistance[i] = 0;
 	}
 
-	for(int i = 0; i < baryonicParticles.size(); i++)
+	for(int i = 0; i < (currentIndex + 1); i++)
 	{
 		if (p != nullptr && baryonicParticles[i] != nullptr)
 		{
@@ -377,7 +386,7 @@ void Node::calcDensity(Particle* p, double h, double& medium, int& n)
 		{
 			if (p != nullptr && baryonicParticles[i] != nullptr)
 			{
-				Hp = glm::distance(p->position, baryonicParticles.at(smallestDistanceParticles[i])->position);
+				Hp = glm::distance(p->position, baryonicParticles[smallestDistanceParticles[i]]->position);
 			}
 		}
 	}
@@ -391,7 +400,7 @@ void Node::calcDensity(Particle* p, double h, double& medium, int& n)
 			double w = 0;
 			if (p != nullptr && baryonicParticles[i] != nullptr)
 			{
-				w = MathFunctions::cubicSplineKernel(glm::distance(p->position, baryonicParticles.at(smallestDistanceParticles[i])->position), Hp);
+				w = MathFunctions::cubicSplineKernel(glm::distance(p->position, baryonicParticles[smallestDistanceParticles[i]]->position), Hp);
 				medium += p->mass * w;
 				n++;
 			}
@@ -410,17 +419,12 @@ void Node::insert(Particle* p)
 {
 	if (p != nullptr)
 	{
-		const size_t maxParticles = particlesize; // Beispielwert, anzupassen nach Bedarf
-
-		// Vor dem Einfügen der Partikel
-		baryonicParticles.reserve(maxParticles);
-		if (p->darkMatter == false)
+		if (reinterpret_cast<uintptr_t>(p) != 0xCDCDCDCD)
 		{
-			if (!glm::isnan(p->position.x) &&
-				!glm::isnan(p->position.y) &&
-				!glm::isnan(p->position.z))
+			if (p->darkMatter == false)
 			{
-				baryonicParticles.push_back(p);
+				baryonicParticles[currentIndex] = p;
+				currentIndex++;
 			}
 		}
 	}

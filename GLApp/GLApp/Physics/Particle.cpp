@@ -28,7 +28,7 @@ void Particle::eulerUpdatePosition(glm::dvec3 velocity, double deltaTime)
 
 void Particle::eulerUpdateThermalEnergy(double deltaTime)
 {
-	thermalEnergy += thermalEnergyChange * deltaTime;
+ 	thermalEnergy += thermalEnergyChange * deltaTime;
 }
 
 
@@ -254,7 +254,7 @@ void Particle::setColor(double mediumDensity, double mediumThermal)
 
     //thermal color
     //set the color based on the thermal energy
-    if (false)
+    if (true)
     {
         r = 0;
         if (thermalEnergy > mediumThermal)
