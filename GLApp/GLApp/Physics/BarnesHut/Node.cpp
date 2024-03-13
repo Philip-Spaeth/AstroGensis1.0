@@ -315,6 +315,11 @@ void Node::calcDensity(double h, double& medium, int& n)
 
 void Node::calcDensity(Particle* p, double h, double& medium, int& n)
 {
+	// Nur wenn Density nicht schon berechnet wurde. wegen abstand zu Node wand.
+	if(p->density != 0)
+	{
+		return;
+	}
 	// hier die Dichte für diesen Partikel berechnen
 	// Die 32 wenig weit entferntesten Partikel finden.
 	int smallestDistanceParticles[32];
