@@ -29,11 +29,6 @@ void Octree::calcH(Particle* p)
 
 void Octree::calcdensity(double h, double& medium, int& n)
 {
-	// set density to 0 for all particles
-	for(int i = 0; i < root->baryonicParticles.size(); i++)
-	{
-		root->baryonicParticles[i]->density = 0;
-	}
 	//calc density for all particles
 	root->calcDensity(h, medium, n);
 }

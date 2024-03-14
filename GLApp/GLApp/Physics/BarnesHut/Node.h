@@ -60,7 +60,7 @@ public:
 	glm::vec3 particleColor;
 	Particle particle;
 	int currentIndex = 0;
-	Particle* baryonicParticles[1000000];
+	Particle* baryonicParticles[100000];
 	bool particlePushed = false;
 
 	void clear();

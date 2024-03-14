@@ -249,7 +249,7 @@ glm::dvec3 Node::calcForce(Physics* phy, Particle* p, Node* root, double softeni
 
 	return force;
 }
-int countNonNullPointers(Particle* particles[1000000], int size)
+int countNonNullPointers(Particle* particles[100000], int size)
 {
 	int count = 0;
 	for (int i = 0 ; i < size; i++)
@@ -403,8 +403,9 @@ void Node::calcDensity(Particle* p, double h, double& medium, int& n)
 				w = MathFunctions::cubicSplineKernel(glm::distance(p->position, baryonicParticles[smallestDistanceParticles[i]]->position), Hp);
 				medium += p->mass * w;
 				n++;
+
+				density += p->mass * w;
 			}
-			density += p->mass * w;
 		}
 	}
 	// Dichte muss hier zu den Partikeln im Rdius h berechnet werden.
@@ -539,18 +540,21 @@ void Node::insert(Particle* p)
 	}
 	else
 	{
-		mass += p->mass;
-		massCenter = (massCenter * (mass - p->mass) + p->position * p->mass) / mass;
-		//dark and baryonic matter mass
-		if (p->darkMatter)
+		if (p != nullptr)
 		{
-			darkMatterMass += p->mass;
+			mass += p->mass;
+			massCenter = (massCenter * (mass - p->mass) + p->position * p->mass) / mass;
+			//dark and baryonic matter mass
+			if (p->darkMatter)
+			{
+				darkMatterMass += p->mass;
+			}
+			else
+			{
+				baryonicMass += p->mass;
+			}
+			//std::cout << "max depth reached in index: " << index << std::endl;
 		}
-		else
-		{
-			baryonicMass += p->mass;
-		}
-		//std::cout << "max depth reached in index: " << index << std::endl;
 	}
 	//calc the density of the node
 	density = mass / (4.0 / 3.0 * 3.14159265359 * radius * radius * radius);
