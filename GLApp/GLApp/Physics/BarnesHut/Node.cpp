@@ -249,7 +249,7 @@ glm::dvec3 Node::calcForce(Physics* phy, Particle* p, Node* root, double softeni
 
 	return force;
 }
-int countNonNullPointers(Particle* particles[100000], int size)
+int countNonNullPointers(Particle* (*particles)[100000], int size)
 {
 	int count = 0;
 	for (int i = 0 ; i < size; i++)
@@ -298,7 +298,7 @@ void Node::calcDensity(double h, double& medium, int& n)
 	{
 		if(child[i] != nullptr)
 		{
-			if(countNonNullPointers(child[i]->baryonicParticles,currentIndex +1) > 32)
+			if(countNonNullPointers(&child[i]->baryonicParticles,currentIndex +1) > 32)
 			{
 				child[i]->calcDensity(h, medium, n);
 			}
