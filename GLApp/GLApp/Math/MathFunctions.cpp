@@ -60,12 +60,12 @@ glm::dvec3 MathFunctions::gradientCubicSplineKernel(const glm::dvec3& r, double 
 double MathFunctions::tempretureToInternalEnergy(double tempreture)
 {
     double gamma = 5.0 / 3.0;
-    double protonMassinG = 1.6726219e-24;
-    double boltzmannConstant = 1.38064852e-16;
+    double protonMassinKG = 1.6726219e-27;
+    double boltzmannConstant = 1.38064852e-23;
     //helium
-    double meanMolecularWeight = 0.588235;
+    double meanMolecularWeight = 0.000588235;
 
-    return (tempreture * boltzmannConstant) / ((gamma - 1) * meanMolecularWeight * protonMassinG);
+    return (tempreture * boltzmannConstant) / ((gamma - 1) * meanMolecularWeight * protonMassinKG);
 }
 
 //////////// Random Functions /////////////////////////////////////////////

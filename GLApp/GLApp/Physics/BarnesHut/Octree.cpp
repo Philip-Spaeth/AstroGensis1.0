@@ -29,7 +29,6 @@ void Octree::calcH(Particle* p)
 
 void Octree::calcdensity(double h, double& medium, int& n)
 {
-	//calc density for all particles
 	root->calcDensity(h, medium, n);
 }
 

@@ -37,7 +37,6 @@ public:
     glm::dvec3 k3Position = { 0,0,0 };
     glm::dvec3 k4Position = { 0,0,0 };
 
-
     //dark matter or not
     bool darkMatter = false;
 

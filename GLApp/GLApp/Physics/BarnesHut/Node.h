@@ -43,6 +43,7 @@ public:
 	double radius = 0;
 	double theta = 0;
 	bool reservedVe = false;
+	double rfConstant = 2e34;
 
 	//SPH
 	double density = 0;
@@ -60,7 +61,7 @@ public:
 	glm::vec3 particleColor;
 	Particle particle;
 	int currentIndex = 0;
-	Particle* baryonicParticles[100000];
+	Particle* baryonicParticles[10000];
 	bool particlePushed = false;
 
 	void clear();

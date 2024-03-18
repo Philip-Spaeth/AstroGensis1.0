@@ -19,6 +19,7 @@
 #include <string>
 #include <unordered_map>
 #include <algorithm>
+#include "MathFunctions.h"
 namespace fs = std::filesystem;
 
 
@@ -131,10 +132,27 @@ bool Physics::Calc()
             double MediumThermalEnergy = 0;
             
             ///SPH before main loop
-            if (SPH)
+            octree->calcdensity(h, mediumDensity, densityN);
+
+            //set start Thermal Energy
+            for (int p = 0; p < currentParticles.size(); p++)
             {
-                octree->calcdensity(h, mediumDensity, densityN);
-            }
+                if (!currentParticles[p].darkMatter)
+                {
+
+                    double u = MathFunctions::tempretureToInternalEnergy(1e10);
+                    double yi = 5.0 / 3.0;
+                    double A = 0;
+                    if (currentParticles[p].density != 0)
+                    {
+                        double A = (u * (yi - 1)) / std::pow(currentParticles[p].density, (yi - 1));
+                    }
+                    
+                    
+                    currentParticles[p].thermalEnergy = A;
+				}
+			}
+
             mediumDensity = mediumDensity / densityN;
             for (int p = 0; p < currentParticles.size(); p++)
             {
@@ -186,7 +204,7 @@ bool Physics::Calc()
             double MediumThermalEnergy = 0;
 
             ///SPH before main loop
-            if (SPH)
+            if (true)
             {
                 octree->calcdensity(h, mediumDensity, densityN);
             }

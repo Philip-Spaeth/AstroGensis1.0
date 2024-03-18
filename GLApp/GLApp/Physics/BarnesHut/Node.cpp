@@ -161,7 +161,13 @@ void Node::gravitySPH(Physics* phy,Particle* p, Node* root, glm::dvec3& force, d
 				double density_i = p->density;
 				double density_j = p->density;
 
+				double u = MathFunctions::tempretureToInternalEnergy(1e19);
+				double yi = 5.0 / 3.0;
+				double A = 0;
+				A = (u * (yi - 1)) / std::pow(density_i, (yi - 1));
 
+				p->thermalEnergy = A;
+				
 				double u_i = (p->thermalEnergy / (gamma - 1)) * std::pow(density_i, gamma - 1);
 				//std::cout << "Thermal Energy: " << p->thermalEnergy << std::endl;
 				p->pressure = (gamma - 1) * density_i * u_i;
@@ -182,12 +188,8 @@ void Node::gravitySPH(Physics* phy,Particle* p, Node* root, glm::dvec3& force, d
 					viscosityTensor = -alpha * c_ij * mu + beta * std::pow(mu, 2);
 				}
 				glm::dvec3 pressureForce = -baryonicMass * (pressure_i / std::pow(density_i, 2) + pressure_j / std::pow(density_j, 2)) * MathFunctions::gradientCubicSplineKernel(p->position - massCenter, h_i);
-				glm::dvec3 artificialViscosity = -baryonicMass * viscosityTensor * MathFunctions::gradientCubicSplineKernel(p->position - massCenter, h_i);
+				glm::dvec3 artificialViscosity = rfConstant * - baryonicMass * viscosityTensor * MathFunctions::gradientCubicSplineKernel(p->position - massCenter, h_i);
 				force += pressureForce + artificialViscosity;
-				if (glm::length(artificialViscosity) > 0)
-				{
-					//std::cout << "Force: " << glm::length(artificialViscosity) << std::endl;
-				}
 
 				p->thermalEnergyChange += 0.5 * ((gamma - 1) / (std::pow(density_i, gamma - 1))) * p->mass * viscosityTensor * glm::dot(v_ij, MathFunctions::gradientCubicSplineKernel(p->position - massCenter, (h_i + h_j) / 2));
 			}
@@ -249,7 +251,7 @@ glm::dvec3 Node::calcForce(Physics* phy, Particle* p, Node* root, double softeni
 
 	return force;
 }
-int countNonNullPointers(Particle* (*particles)[100000], int size)
+int countNonNullPointers(Particle* (*particles)[10000], int size)
 {
 	int count = 0;
 	for (int i = 0 ; i < size; i++)

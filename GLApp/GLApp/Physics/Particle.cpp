@@ -254,7 +254,7 @@ void Particle::setColor(double mediumDensity, double mediumThermal)
 
     //thermal color
     //set the color based on the thermal energy
-    if (true)
+    if (false)
     {
         r = 0;
         if (thermalEnergy > mediumThermal)
