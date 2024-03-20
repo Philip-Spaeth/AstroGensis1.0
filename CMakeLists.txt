@@ -1,3 +1,11 @@
+cmake_minimum_required(VERSION 3.10)
+project(MeinProjekt)
+
+
+set(CMAKE_CXX_STANDARD 17)
+
+set(MAIN_SOURCE "GLApp/GLApp/main.cpp")
+
 # Inkludieren Sie die OpenGl-Bibliothek
 find_package(OpenGL REQUIRED)
 
@@ -26,6 +34,25 @@ elseif(UNIX AND NOT APPLE)
     include_directories(${CMAKE_SOURCE_DIR}/External_Libraries_Linux/GLFW/include)
     link_directories(${CMAKE_SOURCE_DIR}/External_Libraries_Linux/GLFW/lib) # Passen Sie dies an den tatsächlichen Pfad Ihrer GLFW-Bibliotheken an
 endif()
+
+# include all cpp and .h files
+file(GLOB_RECURSE HEADER_FILES "GLApp/GLApp/*.h")
+file(GLOB_RECURSE SOURCE_FILES "GLApp/GLApp/*.cpp")
+
+include_directories(${CMAKE_SOURCE_DIR}/GLApp/GLApp/Physics/)
+include_directories(${CMAKE_SOURCE_DIR}/GLApp/GLApp/File/)
+include_directories(${CMAKE_SOURCE_DIR}/GLApp/GLApp/Physics/BarnesBut/)
+include_directories(${CMAKE_SOURCE_DIR}/GLApp/GLApp/Physics/Galaxies/)
+include_directories(${CMAKE_SOURCE_DIR}/GLApp/GLApp/Rendering)
+include_directories(${CMAKE_SOURCE_DIR}/GLApp/GLApp/Math/)
+
+include_directories(${CMAKE_SOURCE_DIR})
+add_executable(MeinProgramm ${MAIN_SOURCE} ${HEADER_FILES} ${SOURCE_FILES})
+
+target_link_libraries(MeinProgramm PRIVATE ${OPENGL_LIBRARIES} glfw GLEW pthread)
+
+find_package(Curses REQUIRED)
+target_link_libraries(MeinProgramm PRIVATE ${CURSES_LIBRARIES})
 
 # include all cpp and .h files
 file(GLOB_RECURSE HEADER_FILES "GLApp/GLApp/*.h")
