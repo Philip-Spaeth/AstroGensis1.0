@@ -60,51 +60,6 @@ void Node::color(glm::vec3 color)
 		}
 	}
 }
-void Node::gravity(Physics* phy, Particle* p, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations)
-{
-
-	if (particle.position != p->position)
-	{
-		glm::dvec3 delta = massCenter - p->position;
-
-		double r = glm::length(delta);
-
-		if (r > 0)
-		{
-
-			//normal newtonian gravity
-			if (phy->PlummerSoftening)
-			{
-				//Plummer softening
-				double epsilon0 = softening / std::sqrt(1.0 + std::pow(r / a, 2));
-				double distance = glm::dot(delta, delta) + epsilon0 * epsilon0;
-				//normal direct force
-				double powN = 3.0 / 2.0;
-				//G = 1
-				glm::dvec3 Force = (mass * p->mass * delta) / std::pow(distance, powN);
-				//std::cout << "Force: " << glm::length(Force) << std::endl;
-				Particle p2 = Particle(massCenter, mass);
-				potentialEngergy += p->calcPotentialEnergie(p2, 1, epsilon0, 0);
-				force += Force;
-			}
-			else
-			{
-				double distance = glm::dot(delta, delta) + softening * softening;
-				//normal direct force
-				//G = 1
-				double forceMagnitude = (mass * p->mass) / std::pow(distance, 2);
-				//std::cout << forceMagnitude << std::endl;
-				glm::dvec3 Force = forceMagnitude * glm::normalize(delta);
-				Particle p2 = Particle(massCenter, mass);
-				potentialEngergy += p->calcPotentialEnergie(p2, 1, softening, 0);
-				force += Force;
-			}
-
-
-			calculations++;
-		}
-	}
-}
 
 
 void Node::gravitySPH(Physics* phy,Particle* p, Node* root, glm::dvec3& force, double softening, double a, double& potentialEngergy, double& calculations)
@@ -148,7 +103,7 @@ void Node::gravitySPH(Physics* phy,Particle* p, Node* root, glm::dvec3& force, d
 			}
 			
 			//SPH
-			if (r < 2 * p->h && p->darkMatter == false)
+			if (r < 2 * p->h && p->Gas == true)
 			{
 				double h_i = p->h; // Glättungsradius
 				double h_j = p->h; // Glättungsradius
@@ -161,7 +116,7 @@ void Node::gravitySPH(Physics* phy,Particle* p, Node* root, glm::dvec3& force, d
 				double density_i = p->density;
 				double density_j = p->density;
 
-				double u = MathFunctions::tempretureToInternalEnergy(1e19);
+				double u = MathFunctions::tempretureToInternalEnergy(1e18);
 				double yi = 5.0 / 3.0;
 				double A = 0;
 				A = (u * (yi - 1)) / std::pow(density_i, (yi - 1));
@@ -204,16 +159,7 @@ glm::dvec3 Node::calcForce(Physics* phy, Particle* p, Node* root, double softeni
 
 	if (isLeaf)
 	{
-		if (phy->SPH)
-		{
-			//SPH
-			gravitySPH(phy, p, root, force, softening, a, potentialEngergy, calculations);
-		}
-		else
-		{
-			//normal direct force
-			gravity(phy, p, force, softening, a, potentialEngergy, calculations);
-		}
+		gravitySPH(phy, p, root, force, softening, a, potentialEngergy, calculations);
 	}
 	else
 	{
@@ -225,16 +171,7 @@ glm::dvec3 Node::calcForce(Physics* phy, Particle* p, Node* root, double softeni
 
 		if (d / r < theta)
 		{
-			if (phy->SPH)
-			{
-				//SPH
-				gravitySPH(phy, p, root, force, softening, a, potentialEngergy, calculations);
-			}
-			else
-			{
-				//normal direct force
-				gravity(phy, p, force, softening, a, potentialEngergy, calculations);
-			}
+			gravitySPH(phy, p, root, force, softening, a, potentialEngergy, calculations);
 		}
 		else
 		{

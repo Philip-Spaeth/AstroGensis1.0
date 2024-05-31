@@ -26,16 +26,16 @@ using namespace std;
 void SystemInit::start(Physics* phy, std::vector<Particle>& particles)
 {
 	//manuelle Initialisierung
-	if (true)
+	if (false)
 	{
 		//Bulletcluster
 		//Cluster1
 		Halo halo;
 		halo.halo(1, 2499, glm::dvec3(0, 0, 0), glm::dvec3(0, 0, 0), glm::dvec3(0, 0, 0), 1e22, 1e42, 0.3, false, particles);
-		halo.halo(2500, 4999, glm::dvec3(0, 0, 0), glm::dvec3(0, 0, 0), glm::dvec3(0, 0, 0), 6e21, 1e42, 0.3, true, particles);
+		halo.halo(2500, 4999, glm::dvec3(0, 0, 0), glm::dvec3(0, 0, 0), glm::dvec3(0, 0, 0), 1e22, 1e42, 0.3, true, particles);
 		//Cluster2
-		halo.halo(5000, 7499, glm::dvec3(-0.3e23, 0, 0), glm::dvec3(0, 0, 0), glm::dvec3(4.5e6, 0, 0), 5e21, 1e42, 0.3, false, particles);
-		halo.halo(7500, 9999, glm::dvec3(-0.3e23, 0, 0), glm::dvec3(0, 0, 0), glm::dvec3(4.5e6, 0, 0), 3e21, 1e42, 0.3, true, particles);
+		halo.halo(5000, 7499, glm::dvec3(-0.2e23, 0, 0), glm::dvec3(0, 0, 0), glm::dvec3(4.5e6, 0, 0), 5e21, 1e42, 0.3, false, particles);
+		halo.halo(7500, 9999, glm::dvec3(-0.2e23, 0, 0), glm::dvec3(0, 0, 0), glm::dvec3(4.5e6, 0, 0), 5e21, 1e42, 0.3, true, particles);
 	}
 	else
 	{

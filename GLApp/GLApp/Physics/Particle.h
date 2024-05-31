@@ -38,6 +38,7 @@ public:
     glm::dvec3 k4Position = { 0,0,0 };
 
     //dark matter or not
+    bool Gas = false;
     bool darkMatter = false;
 
     //dark Energy / hubbleconstant
