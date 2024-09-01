@@ -1,3 +1,5 @@
+#See AstroGensis2.0 for a better simulation, wich is way more advanced
+
 # N-body simulation 
 ## Whats the Purpose of our simulation-software
 
